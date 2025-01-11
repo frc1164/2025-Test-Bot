@@ -13,6 +13,9 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import frc.robot.util.LocalADStarAK;
+
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
@@ -34,6 +37,8 @@ public class Robot extends LoggedRobot {
    * initialization code.
    */
   public Robot() {
+    Pathfinding.setPathfinder(new LocalADStarAK());
+
     // AdvantageKit (See https://docs.advantagekit.org/getting-started/installation/existing-projects)
     Logger.recordMetadata("ProjectName", "2025-Test-Bot");
     Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
