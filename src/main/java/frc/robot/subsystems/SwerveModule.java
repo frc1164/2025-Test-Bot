@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule {
-
     private final SparkMax driveMotor;
     private final SparkMax turningMotor;
 
@@ -29,7 +28,6 @@ public class SwerveModule {
 
     private final PIDController turningPidController;
 
-    /* private final AnalogInput absoluteEncoder; */
     private final CANcoder absoluteEncoder;
     private final CANcoderConfiguration config;
 

@@ -4,16 +4,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.SwerveJoystickCmd;
 
@@ -33,16 +30,19 @@ public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem;
     private final SendableChooser<Command> autoChooser;
 
-    private final CommandXboxController m_driverXboxController = new CommandXboxController(OIConstants.kDriverControllerPort);
+    private final CommandXboxController m_driverXboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController m_operatorXboxController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        // Configure the trigger bindings
+        // Create Subsystems
         swerveSubsystem = new SwerveSubsystem();
 
+        // Bind buttons to commands/methods
         configureBindings();
 
+        // Setup Default Commands
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
                 swerveSubsystem,
                 () -> m_driverXboxController.getLeftY(),
@@ -50,7 +50,6 @@ public class RobotContainer {
                 () -> -m_driverXboxController.getRightX(),
                 () -> !m_driverXboxController.rightBumper().getAsBoolean()));
         
-        // Register named commands
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();

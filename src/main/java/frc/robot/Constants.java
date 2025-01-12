@@ -10,30 +10,36 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants. This class should not be used for any other
+ * purpose.
+ * All constants should be declared globally (i.e. public static).
+ * Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
+    public static class OperatorConstants {
+        public static final int kDriverControllerPort = 0;
+        public static final int kOperatorControllerPort = 1;
 
-  public static final class ModuleConstants {
-    public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
-    public static final double kDriveMotorGearRatio = 1/6.75;
-    public static final double kTurningMotorGearRatio = 7.00 / 150.00;//150.00 / 7.00;
-    public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio *  kWheelDiameterMeters * Math.PI;
-    public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2.0 * Math.PI;
-    public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60.0;
-    public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60.0;
-    public static final double kPTurning = 0.5;
-}
+        public static final double kDeadband = 0.25;
+    }
 
-  public static final class DriveConstants {
+    public static final class ModuleConstants {
+        public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
+        public static final double kDriveMotorGearRatio = 1 / 6.75;
+        public static final double kTurningMotorGearRatio = 7.00 / 150.00;// 150.00 / 7.00;
+        public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * kWheelDiameterMeters * Math.PI;
+        public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2.0 * Math.PI;
+        public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60.0;
+        public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60.0;
+        public static final double kPTurning = 0.5;
+    }
+
+    public static final class DriveConstants {
 
         public static final double kTrackWidth = Units.inchesToMeters(24);
         // Distance between right and left wheels
@@ -75,12 +81,10 @@ public final class Constants {
         public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
-
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 167.695 * Math.PI/180.0;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 45.0 * Math.PI/180.0;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 284.15 * Math.PI/180.0;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 245.25 * Math.PI/180.0;
-
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 167.695 * Math.PI / 180.0;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 45.0 * Math.PI / 180.0;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 284.15 * Math.PI / 180.0;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 245.25 * Math.PI / 180.0;
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
@@ -100,32 +104,21 @@ public final class Constants {
         // public static final double kVRight = 1.7619;
         // public static final double kARight = 0.66864;
 
-        /*  (Incorrect) Feedforward constants from Daedalus */
-         public static final double kSLeft = 0.097576;
-         public static final double kVLeft = 2.6933;
-         public static final double kALeft = 0.26236;
+        /* (Incorrect) Feedforward constants from Daedalus */
+        public static final double kSLeft = 0.097576;
+        public static final double kVLeft = 2.6933;
+        public static final double kALeft = 0.26236;
 
-         public static final double kSRight = 0.099437;
-         public static final double kVRight = 2.6173;
-         public static final double kARight = 0.11195;
+        public static final double kSRight = 0.099437;
+        public static final double kVRight = 2.6173;
+        public static final double kARight = 0.11195;
 
         // Drive/Rotation gain
         public static final double kRotGain = 2;
         public static final double kDriveGain = 3;
     }
 
-    public static final class OIConstants {
-      public static final int kDriverControllerPort = 0;
-
-      public static final int kDriverYAxis = 1;
-      public static final int kDriverXAxis = 0;
-      public static final int kDriverRotAxis = 4;
-      public static final int kDriverFieldOrientedButtonIdx = 5;
-
-      public static final double kDeadband = 0.25;
-  }
-
-  public static final class AutoConstants {
+    public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond;
         public static final double kMaxAngularSpeedRadiansPerSecond = //
                 DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 2.5;
@@ -139,8 +132,5 @@ public final class Constants {
                 new TrapezoidProfile.Constraints(
                         kMaxAngularSpeedRadiansPerSecond,
                         kMaxAngularAccelerationRadiansPerSecondSquared);
-    
     }
-
-
 }
