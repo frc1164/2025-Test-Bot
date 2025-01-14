@@ -69,16 +69,13 @@ public class SwerveSubsystem extends SubsystemBase {
     private final Pose2d poseThis = new Pose2d();
     private final SwerveModulePosition[] Position = { frontLeft.getPosition(), frontRight.getPosition(),
             backLeft.getPosition(), backRight.getPosition() };
-    //private final SwerveDrivePoseEstimator odometer = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics,
-            //new Rotation2d(0), Position, poseThis);
 
-    private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics,
+    private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
+            DriveConstants.kDriveKinematics,
             new Rotation2d(0), Position, poseThis);
 
     // Create a new Field2d object for plotting pose and initialize LimeLight Network table instances
     private final Field2d m_field = new Field2d();
-  
-
 
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
 
@@ -98,24 +95,27 @@ public class SwerveSubsystem extends SubsystemBase {
             }
         }).start();
         try {
-        RobotConfig config = RobotConfig.fromGUISettings();
-        // Configure AutoBuilder last
-        AutoBuilder.configure(
-                this::getPose, // Robot pose supplier
-                this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
-                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                (speeds, feedforward) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-                new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your
-                                                 // Constants class
-                        new PIDConstants(AutoConstants.kPXController, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(AutoConstants.kPThetaController, 0.0, 0.0) // Rotation PID constants
-                ),
-                config,
-                () -> {
-                    // Boolean supplier that controls when the path will be mirrored for the red
-                    // alliance
-                    // This will flip the path being followed to the red side of the field.
-                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+            // This WILL FAIL if the file (/src/main/deploy/pathplanner/settings.json) is
+            // not present.
+            // Make sure to open PathPlanner and change a setting to create the file.
+            RobotConfig config = RobotConfig.fromGUISettings();
+            // Configure AutoBuilder last
+            AutoBuilder.configure(
+                    this::getPose, // Robot pose supplier
+                    this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+                    this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                    (speeds, feedforward) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                    new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your
+                                                    // Constants class
+                            new PIDConstants(AutoConstants.kPXController, 0.0, 0.0), // Translation PID constants
+                            new PIDConstants(AutoConstants.kPThetaController, 0.0, 0.0) // Rotation PID constants
+                    ),
+                    config,
+                    () -> {
+                        // Boolean supplier that controls when the path will be mirrored for the red
+                        // alliance
+                        // This will flip the path being followed to the red side of the field.
+                        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
                     var alliance = DriverStation.getAlliance();
                     if (alliance.isPresent()) {
@@ -136,7 +136,7 @@ public class SwerveSubsystem extends SubsystemBase {
             });
         }
         catch(Exception e){
-            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder",e.getStackTrace());
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",e.getStackTrace());
         }
     }
 
@@ -182,15 +182,13 @@ public class SwerveSubsystem extends SubsystemBase {
     @AutoLogOutput(key = "SwerveStates/Measured")
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = {
-            frontLeft.getState(),
-            frontRight.getState(),
-            backLeft.getState(),
-            backRight.getState()
+                frontLeft.getState(),
+                frontRight.getState(),
+                backLeft.getState(),
+                backRight.getState()
         };
         return states;
     }
-
-   
 
     @Override
     public void periodic() {
@@ -201,11 +199,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         // The .name() method seems to have been removed from DriverStation.getAlliance. So this needs a switch statement or something
         //SmartDashboard.putString("Alliance Color", DriverStation.getAlliance().name());
-        
+
         // Set the robot pose on the Field2D object
-        
-      
-       
 
         m_field.setRobotPose(this.getPose());
         SmartDashboard.putData(m_field);
@@ -222,9 +217,9 @@ public class SwerveSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber("Roll Rate", gyro.getRawGyroZ());
         // SmartDashboard.putNumber("X Acceleration", gyro.getWorldLinearAccelX());
         // SmartDashboard.putNumber("Y Acceleration", gyro.getWorldLinearAccelY());
-        //offsets
-        //forward: 0.381
-        //up: 0.713
+        // offsets
+        // forward: 0.381
+        // up: 0.713
 
         // This is not finished yet... :-)
         // if (isUpdating && !isUpdatingSet) {
@@ -259,15 +254,15 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     // Though related to the LimeLights, these functions are needed for pose esimation.
-    
-    
-    /* This can probably be safely removed
-    public float getChassisPitch() {
-        return gyro.getPitch();
-    }*/
+
+    /*
+     * This can probably be safely removed
+     * public float getChassisPitch() {
+     * return gyro.getPitch();
+     * }
+     */
 
     public float getChassisYaw() {
         return gyro.getYaw();
     }
-
-    } 
+}
