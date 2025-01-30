@@ -105,13 +105,21 @@ public final class Constants {
         // public static final double kARight = 0.66864;
 
         /* (Incorrect) Feedforward constants from Daedalus */
-        public static final double kSLeft = 0.097576;
-        public static final double kVLeft = 2.6933;
-        public static final double kALeft = 0.26236;
+        // public static final double kSLeft = 0.097576;
+        // public static final double kVLeft = 2.6933;
+        // public static final double kALeft = 0.26236;
 
-        public static final double kSRight = 0.099437;
-        public static final double kVRight = 2.6173;
-        public static final double kARight = 0.11195;
+        // public static final double kSRight = 0.099437;
+        // public static final double kVRight = 2.6173;
+        // public static final double kARight = 0.11195;
+
+        public static final double kSLeft = 0.20423;
+        public static final double kVLeft = 2.6196;
+        public static final double kALeft = 0.34348;
+
+        public static final double kSRight = 0.2027;
+        public static final double kVRight = 2.6288;
+        public static final double kARight = 0.351;
 
         // Drive/Rotation gain
         public static final double kRotGain = 2;
