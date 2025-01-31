@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LReef1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef1HCoralStation"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HCoralStationReef6"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
