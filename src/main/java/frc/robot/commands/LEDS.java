@@ -5,6 +5,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.LEDSubsystem;
@@ -23,7 +25,6 @@ public class LEDS extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
 
     addRequirements(m_LedSubsystem);
-  
   }
 
  
@@ -36,7 +37,8 @@ public class LEDS extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    LEDPattern pattern = LEDPattern.progressMaskLayer(() -> m_CommandXboxController.getRightTriggerAxis() / 1);
+    LEDPattern pattern = LEDPattern.progressMaskLayer(() -> m_CommandXboxController.getRightTriggerAxis());
+    SmartDashboard.putNumber("rt", m_CommandXboxController.getRightTriggerAxis());
 
     m_LedSubsystem.runPattern(pattern);
   }

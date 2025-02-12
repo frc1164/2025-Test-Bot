@@ -18,16 +18,19 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.LEDS;
 import frc.robot.commands.SwerveJoystickCmd;
 
 
@@ -40,21 +43,23 @@ import frc.robot.commands.SwerveJoystickCmd;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-
+ private final LEDSubsystem ledSubsystem;
    private final SwerveSubsystem swerveSubsystem;
 
         private final SendableChooser<Command> autoChooser;
 
+        private final CommandXboxController operatorController = new CommandXboxController(1);
 
        
 
         private final Joystick m_driveController = new Joystick(OIConstants.kDriverControllerPort);
-    
+      
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     swerveSubsystem = new SwerveSubsystem();
+    ledSubsystem = new LEDSubsystem();
 
    
     configureBindings();
@@ -70,11 +75,17 @@ public class RobotContainer {
                  //Register named commands
              
               // Build an auto chooser. This will use Commands.none() as the default option.
-              autoChooser = AutoBuilder.buildAutoChooser();
+      autoChooser = AutoBuilder.buildAutoChooser();
 
-                // Another option that allows you to specify the default auto by its name
-                // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
+        // Another option that allows you to specify the default auto by its name
+        // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
+    
+   ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, operatorController));
+    
+     
+    
+    //ledSubsystem.setDefaultCommand(ledSubsystem.runPattern(LEDPattern.solid(Color.kBlack)).withName("Off"));
   }
 
   /**
@@ -101,5 +112,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
    return autoChooser.getSelected();
-  }}
+  }
+
+
+}
 //}
