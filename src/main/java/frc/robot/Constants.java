@@ -20,6 +20,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int ToFID = 50;
   }
 
   public static final class ModuleConstants {
