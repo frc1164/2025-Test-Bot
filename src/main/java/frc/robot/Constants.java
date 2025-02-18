@@ -133,4 +133,10 @@ public final class Constants {
                         kMaxAngularSpeedRadiansPerSecond,
                         kMaxAngularAccelerationRadiansPerSecondSquared);
     }
+
+    public static final class LimeLightConstants{
+        public static final String kLLTags = "limelight-tags";
+        public static final String kTagLimelightNetworkTableName = "limelight-tags";
+        public static final int kAprilTagPipeline = 0;
+    }
 }
