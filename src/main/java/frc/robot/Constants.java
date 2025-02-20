@@ -139,4 +139,14 @@ public final class Constants {
         public static final String kTagLimelightNetworkTableName = "limelight-tags";
         public static final int kAprilTagPipeline = 0;
     }
+
+    public static final class OffsetConstants{
+        public static final double offsetRight = -13.12;
+        public static final double offsetLeft = 13.12;
+
+
+
+    }
+
+
 }
