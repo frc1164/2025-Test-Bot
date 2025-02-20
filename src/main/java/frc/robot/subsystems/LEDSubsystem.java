@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,15 +23,21 @@ public class LEDSubsystem extends SubsystemBase {
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
+  private final AddressableLEDBufferView m_left;
+  private final AddressableLEDBufferView m_right;
+
   
 
   public LEDSubsystem() {
     m_led = new AddressableLED(kPort);
     m_buffer = new AddressableLEDBuffer(kLength);
     m_led.setLength(kLength);
+    m_left = m_buffer.createView(0,7);
+    m_right = m_buffer.createView(8,15);
     m_led.start();
 
     ToF = new LaserCan(OperatorConstants.ToFID);
+    
 
     // Set the default command to turn the strip off, otherwise the last colors written by
     // the last command to run will continue to be displayed.
@@ -47,8 +54,9 @@ public class LEDSubsystem extends SubsystemBase {
 
 
 
-  public void applyPattern(LEDPattern pattern){
-    pattern.applyTo(m_buffer);
+  public void applyPattern(LEDPattern pattern1, LEDPattern pattern2){
+    pattern1.applyTo(m_right);
+    pattern2.applyTo(m_left);
     m_led.setData(m_buffer);
   }
 

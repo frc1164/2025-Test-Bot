@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,7 +19,8 @@ import edu.wpi.first.wpilibj.util.Color;
 public class LEDS extends Command {
   private final CommandXboxController m_CommandXboxController;
   private final LEDSubsystem m_LedSubsystem;
-  
+  private static final Distance kLedSpacing = Meters.of(1 / 120.0);
+
   /** Creates a new LEDS. */
   
   public LEDS(LEDSubsystem ledSubsystem, CommandXboxController controller) {
@@ -42,9 +44,10 @@ public class LEDS extends Command {
   public void execute() {
     LEDPattern base = LEDPattern.solid(Color.kPurple);
     LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_LedSubsystem.getToF()/1000);
-    LEDPattern pattern = base.mask(mask);
-
-    m_LedSubsystem.applyPattern(pattern);
+    LEDPattern pattern1 = base.mask(mask);
+    LEDPattern pattern2 = LEDPattern.rainbow(255,100);
+    pattern2.scrollAtAbsoluteSpeed(1,kLedSpacing);
+    m_LedSubsystem.applyPattern(pattern1, pattern2);
     
   }
 
