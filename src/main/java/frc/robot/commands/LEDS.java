@@ -27,35 +27,39 @@ import edu.wpi.first.wpilibj.util.Color;
 public class LEDS extends Command {
   private final CommandXboxController m_CommandXboxController;
   private final LEDSubsystem m_LedSubsystem;
-  Distance LED_SPACING = Meters.of(1.0 / 60);
-
-  /** Creates a new LEDS. */
+  private LEDPattern m_rainbow;
+  private LEDPattern m_scrollingRainbow;
+    Distance LED_SPACING = Meters.of(1.0 / 60);
   
-  public LEDS(LEDSubsystem ledSubsystem, CommandXboxController controller) {
-    m_LedSubsystem = ledSubsystem; 
-    m_CommandXboxController = controller;
-
-    // Use addRequirements() here to declare subsystem dependencies.
-
-    addRequirements(m_LedSubsystem);
-  }
-
- 
- 
- 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    LEDPattern base = LEDPattern.solid(Color.kPurple);
-    LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_LedSubsystem.getToF()/1000);
-    LEDPattern pattern1 = base.mask(mask);
-    LEDPattern pattern2 = LEDPattern.rainbow(255,100);
-    pattern2.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.1), LED_SPACING);
-    m_LedSubsystem.applyPattern(pattern1, pattern2);
+    /** Creates a new LEDS. */
+    
+    public LEDS(LEDSubsystem ledSubsystem, CommandXboxController controller) {
+      m_LedSubsystem = ledSubsystem; 
+      m_CommandXboxController = controller;
+  
+      // Use addRequirements() here to declare subsystem dependencies.
+  
+      addRequirements(m_LedSubsystem);
+    }
+  
+   
+   
+   
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {}
+  
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+      LEDPattern base = LEDPattern.solid(Color.kPurple);
+      LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_LedSubsystem.getToF()/1000);
+      LEDPattern pattern1 = base.mask(mask);
+      LEDPattern m_rainbow = LEDPattern.rainbow(255,100);
+      m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(.08), LED_SPACING);
+    // LEDPattern pattern2 = LEDPattern.rainbow(255,100);
+    // pattern2.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.1), LED_SPACING);
+    m_LedSubsystem.applyPattern(pattern1, m_scrollingRainbow);
     
   }
 
