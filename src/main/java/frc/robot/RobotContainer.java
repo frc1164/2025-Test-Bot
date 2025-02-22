@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -16,6 +18,7 @@ import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -75,6 +78,14 @@ public class RobotContainer {
         m_driverXboxController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
         m_driverXboxController.rightBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetRight));
         m_driverXboxController.leftBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetLeft));
+
+
+
+
+
+
+        m_driverXboxController.x().whileTrue(AutoBuilder.pathfindToPose(new Pose2d(7.7, 6.1, Rotation2d.fromDegrees(0)),
+                                                                        new PathConstraints(.5, .25, 1, 1)));
     }
 
     /**

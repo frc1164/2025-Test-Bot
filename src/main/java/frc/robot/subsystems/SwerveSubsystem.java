@@ -199,6 +199,7 @@ public class SwerveSubsystem extends SubsystemBase {
         double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
         double bot_x, bot_y, rotation_z;
 
+        LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), 0,0,0,0,0);
         bot_pose = aprilTagTable
                     .getEntry("botpose_wpiblue")
                     .getDoubleArray(new double[6]);
