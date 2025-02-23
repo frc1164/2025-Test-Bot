@@ -4,6 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix6.signals.InvertedValue;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -31,12 +34,12 @@ public final class Constants {
     public static final class ModuleConstants {
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
         public static final double kDriveMotorGearRatio = 1 / 6.75;
-        public static final double kTurningMotorGearRatio = 7.00 / 150.00;// 150.00 / 7.00;
+        public static final double kTurningMotorGearRatio = 1 / 18.75;// 7 / 150;
         public static final double kDriveEncoderRot2Meter = kDriveMotorGearRatio * kWheelDiameterMeters * Math.PI;
         public static final double kTurningEncoderRot2Rad = kTurningMotorGearRatio * 2.0 * Math.PI;
         public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60.0;
         public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60.0;
-        public static final double kPTurning = 0.5;
+        public static final double kPTurning = 0.25;
     }
 
     public static final class DriveConstants {
@@ -61,15 +64,15 @@ public final class Constants {
         public static final int kFrontRightTurningMotorPort = 21;
         public static final int kBackRightTurningMotorPort = 31;
 
-        public static final boolean kFrontLeftTurningEncoderReversed = true;
-        public static final boolean kBackLeftTurningEncoderReversed = true;
-        public static final boolean kFrontRightTurningEncoderReversed = true;
-        public static final boolean kBackRightTurningEncoderReversed = true;
+        public static final InvertedValue kFrontLeftTurningEncoderReversed = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kBackLeftTurningEncoderReversed = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kFrontRightTurningEncoderReversed = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kBackRightTurningEncoderReversed = InvertedValue.Clockwise_Positive;
 
-        public static final boolean kFrontLeftDriveEncoderReversed = true;
-        public static final boolean kBackLeftDriveEncoderReversed = true;
-        public static final boolean kFrontRightDriveEncoderReversed = false;
-        public static final boolean kBackRightDriveEncoderReversed = false;
+        public static final InvertedValue kFrontLeftDriveEncoderReversed = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kBackLeftDriveEncoderReversed = InvertedValue.Clockwise_Positive;
+        public static final InvertedValue kFrontRightDriveEncoderReversed = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue kBackRightDriveEncoderReversed = InvertedValue.CounterClockwise_Positive;
 
         public static final int kFrontLeftDriveAbsoluteEncoderPort = 12;
         public static final int kBackLeftDriveAbsoluteEncoderPort = 42;
@@ -81,10 +84,10 @@ public final class Constants {
         public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 167.695 * Math.PI / 180.0;
-        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 45.0 * Math.PI / 180.0;
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 284.15 * Math.PI / 180.0;
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 245.25 * Math.PI / 180.0;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 51.41592 * Math.PI / 180.0;
+        public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 236.07432 * Math.PI / 180.0;
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 71.631 * Math.PI / 180.0;
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 36.8262 * Math.PI / 180.0;
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;

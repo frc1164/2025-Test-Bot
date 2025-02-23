@@ -194,116 +194,122 @@ public class SwerveSubsystem extends SubsystemBase {
         return states;
     }
 
-    public Pose2d getVisionEstimatedPose() {
+    // public Pose2d getVisionEstimatedPose() {
 
-        double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-        double bot_x, bot_y, rotation_z;
+    //     double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    //     double bot_x, bot_y, rotation_z;
 
-        LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), 0,0,0,0,0);
-        bot_pose = aprilTagTable
-                    .getEntry("botpose_wpiblue")
-                    .getDoubleArray(new double[6]);
+    //     LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), 0,0,0,0,0);
+    //     bot_pose = aprilTagTable
+    //                 .getEntry("botpose_wpiblue")
+    //                 .getDoubleArray(new double[6]);
 
-        /* 
-        if (alliance.isPresent()) {
-            if (alliance.get() == Alliance.Blue) {
-            bot_pose = shooterLLTable
-                    .getEntry("botpose_wpiblue")
-                    .getDoubleArray(new double[6]);
-            } else if (alliance.get() == Alliance.Red) {
-            bot_pose = shooterLLTable
-                    .getEntry("botpose_wpired")
-                    .getDoubleArray(new double[6]);
-            }
-        }*/
+    //     /* 
+    //     if (alliance.isPresent()) {
+    //         if (alliance.get() == Alliance.Blue) {
+    //         bot_pose = shooterLLTable
+    //                 .getEntry("botpose_wpiblue")
+    //                 .getDoubleArray(new double[6]);
+    //         } else if (alliance.get() == Alliance.Red) {
+    //         bot_pose = shooterLLTable
+    //                 .getEntry("botpose_wpired")
+    //                 .getDoubleArray(new double[6]);
+    //         }
+    //     }*/
 
-        bot_x = bot_pose[0];
-        bot_y = bot_pose[1];
-        rotation_z = (bot_pose[5] + 360) % 360;
+    //     bot_x = bot_pose[0];
+    //     bot_y = bot_pose[1];
+    //     rotation_z = (bot_pose[5] + 360) % 360;
 
 
-        return new Pose2d(
-                new Translation2d(bot_x, bot_y),
-                Rotation2d.fromDegrees(rotation_z));
-    }
+    //     return new Pose2d(
+    //             new Translation2d(bot_x, bot_y),
+    //             Rotation2d.fromDegrees(rotation_z));
+    // }
 
-        public void updatePoseEstimatorWithVisionBotPose(LimelightHelpers.PoseEstimate poseEstimate) {
-        //PoseLatency visionBotPose = m_visionSystem.getPoseLatency();
-        //Pose2d visionPose = getVisionEstimatedPose();
-        Pose2d visionPose = poseEstimate.pose;
-        // invalid LL data
-        //if (visionBotPose.pose2d.getX() == 0.0) {
-        //    return;
-        //}
+    //     public void updatePoseEstimatorWithVisionBotPose(LimelightHelpers.PoseEstimate poseEstimate) {
+    //     //PoseLatency visionBotPose = m_visionSystem.getPoseLatency();
+    //     //Pose2d visionPose = getVisionEstimatedPose();
+    //     Pose2d visionPose = poseEstimate.pose;
+    //     // invalid LL data
+    //     //if (visionBotPose.pose2d.getX() == 0.0) {
+    //     //    return;
+    //     //}
 
-        if (visionPose.getX() == 0.0) {
-            isUpdating = false;
-            return;
-        }
+    //     if (visionPose.getX() == 0.0) {
+    //         isUpdating = false;
+    //         return;
+    //     }
         
-        // distance from current pose to vision estimated pose
-        //double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
-        //    .getDistance(visionBotPose.pose2d.getTranslation());
+    //     // distance from current pose to vision estimated pose
+    //     //double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
+    //     //    .getDistance(visionBotPose.pose2d.getTranslation());
 
-        double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
-            .getDistance(visionPose.getTranslation());
+    //     double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
+    //         .getDistance(visionPose.getTranslation());
 
-        if (poseEstimate.tagCount > 0) {
-            double xyStds;
-            double degStds;
-            SmartDashboard.putNumber("poseDifference", poseDifference);
-            // multiple targets detected
-            if (poseEstimate.tagCount >= 2 && poseEstimate.avgTagArea > 0.5) {
-                xyStds = 0.5;
-                degStds = 6;
-            }
-            // 1 target with large area and close to estimated pose
-            else if (poseEstimate.avgTagArea > 0.66 && poseDifference < 1.5) { //areea 0.8, diff 0.5
-                xyStds = 1.0;
-                degStds = 12;
-            }
-            // 1 target farther away and estimated pose is close
-            else if (poseEstimate.avgTagArea > 0.15 && poseDifference < 0.3) { // area 0.1, diff 0.3
-                xyStds = 2.0;
-                degStds = 30;
-            }
-            else if (gate) {
-                xyStds = 0;
-                degStds = 0;
-                gate = false;
-            }
-            // conditions don't match to add a vision measurement
-            else {
-                isUpdating = false;
-                return;
-            }
+    //     if (poseEstimate.tagCount > 0) {
+    //         double xyStds;
+    //         double degStds;
+    //         SmartDashboard.putNumber("poseDifference", poseDifference);
+    //         // multiple targets detected
+    //         if (poseEstimate.tagCount >= 2 && poseEstimate.avgTagArea > 0.5) {
+    //             xyStds = 0.5;
+    //             degStds = 6;
+    //         }
+    //         // 1 target with large area and close to estimated pose
+    //         else if (poseEstimate.avgTagArea > 0.66 && poseDifference < 1.5) { //areea 0.8, diff 0.5
+    //             xyStds = 1.0;
+    //             degStds = 12;
+    //         }
+    //         // 1 target farther away and estimated pose is close
+    //         else if (poseEstimate.avgTagArea > 0.15 && poseDifference < 0.3) { // area 0.1, diff 0.3
+    //             xyStds = 2.0;
+    //             degStds = 30;
+    //         }
+    //         else if (gate) {
+    //             xyStds = 0;
+    //             degStds = 0;
+    //             gate = false;
+    //         }
+    //         // conditions don't match to add a vision measurement
+    //         else {
+    //             isUpdating = false;
+    //             return;
+    //         }
 
-            isUpdating = true;
+    //         isUpdating = true;
 
-            m_poseEstimator.setVisionMeasurementStdDevs(
-                VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-            m_poseEstimator.addVisionMeasurement(visionPose,
-                poseEstimate.timestampSeconds);
-        }
-    }
+    //         m_poseEstimator.setVisionMeasurementStdDevs(
+    //             VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+    //         m_poseEstimator.addVisionMeasurement(visionPose,
+    //             poseEstimate.timestampSeconds);
+    //     }
+    // }
 
 
 
-    public double getLatency() {
-        return Timer.getFPGATimestamp() - Units.millisecondsToSeconds(tl);
+    // public double getLatency() {
+    //     return Timer.getFPGATimestamp() - Units.millisecondsToSeconds(tl);
 
-        // maybe need camera_latency?
-        // TODO: TEST 
-        // return results.targetingResults.latency_capture;
+    //     // maybe need camera_latency?
+    //     // TODO: TEST 
+    //     // return results.targetingResults.latency_capture;
 
-        // TODO: TEST this breaks it for some reason
-        // return llresults.targetingResults.latency_pipeline; 
-    }
+    //     // TODO: TEST this breaks it for some reason
+    //     // return llresults.targetingResults.latency_pipeline; 
+    // }
 
 
 
     @Override
     public void periodic() {
+
+        SmartDashboard.putNumber("Position 12", frontLeft.getTurningPosition() * Math.PI / 180);
+        SmartDashboard.putNumber("Position 22", frontRight.getTurningPosition() * Math.PI / 180);
+        SmartDashboard.putNumber("Position 32", backRight.getTurningPosition() * Math.PI / 180);
+        SmartDashboard.putNumber("Position 42", backLeft.getTurningPosition() * Math.PI / 180);
+
 
         SwerveModulePosition[] positions = { frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(),
                 backRight.getPosition() };
@@ -327,16 +333,16 @@ public class SwerveSubsystem extends SubsystemBase {
         
 
        
-        LimelightHelpers.PoseEstimate tagsLLPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.kLLTags);
+        //LimelightHelpers.PoseEstimate tagsLLPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.kLLTags);
         
         boolean signalIsUpdating = false;
         
-        updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
-        if(isUpdating == true) {
-            signalIsUpdating = true;
-        }
-            SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
-            SmartDashboard.putBoolean("seesTags", tagsLLPoseEstimate.tagCount > 0);
+       // updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
+        // if(isUpdating == true) {
+        //     signalIsUpdating = true;
+        // }
+        //     SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
+        //     SmartDashboard.putBoolean("seesTags", tagsLLPoseEstimate.tagCount > 0);
     }
 
     public void stopModules() {
