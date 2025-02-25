@@ -48,7 +48,7 @@ public class SwerveModule {
         turningMotorConfig = new TalonFXConfiguration();
 
         driveMotorConfig.MotorOutput.withInverted(driveMotorReversed);
-        driveMotorConfig.MotorOutput.withNeutralMode(NeutralModeValue.Coast);
+        driveMotorConfig.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
         driveMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
 
@@ -78,7 +78,7 @@ public class SwerveModule {
     }
 
     public double getTurningPosition() {
-        return turningMotor.getPosition().getValueAsDouble() * 2 * Math.PI - (Math.PI / 4);
+        return turningMotor.getPosition().getValueAsDouble() * 2 * Math.PI - absoluteEncoderOffsetRad;
     }
 
     public double getDriveVelocity() {
