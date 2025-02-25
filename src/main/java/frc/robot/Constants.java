@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -146,10 +147,7 @@ public final class Constants {
     public static final class OffsetConstants{
         public static final double offsetRight = -13.12;
         public static final double offsetLeft = 13.12;
-
-
-
     }
 
-
+    public static final class LiftConstants{}
 }
