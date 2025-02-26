@@ -12,14 +12,11 @@ import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import au.grapplerobotics.LaserCan;
-import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
 
 public class LEDSubsystem extends SubsystemBase {
   private static final int kPort = 9;
   private static final int kLength = 16;
 
-  private final LaserCan ToF;
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
@@ -36,7 +33,6 @@ public class LEDSubsystem extends SubsystemBase {
     m_right = m_buffer.createView(8,15);
     m_led.start();
 
-    ToF = new LaserCan(OperatorConstants.ToFID);
     
 
     // Set the default command to turn the strip off, otherwise the last colors written by
@@ -47,10 +43,10 @@ public class LEDSubsystem extends SubsystemBase {
 
   }
 
-  public double getToF(){
-    Measurement measurement = ToF.getMeasurement();
-    return measurement.distance_mm;
-  }
+  // public double getToF(){
+  //   Measurement measurement = ToF.getMeasurement();
+  //   return measurement.distance_mm;
+  // }
 
 
 
@@ -65,7 +61,7 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     // Periodically send the latest LED color data to the LED strip for it to display
     m_led.setData(m_buffer);
-    SmartDashboard.putNumber("ToF", getToF());
+    
   }
 
   /**
@@ -76,4 +72,9 @@ public class LEDSubsystem extends SubsystemBase {
   public Command runPattern(LEDPattern pattern) {
     return run(() -> pattern.applyTo(m_buffer));
   }
+
+public int getToF() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'getToF'");
+}
 }

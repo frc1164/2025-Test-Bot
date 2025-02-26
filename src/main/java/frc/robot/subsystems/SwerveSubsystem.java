@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+
+import au.grapplerobotics.LaserCan;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
@@ -23,6 +26,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
+import frc.robot.Constants.OperatorConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule frontLeft = new SwerveModule(
@@ -68,12 +74,13 @@ public class SwerveSubsystem extends SubsystemBase {
     //private final SwerveDrivePoseEstimator odometer = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics,
             //new Rotation2d(0), Position, poseThis);
 
+    private final LaserCan ToF;
+
     private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics,
             new Rotation2d(0), Position, poseThis);
 
     // Create a new Field2d object for plotting pose and initialize LimeLight Network table instances
     private final Field2d m_field = new Field2d();
-  
 
 
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
@@ -125,7 +132,15 @@ public class SwerveSubsystem extends SubsystemBase {
         catch(Exception e){
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder",e.getStackTrace());
         }
+        ToF = new LaserCan(OperatorConstants.ToFID);
     }
+
+
+
+    public double getToF(){
+        Measurement measurement = ToF.getMeasurement();
+        return measurement.distance_mm;
+      }
 
     public void zeroHeading() {
         gyro.reset();
@@ -198,6 +213,8 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pitch", gyro.getPitch());
         SmartDashboard.putNumber("Yaw", gyro.getYaw());
         SmartDashboard.putNumber("Roll", gyro.getRoll());
+
+        SmartDashboard.putNumber("ToF", getToF());
         // SmartDashboard.putNumber("Pitch Rate", gyro.getRawGyroX());
         // SmartDashboard.putNumber("Yaw Rate", gyro.getRawGyroY());
         // SmartDashboard.putNumber("Roll Rate", gyro.getRawGyroZ());

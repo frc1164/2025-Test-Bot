@@ -53,13 +53,11 @@ public class LEDS extends Command {
     @Override
     public void execute() {
       LEDPattern base = LEDPattern.solid(Color.kPurple);
-      LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_LedSubsystem.getToF()/1000);
+      LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_swerveSubsystem.getToF()/1000);
       LEDPattern pattern1 = base.mask(mask);
       LEDPattern m_rainbow = LEDPattern.rainbow(255,100);
       m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(.08), LED_SPACING);
-    // LEDPattern pattern2 = LEDPattern.rainbow(255,100);
-    // pattern2.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.1), LED_SPACING);
-    m_LedSubsystem.applyPattern(pattern1, m_scrollingRainbow);
+     //m_LedSubsystem.applyPattern(pattern1, m_scrollingRainbow);
     
   }
 
