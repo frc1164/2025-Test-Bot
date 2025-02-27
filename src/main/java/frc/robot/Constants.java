@@ -98,23 +98,13 @@ public final class Constants {
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
 
-        /* (Also Incorrect) Feedforward constants from SysID run on 2/19/24 */
-        // public static final double kSLeft = 0.95317;
-        // public static final double kVLeft = 0.26112;
-        // public static final double kALeft = 1.0539;
+        public static final double kSLeft = 0.30323;
+        public static final double kVLeft = 3.5231;
+        public static final double kALeft = 0.17608;
 
-        // public static final double kSRight = 0.48604;
-        // public static final double kVRight = 1.7619;
-        // public static final double kARight = 0.66864;
-
-        /* (Incorrect) Feedforward constants from Daedalus */
-        public static final double kSLeft = 0.097576;
-        public static final double kVLeft = 2.6933;
-        public static final double kALeft = 0.26236;
-
-        public static final double kSRight = 0.099437;
-        public static final double kVRight = 2.6173;
-        public static final double kARight = 0.11195;
+        public static final double kSRight = 0.30202;
+        public static final double kVRight = 3.5304;
+        public static final double kARight = 0.20064;
 
         // Drive/Rotation gain
         public static final double kRotGain = 2;
