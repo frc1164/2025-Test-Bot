@@ -19,6 +19,7 @@ import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LiftConstants;
 
 public class Lift extends SubsystemBase {
   private final SparkMax liftMotor;
@@ -31,7 +32,7 @@ public class Lift extends SubsystemBase {
   private final LaserCan tofL, tofR;
   private final DigitalInput topLim, bottomLim;
 
-  private final PIDController liftPidController; //migth become a trapezoid profiled one not sure yet
+  private final PIDController liftPID; //either feedforward or switch statement
   private double kp, ki, kd;
   /** Creates a new Lift. */
   public Lift() {
@@ -55,7 +56,7 @@ public class Lift extends SubsystemBase {
     bottomLim = new DigitalInput(1);
 
 
-    liftPidController = new PIDController(kp, ki, kd);
+    liftPID = new PIDController(kp, ki, kd);
   }
 
     public void setLift(double speed) {
@@ -74,9 +75,42 @@ public class Lift extends SubsystemBase {
         }
       }
     }
-  
-    
+  /*
+    public void runLiftSetpoint() {
+    setLift(-LiftSetpoint.calculate(currentFilteredHeight()));
+  }
 
+  public void setLiftPID(LiftConstants.Setpoint m_Setpoint) {
+
+    LiftConstants.Setpoint setpoint = m_Setpoint;
+    switch (setpoint) {
+        case L4: kp = 0.00287; ki = 0.000875; kd = 0.00007; height = LiftConstants.AmpHeight; speed = .225 ;
+      break;
+        case L3: kp = 0.00475; ki = 0.00115; kd = 0.000085; height = LiftConstants.SpeakerHeight; speed = 1 ;
+      break;
+        case L2: kp = 0; ki = 0; kd = 0; height = LiftConstants.Stow; speed = 0;
+      break;
+        case STOW : kp = 0; ki = 0; kd = 0; height = LiftConstants.ClimbTop; speed = 0 ;
+      break;
+        case PICKUP: kp = .002; ki = 0.0003; kd = 0; height = LiftConstants.PickupHeight; speed = 0  ;
+
+        default:kp = 0; ki = 0; kd = 0; height = LiftConstants.Stow; speed = 0 ;
+    } 
+    liftPID = new PIDController(kp, ki, kd);
+    liftPID.setSetpoint(height);  
+  }
+
+  public boolean atSetpoint() {
+    int tolerance = 5;
+    // if(currentHeight() < getCommandedHeight() + tolerance && currentHeight() > getCommandedHeight() - tolerance) {
+    //   return true;
+    // }
+    if(currentFilteredHeight() < getCommandedHeight() + tolerance && currentFilteredHeight() > getCommandedHeight() - tolerance) {
+      return true;
+    }
+    return false;
+  }
+    */
 
   @Override
   public void periodic() {
