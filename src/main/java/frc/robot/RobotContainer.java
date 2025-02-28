@@ -59,31 +59,11 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
     }
 
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be
-     * created via the
-     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-     * an arbitrary
-     * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-     * {@link
-     * CommandXboxController
-     * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-     * PS4} controllers or
-     * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-     * joysticks}.
-     */
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         m_driverXboxController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
         m_driverXboxController.rightBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetRight));
         m_driverXboxController.leftBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetLeft));
-
-
-
-
-
-
         m_driverXboxController.x().whileTrue(AutoBuilder.pathfindToPose(new Pose2d(7.7, 6.1, Rotation2d.fromDegrees(0)),
                                                                         new PathConstraints(.5, .25, 1, 1)));
     }

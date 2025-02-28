@@ -5,9 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel;
@@ -24,7 +22,6 @@ import frc.robot.Constants.LiftConstants;
 public class Lift extends SubsystemBase {
   private final SparkMax liftMotor;
   private final SparkMaxConfig liftMotorConfig;
-  private final RelativeEncoder liftRelativeEncoder;
 
   private final CANcoder liftAbsoluteEncoder;
   private final CANcoderConfiguration config;
@@ -42,13 +39,13 @@ public class Lift extends SubsystemBase {
     liftMotorConfig.inverted(false).idleMode(IdleMode.kBrake);
     liftMotor.configure(liftMotorConfig, null, null);
 
-    liftRelativeEncoder = liftMotor.getEncoder();
 
     liftAbsoluteEncoder = new CANcoder(54);
     config = new CANcoderConfiguration();
     config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
     config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
     liftAbsoluteEncoder.getConfigurator().apply(config);
+    //abs encoder offset should make 0 the bottom of the range
 
     tofL = new LaserCan(55);
     tofR = new LaserCan(56);
@@ -76,10 +73,12 @@ public class Lift extends SubsystemBase {
       }
     }
   /*
-    public void runLiftSetpoint() {
+    public void runLiftPID() {
     setLift(-LiftSetpoint.calculate(currentFilteredHeight()));
   }
 
+
+  //TUNE THESE PID GAINS THE UP WILL SHATTER AND THE BOTTOM WILL OVERRUN BE CAREFUL
   public void setLiftPID(LiftConstants.Setpoint m_Setpoint) {
 
     LiftConstants.Setpoint setpoint = m_Setpoint;
@@ -114,6 +113,6 @@ public class Lift extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    //runLiftPID();
   }
 }
