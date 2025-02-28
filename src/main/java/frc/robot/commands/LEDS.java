@@ -37,6 +37,7 @@ public class LEDS extends Command {
     public LEDS(LEDSubsystem ledSubsystem, SwerveSubsystem swerveSubsystem) {
       m_LedSubsystem = ledSubsystem;
       m_SwerveSubsystem = swerveSubsystem; 
+      
   
       // Use addRequirements() here to declare subsystem dependencies.
   
@@ -53,13 +54,37 @@ public class LEDS extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-      LEDPattern base = LEDPattern.solid(Color.kPurple);
-      LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_SwerveSubsystem.getToF()/1000);
-      LEDPattern pattern1 = base.mask(mask);
-      LEDPattern m_rainbow = LEDPattern.rainbow(255,100);
-      m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(.08), LED_SPACING);
-      m_LedSubsystem.applyPattern(pattern1, m_scrollingRainbow);
+      //SOLID COLOR + SCROLLING RAINBOW
+      //LEDPattern base = LEDPattern.solid(Color.kPurple);
+      // LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_SwerveSubsystem.getToF()/1000);
+      // LEDPattern pattern1 = base.mask(mask);
+      // LEDPattern m_rainbow = LEDPattern.rainbow(255,100);
+      // m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(.08), LED_SPACING);
+      // m_LedSubsystem.applyPattern(pattern1, m_scrollingRainbow);
+
+      //ZIA SYMBOL
+      // Color purple = new Color(135, 0, 211);
+      // Color orange = new Color(255, 20, 0);
+      // LEDPattern purpleArms = LEDPattern.solid(purple);
+      // LEDPattern orangeCenter = LEDPattern.solid(orange);
+      // m_LedSubsystem.applyPattern(orangeCenter, purpleArms);
+
+      // TOF SENSOR WOBBLE
+      Color purple = new Color(135, 0, 211);
+      LEDPattern leftOn = LEDPattern.solid(purple);
+      LEDPattern rightOn = LEDPattern.solid(purple);
+      LEDPattern leftOff = LEDPattern.solid(Color.kBlack);
+      LEDPattern rightOff = LEDPattern.solid(Color.kBlack);
     
+      Boolean lefttrue = m_SwerveSubsystem.getToF() < 500;
+      if(lefttrue){
+        m_LedSubsystem.applyPattern(leftOn, rightOff);
+
+      } else {
+        m_LedSubsystem.applyPattern(leftOff, rightOn);
+      }
+    
+
   }
 
   // Called once the command ends or is interrupted.
