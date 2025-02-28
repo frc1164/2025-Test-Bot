@@ -20,22 +20,23 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj.util.Color;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class LEDS extends Command {
-  private final CommandXboxController m_CommandXboxController;
   private final LEDSubsystem m_LedSubsystem;
+  private final SwerveSubsystem m_SwerveSubsystem;
   private LEDPattern m_rainbow;
   private LEDPattern m_scrollingRainbow;
     Distance LED_SPACING = Meters.of(1.0 / 60);
   
     /** Creates a new LEDS. */
     
-    public LEDS(LEDSubsystem ledSubsystem, CommandXboxController controller) {
-      m_LedSubsystem = ledSubsystem; 
-      m_CommandXboxController = controller;
+    public LEDS(LEDSubsystem ledSubsystem, SwerveSubsystem swerveSubsystem) {
+      m_LedSubsystem = ledSubsystem;
+      m_SwerveSubsystem = swerveSubsystem; 
   
       // Use addRequirements() here to declare subsystem dependencies.
   
@@ -53,11 +54,11 @@ public class LEDS extends Command {
     @Override
     public void execute() {
       LEDPattern base = LEDPattern.solid(Color.kPurple);
-      LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_swerveSubsystem.getToF()/1000);
+      LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_SwerveSubsystem.getToF()/1000);
       LEDPattern pattern1 = base.mask(mask);
       LEDPattern m_rainbow = LEDPattern.rainbow(255,100);
       m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(.08), LED_SPACING);
-     //m_LedSubsystem.applyPattern(pattern1, m_scrollingRainbow);
+      m_LedSubsystem.applyPattern(pattern1, m_scrollingRainbow);
     
   }
 

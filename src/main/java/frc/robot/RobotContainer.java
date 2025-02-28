@@ -81,7 +81,7 @@ public class RobotContainer {
         // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
     
-   ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, operatorController));
+   ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, swerveSubsystem));
     
      
     
