@@ -4,14 +4,17 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OffsetConstants;
+import frc.robot.subsystems.LEDSubsystem;import frc.robot.Constants.OffsetConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.LEDS;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 
@@ -28,17 +31,19 @@ import com.pathplanner.lib.auto.AutoBuilder;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final SwerveSubsystem swerveSubsystem;
+ private final LEDSubsystem ledSubsystem;    private final SwerveSubsystem swerveSubsystem;
     private final SendableChooser<Command> autoChooser;
 
+        private final CommandXboxController operatorController = new CommandXboxController(1);
     private final CommandXboxController m_driverXboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-    private final CommandXboxController m_operatorXboxController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+      private final CommandXboxController m_operatorXboxController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         // Create Subsystems
         swerveSubsystem = new SwerveSubsystem();
+    ledSubsystem = new LEDSubsystem();
 
         // Bind buttons to commands/methods
         configureBindings();
@@ -77,12 +82,12 @@ public class RobotContainer {
         m_driverXboxController.leftBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetLeft));
     }
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-    }
-}
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+   return autoChooser.getSelected();
+  }}
+//}

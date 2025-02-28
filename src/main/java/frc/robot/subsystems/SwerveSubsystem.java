@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+
+import au.grapplerobotics.LaserCan;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
@@ -31,6 +34,9 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimeLightConstants;
 import frc.robot.LimelightHelpers;
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
+import frc.robot.Constants.OperatorConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule frontLeft = new SwerveModule(
@@ -73,6 +79,8 @@ public class SwerveSubsystem extends SubsystemBase {
     private final Pose2d poseThis = new Pose2d();
     private final SwerveModulePosition[] Position = { frontLeft.getPosition(), frontRight.getPosition(),
             backLeft.getPosition(), backRight.getPosition() };
+
+    private final LaserCan ToF;
 
     private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
             DriveConstants.kDriveKinematics,
@@ -149,7 +157,15 @@ public class SwerveSubsystem extends SubsystemBase {
                     "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",
                     e.getStackTrace());
         }
+        ToF = new LaserCan(OperatorConstants.ToFID);
     }
+
+
+
+    public double getToF(){
+        Measurement measurement = ToF.getMeasurement();
+        return measurement.distance_mm;
+      }
 
     public void zeroHeading() {
         gyro.reset();
@@ -323,6 +339,8 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pitch", gyro.getPitch());
         SmartDashboard.putNumber("Yaw", gyro.getYaw());
         SmartDashboard.putNumber("Roll", gyro.getRoll());
+
+        SmartDashboard.putNumber("ToF", getToF());
         
 
        
