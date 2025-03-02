@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class LEDSubsystem extends SubsystemBase {
   private static final int kPort = 9;
-  private static final int kLength = 16;
+  private static final int kLength = 74;
 
 
   private final AddressableLED m_led;
@@ -32,7 +32,7 @@ public class LEDSubsystem extends SubsystemBase {
     m_buffer = new AddressableLEDBuffer(kLength);
     m_led.setLength(kLength);
     m_left = m_buffer.createView(0,7);
-    m_right = m_buffer.createView(8,15);
+    m_right = m_buffer.createView(8,73);
     // m_ziaCenter = m_buffer.createView(0,7);
     // m_ziaArms = m_buffer.createView(8,47);
     m_led.start();
