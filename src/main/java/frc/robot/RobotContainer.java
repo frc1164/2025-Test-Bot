@@ -27,6 +27,8 @@ import com.pathplanner.lib.commands.PathfindThenFollowPath;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.DriverStation;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -90,7 +92,12 @@ public class RobotContainer {
         m_driverXboxController.rightBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetRight));
         m_driverXboxController.leftBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetLeft));
 
-        // m_driverXboxController.x().whileTrue(new PathfindThenFollowPath(PathPlannerPath.fromPathFile("Example Path"), new PathConstraints(1, 1, 1.5, .25)));
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("Path Path Path");
+            m_driverXboxController.x().whileTrue(AutoBuilder.pathfindThenFollowPath(path, new PathConstraints(2, 1, 1.5, .25)));
+        } catch (Exception e) {
+                DriverStation.reportError("oopsie daisy!!: " + e.getMessage(), e.getStackTrace());
+            }
         // m_driverXboxController.x().whileTrue(AutoBuilder.pathfindToPose(new Pose2d(3.824, 2.545, Rotation2d.fromDegrees(60)), new PathConstraints(1, 1, 1.5, .25)));
     }
 
