@@ -19,13 +19,18 @@ import frc.robot.Constants.OffsetConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.LEDS;
+import frc.robot.commands.RunPath;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindThenFollowPath;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -40,9 +45,12 @@ import edu.wpi.first.wpilibj.DriverStation;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
- private final LEDSubsystem ledSubsystem;    private final SwerveSubsystem swerveSubsystem;
+    private final LEDSubsystem ledSubsystem;    
+    private final SwerveSubsystem swerveSubsystem;
     private final SendableChooser<Command> autoChooser;
 
+
+    
         private final CommandXboxController operatorController = new CommandXboxController(1);
     private final CommandXboxController m_driverXboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
       private final CommandXboxController m_operatorXboxController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
@@ -86,19 +94,32 @@ public class RobotContainer {
      * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
      * joysticks}.
      */
+
+    
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         m_driverXboxController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
         m_driverXboxController.rightBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetRight));
         m_driverXboxController.leftBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetLeft));
 
-        try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile("Path Path Path");
-            m_driverXboxController.x().whileTrue(AutoBuilder.pathfindThenFollowPath(path, new PathConstraints(2, 1, 1.5, .25)));
-        } catch (Exception e) {
-                DriverStation.reportError("oopsie daisy!!: " + e.getMessage(), e.getStackTrace());
-            }
+        // try {
+        //     PathPlannerPath path = PathPlannerPath.fromPathFile("Blu-Close-R-R");
+        //     m_driverXboxController.x().whileTrue(AutoBuilder.pathfindThenFollowPath(path, new PathConstraints(2, 1, 1.5, .25)));
+        // } catch (Exception e) {
+        //         DriverStation.reportError("oopsie daisy!!: " + e.getMessage(), e.getStackTrace());
+        //     }
+        
+        m_driverXboxController.x().whileTrue(makePath(new Pose2d(3.2, 3.863-2, new Rotation2d(0))));
+
+        
         // m_driverXboxController.x().whileTrue(AutoBuilder.pathfindToPose(new Pose2d(3.824, 2.545, Rotation2d.fromDegrees(60)), new PathConstraints(1, 1, 1.5, .25)));
+    }
+
+    private Command makePath(Pose2d targetPose){
+        final List bPoints = PathPlannerPath.waypointsFromPoses(swerveSubsystem.getPose(), new Pose2d(2.901, 3.863, new Rotation2d(0)) ,targetPose);
+        final PathConstraints constraints = new PathConstraints(.75, 1, 1.5, .25);
+        PathPlannerPath testPath = new PathPlannerPath(bPoints, constraints, null, new GoalEndState(0, new Rotation2d(0)));
+        return AutoBuilder.followPath(testPath);
     }
 
   /**

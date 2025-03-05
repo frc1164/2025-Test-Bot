@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -219,6 +220,8 @@ public class SwerveSubsystem extends SubsystemBase {
                     .getEntry("botpose_wpiblue")
                     .getDoubleArray(new double[6]);
 
+        LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), 0,0,0,0,0);
+
         /* 
         if (alliance.isPresent()) {
             if (alliance.get() == Alliance.Blue) {
@@ -341,6 +344,8 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Roll", gyro.getRoll());
 
         SmartDashboard.putNumber("ToF", getToF());
+
+        SmartDashboard.putNumber("ta", aprilTagTable.getValue("ta").getDouble());
         
 
        
