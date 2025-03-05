@@ -109,7 +109,7 @@ public class RobotContainer {
         //         DriverStation.reportError("oopsie daisy!!: " + e.getMessage(), e.getStackTrace());
         //     }
         
-        m_driverXboxController.x().whileTrue(makePath(new Pose2d(3.2, 3.863-2, new Rotation2d(0))));
+        m_driverXboxController.x().whileTrue(makePath(new Pose2d(3.2, 3.863-2, new Rotation2d(90))));
 
         
         // m_driverXboxController.x().whileTrue(AutoBuilder.pathfindToPose(new Pose2d(3.824, 2.545, Rotation2d.fromDegrees(60)), new PathConstraints(1, 1, 1.5, .25)));
