@@ -211,39 +211,19 @@ public class SwerveSubsystem extends SubsystemBase {
         return states;
     }
 
-    public Pose2d getVisionEstimatedPose() {
+    public LimelightHelpers.PoseEstimate getVisionEstimatedPose() {
 
         LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), 0,0,0,0,0);
+        LimelightHelpers.PoseEstimate botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-tags");
 
-        double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-        double bot_x, bot_y, rotation_z;
+        // double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        // double bot_x, bot_y, rotation_z;
 
-        bot_pose = aprilTagTable
-                    .getEntry("botpose_orb_wpiblue")
-                    .getDoubleArray(new double[6]);
+        // bot_pose = aprilTagTable
+        //             .getEntry("botpose_orb_wpiblue")
+        //             .getDoubleArray(new double[6]);
 
-
-        /* 
-        if (alliance.isPresent()) {
-            if (alliance.get() == Alliance.Blue) {
-            bot_pose = shooterLLTable
-                    .getEntry("botpose_wpiblue")
-                    .getDoubleArray(new double[6]);
-            } else if (alliance.get() == Alliance.Red) {
-            bot_pose = shooterLLTable
-                    .getEntry("botpose_wpired")
-                    .getDoubleArray(new double[6]);
-            }
-        }*/
-
-        bot_x = bot_pose[0];
-        bot_y = bot_pose[1];
-        rotation_z = (bot_pose[5] + 360) % 360;
-
-
-        return new Pose2d(
-                new Translation2d(bot_x, bot_y),
-                Rotation2d.fromDegrees(rotation_z));
+        return botPose;
     }
 
         public void updatePoseEstimatorWithVisionBotPose(LimelightHelpers.PoseEstimate poseEstimate) {
@@ -350,16 +330,16 @@ public class SwerveSubsystem extends SubsystemBase {
         
 
        
-        LimelightHelpers.PoseEstimate tagsLLPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.kLLTags);
+        //LimelightHelpers.PoseEstimate tagsLLPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.kLLTags);
         
         boolean signalIsUpdating = false;
         
-        updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
+        updatePoseEstimatorWithVisionBotPose(getVisionEstimatedPose());
         if(isUpdating == true) {
             signalIsUpdating = true;
         }
             SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
-            SmartDashboard.putBoolean("seesTags", tagsLLPoseEstimate.tagCount > 0);
+            SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
     }
 
     public void stopModules() {
