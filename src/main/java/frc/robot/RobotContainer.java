@@ -9,8 +9,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -108,8 +110,27 @@ public class RobotContainer {
         // } catch (Exception e) {
         //         DriverStation.reportError("oopsie daisy!!: " + e.getMessage(), e.getStackTrace());
         //     }
-        
-        m_driverXboxController.x().whileTrue(makePath(new Pose2d(3.2, 3.863-2, new Rotation2d(90))));
+        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+            Pose2d currentPose = swerveSubsystem.getPose();
+            
+            // The rotation component in these poses represents the direction of travel
+            Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+            Pose2d endPos = new Pose2d(3.2, 3.863, new Rotation2d());
+      
+            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+            PathPlannerPath path = new PathPlannerPath(
+              waypoints, 
+              new PathConstraints(.75, 1, 1.5, .25),
+              null, // Ideal starting state can be null for on-the-fly paths
+              new GoalEndState(0.0, new Rotation2d(0))
+            );
+      
+            // Prevent this path from being flipped on the red alliance, since the given positions are already correct
+            path.preventFlipping = true;
+      
+            AutoBuilder.followPath(path).schedule();
+            }));
+        m_driverXboxController.x().whileTrue(makePath(new Pose2d(3.2, 3.863, new Rotation2d(0))));
 
         
         // m_driverXboxController.x().whileTrue(AutoBuilder.pathfindToPose(new Pose2d(3.824, 2.545, Rotation2d.fromDegrees(60)), new PathConstraints(1, 1, 1.5, .25)));
@@ -119,6 +140,7 @@ public class RobotContainer {
         final List bPoints = PathPlannerPath.waypointsFromPoses(swerveSubsystem.getPose(), new Pose2d(2.901, 3.863, new Rotation2d(0)) ,targetPose);
         final PathConstraints constraints = new PathConstraints(.75, 1, 1.5, .25);
         PathPlannerPath testPath = new PathPlannerPath(bPoints, constraints, null, new GoalEndState(0, new Rotation2d(0)));
+        SmartDashboard.putString("Target Pose", testPath.getPathPoses().get(26).getTranslation().toString());
         return AutoBuilder.followPath(testPath);
     }
 
