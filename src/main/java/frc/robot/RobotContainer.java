@@ -17,11 +17,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LEDSubsystem;
-import frc.robot.Constants.OffsetConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.LEDS;
-import frc.robot.commands.RunPath;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 
@@ -101,8 +99,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         m_driverXboxController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-        m_driverXboxController.rightBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetRight));
-        m_driverXboxController.leftBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetLeft));
+       
 
         // try {
         //     PathPlannerPath path = PathPlannerPath.fromPathFile("Blu-Close-R-R");
@@ -110,38 +107,43 @@ public class RobotContainer {
         // } catch (Exception e) {
         //         DriverStation.reportError("oopsie daisy!!: " + e.getMessage(), e.getStackTrace());
         //     }
-        SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
-            Pose2d currentPose = swerveSubsystem.getPose();
+
+
+        // SmartDashboard.putData("On-the-fly path", Commands.runOnce(() -> {
+        //     Pose2d currentPose = swerveSubsystem.getPose();
             
-            // The rotation component in these poses represents the direction of travel
-            Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
-            Pose2d endPos = new Pose2d(3.2, 3.863, new Rotation2d());
+        //     // The rotation component in these poses represents the direction of travel
+        //     Pose2d startPos = new Pose2d(currentPose.getTranslation(), new Rotation2d());
+        //     Pose2d endPos = new Pose2d(3.2, 3.863, new Rotation2d());
       
-            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
-            PathPlannerPath path = new PathPlannerPath(
-              waypoints, 
-              new PathConstraints(.75, 1, 1.5, .25),
-              null, // Ideal starting state can be null for on-the-fly paths
-              new GoalEndState(0.0, new Rotation2d(0))
-            );
+        //     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(startPos, endPos);
+        //     PathPlannerPath path = new PathPlannerPath(
+        //       waypoints, 
+        //       new PathConstraints(.75, 1, 1.5, .25),
+        //       null, // Ideal starting state can be null for on-the-fly paths
+        //       new GoalEndState(0.0, new Rotation2d(0))
+        //     );
       
-            // Prevent this path from being flipped on the red alliance, since the given positions are already correct
-            path.preventFlipping = true;
+        //     // Prevent this path from being flipped on the red alliance, since the given positions are already correct
+        //     path.preventFlipping = true;
       
-            AutoBuilder.followPath(path).schedule();
-            }));
-        m_driverXboxController.x().whileTrue(makePath(new Pose2d(3.2, 3.863, new Rotation2d(0))));
+        //     AutoBuilder.followPath(path).schedule();
+        //     }));
 
         
-        // m_driverXboxController.x().whileTrue(AutoBuilder.pathfindToPose(new Pose2d(3.824, 2.545, Rotation2d.fromDegrees(60)), new PathConstraints(1, 1, 1.5, .25)));
-    }
+        m_driverXboxController.rightBumper().onTrue(Commands.runOnce(() -> {makePath(new Pose2d(3.165, 3.863, new Rotation2d(0)));}));
+         m_driverXboxController.leftBumper().onTrue(Commands.runOnce(() -> {makePath(new Pose2d(3.165, 4.163, new Rotation2d(0)));}));
+        }
 
-    private Command makePath(Pose2d targetPose){
-        final List bPoints = PathPlannerPath.waypointsFromPoses(swerveSubsystem.getPose(), new Pose2d(2.901, 3.863, new Rotation2d(0)) ,targetPose);
+    private void makePath(Pose2d targetPose){
+        final List bPoints = PathPlannerPath.waypointsFromPoses(swerveSubsystem.getPose(), targetPose);
         final PathConstraints constraints = new PathConstraints(.75, 1, 1.5, .25);
-        PathPlannerPath testPath = new PathPlannerPath(bPoints, constraints, null, new GoalEndState(0, new Rotation2d(0)));
-        SmartDashboard.putString("Target Pose", testPath.getPathPoses().get(26).getTranslation().toString());
-        return AutoBuilder.followPath(testPath);
+
+        PathPlannerPath testPath = new PathPlannerPath(bPoints,
+        constraints,
+        null,
+        new GoalEndState(0, new Rotation2d(0)));
+        AutoBuilder.followPath(testPath).schedule();
     }
 
   /**

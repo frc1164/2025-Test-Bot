@@ -133,6 +133,10 @@ public final class Constants {
                 new TrapezoidProfile.Constraints(
                         kMaxAngularSpeedRadiansPerSecond,
                         kMaxAngularAccelerationRadiansPerSecondSquared);
+
+        public static enum location{
+            A, B, C, D, E, F, G, H, I, J, K, L;
+        }
     }
 
     public static final class LimeLightConstants{
@@ -140,14 +144,5 @@ public final class Constants {
         public static final String kTagLimelightNetworkTableName = "limelight-tags";
         public static final int kAprilTagPipeline = 0;
     }
-
-    public static final class OffsetConstants{
-        public static final double offsetRight = -13.12;
-        public static final double offsetLeft = 13.12;
-
-
-
-    }
-
 
 }
