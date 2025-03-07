@@ -22,6 +22,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.LEDS;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.commands.CoralScore;
 
 import java.util.List;
 
@@ -131,20 +132,11 @@ public class RobotContainer {
         //     }));
 
         
-        m_driverXboxController.rightBumper().onTrue(Commands.runOnce(() -> {makePath(new Pose2d(3.165, 3.863, new Rotation2d(0)));}));
-         m_driverXboxController.leftBumper().onTrue(Commands.runOnce(() -> {makePath(new Pose2d(3.165, 4.163, new Rotation2d(0)));}));
+        m_driverXboxController.rightBumper().onTrue(new CoralScore(swerveSubsystem, false));
+
+         m_driverXboxController.leftBumper().onTrue(new CoralScore(swerveSubsystem, true));
+
         }
-
-    private void makePath(Pose2d targetPose){
-        final List bPoints = PathPlannerPath.waypointsFromPoses(swerveSubsystem.getPose(), targetPose);
-        final PathConstraints constraints = new PathConstraints(.75, 1, 1.5, .25);
-
-        PathPlannerPath testPath = new PathPlannerPath(bPoints,
-        constraints,
-        null,
-        new GoalEndState(0, new Rotation2d(0)));
-        AutoBuilder.followPath(testPath).schedule();
-    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

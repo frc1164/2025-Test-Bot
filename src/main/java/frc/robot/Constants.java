@@ -133,10 +133,6 @@ public final class Constants {
                 new TrapezoidProfile.Constraints(
                         kMaxAngularSpeedRadiansPerSecond,
                         kMaxAngularAccelerationRadiansPerSecondSquared);
-
-        public static enum location{
-            A, B, C, D, E, F, G, H, I, J, K, L;
-        }
     }
 
     public static final class LimeLightConstants{

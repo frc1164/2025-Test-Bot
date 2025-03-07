@@ -213,7 +213,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public LimelightHelpers.PoseEstimate getVisionEstimatedPose() {
 
-        LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), 0,0,0,0,0);
+        LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), getYawRate(),0,0,0,0);
         LimelightHelpers.PoseEstimate botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-tags");
 
         // double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -300,6 +300,16 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 
+    public int getPrincipalTag(){
+        double tag = aprilTagTable.getValue("tid").getDouble();
+        int tagRead = (int)tag;
+        return tagRead;
+    }
+
+    public double getYawRate(){
+        return gyro.getRate();
+    }
+
 
     @Override
     public void periodic() {
@@ -317,6 +327,7 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putData(m_field);
 
         SmartDashboard.putNumber("Robot Heading", getHeading());
+
         SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 
