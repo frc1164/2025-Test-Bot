@@ -15,7 +15,9 @@ import frc.robot.Constants.OffsetConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.AprilTagAlignCmd;
+import frc.robot.commands.ManualLift;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.subsystems.Lift;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
@@ -34,6 +36,8 @@ public class RobotContainer {
     private final SwerveSubsystem swerveSubsystem;
     private final SendableChooser<Command> autoChooser;
 
+    private final Lift lift;
+
     private final CommandXboxController m_driverXboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     private final CommandXboxController m_operatorXboxController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
     /**
@@ -42,6 +46,7 @@ public class RobotContainer {
     public RobotContainer() {
         // Create Subsystems
         swerveSubsystem = new SwerveSubsystem();
+        lift = new Lift();
 
         // Bind buttons to commands/methods
         configureBindings();
@@ -55,6 +60,7 @@ public class RobotContainer {
                 () -> !m_driverXboxController.rightBumper().getAsBoolean()));
         
 
+        lift.setDefaultCommand(new ManualLift(lift, m_driverXboxController));
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
     }
@@ -62,10 +68,7 @@ public class RobotContainer {
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         m_driverXboxController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-        m_driverXboxController.rightBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetRight));
-        m_driverXboxController.leftBumper().whileTrue(new AprilTagAlignCmd(swerveSubsystem, OffsetConstants.offsetLeft));
-        m_driverXboxController.x().whileTrue(AutoBuilder.pathfindToPose(new Pose2d(7.7, 6.1, Rotation2d.fromDegrees(0)),
-                                                                        new PathConstraints(.5, .25, 1, 1)));
+        
     }
 
     /**

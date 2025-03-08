@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import au.grapplerobotics.LaserCan;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LiftConstants;
 
@@ -23,8 +24,7 @@ public class Lift extends SubsystemBase {
   private final SparkMax liftMotor;
   private final SparkMaxConfig liftMotorConfig;
 
-  private final CANcoder liftAbsoluteEncoder;
-  private final CANcoderConfiguration config;
+
 
   private final LaserCan tofL, tofR;
   private final DigitalInput topLim, bottomLim;
@@ -40,17 +40,13 @@ public class Lift extends SubsystemBase {
     liftMotor.configure(liftMotorConfig, null, null);
 
 
-    liftAbsoluteEncoder = new CANcoder(54);
-    config = new CANcoderConfiguration();
-    config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = .5;
-    config.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
-    liftAbsoluteEncoder.getConfigurator().apply(config);
+    
     //abs encoder offset should make 0 the bottom of the range
 
     tofL = new LaserCan(55);
     tofR = new LaserCan(56);
-    topLim = new DigitalInput(0);
-    bottomLim = new DigitalInput(1);
+    topLim = new DigitalInput(1);
+    bottomLim = new DigitalInput(2);
 
 
     liftPID = new PIDController(kp, ki, kd);
@@ -114,5 +110,8 @@ public class Lift extends SubsystemBase {
   @Override
   public void periodic() {
     //runLiftPID();
+    SmartDashboard.putBoolean("toplim", !topLim.get());
+    SmartDashboard.putBoolean("bottomlim", !bottomLim.get());
+
   }
 }
