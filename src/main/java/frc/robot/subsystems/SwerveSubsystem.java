@@ -85,6 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     private final LaserCan ToF;
 
+
     private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
             DriveConstants.kDriveKinematics,
             new Rotation2d(0), Position, poseThis);
@@ -115,6 +116,11 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kVRight, DriveConstants.kARight);
     private SimpleMotorFeedforward feedforwardLeft = new SimpleMotorFeedforward(DriveConstants.kSLeft,
             DriveConstants.kVLeft, DriveConstants.kALeft);
+
+
+    private double tag;
+    private int tagRead;
+
 
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -303,8 +309,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     public int getPrincipalTag(){
-        double tag = aprilTagTable.getValue("tid").getDouble();
-        int tagRead = (int)tag;
+        tag = aprilTagTable.getValue("tid").getDouble();
+        if(tag == 0){}
+        else{tagRead = (int)tag;}
+        
         return tagRead;
     }
 
