@@ -38,6 +38,7 @@ import frc.robot.LimelightHelpers;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
 import frc.robot.Constants.OperatorConstants;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule frontLeft = new SwerveModule(
@@ -76,6 +77,7 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
+    public Command currentPath;
     private final AHRS gyro = new AHRS(NavXComType.kUSB1);
     private final Pose2d poseThis = new Pose2d();
     private final SwerveModulePosition[] Position = { frontLeft.getPosition(), frontRight.getPosition(),
