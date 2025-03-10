@@ -149,5 +149,18 @@ public final class Constants {
         public static final double offsetLeft = 13.12;
     }
 
-    public static final class LiftConstants{}
+    public static final class LiftConstants{
+        public static final double liftPIDkP = 0;
+        public static final double liftPIDkI = 0;
+        public static final double liftPIDkD = 0;
+
+        public static final double liftMaxVelocity = 2;
+        public static final double liftMaxAcceleration = 2;
+        
+        // Placeholder constants, SysId has not been run yet
+        public static final double liftFeedforwardkS = 0;
+        public static final double liftFeedforwardkG = 0;
+        public static final double liftFeedforwardkV = 0;
+        public static final double liftFeedforwardkA = 0;
+    }
 }
