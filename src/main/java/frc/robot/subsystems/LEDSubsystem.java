@@ -15,13 +15,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class LEDSubsystem extends SubsystemBase {
   private static final int kPort = 9;
-  private static final int kLength = 16;
+  private static final int kLength = 74;
 
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
   private final AddressableLEDBufferView m_left;
   private final AddressableLEDBufferView m_right;
+  // private final AddressableLEDBufferView m_ziaCenter;
+  // private final AddressableLEDBufferView m_ziaArms;
 
   
 
@@ -30,7 +32,9 @@ public class LEDSubsystem extends SubsystemBase {
     m_buffer = new AddressableLEDBuffer(kLength);
     m_led.setLength(kLength);
     m_left = m_buffer.createView(0,7);
-    m_right = m_buffer.createView(8,15);
+    m_right = m_buffer.createView(8,73);
+    // m_ziaCenter = m_buffer.createView(0,7);
+    // m_ziaArms = m_buffer.createView(8,47);
     m_led.start();
 
     
@@ -51,8 +55,10 @@ public class LEDSubsystem extends SubsystemBase {
 
 
   public void applyPattern(LEDPattern pattern1, LEDPattern pattern2){
-    pattern1.applyTo(m_right);
-    pattern2.applyTo(m_left);
+    // pattern1.applyTo(m_ziaCenter);
+    // pattern2.applyTo(m_ziaArms);
+    pattern1.applyTo(m_left);
+    pattern2.applyTo(m_right);
     m_led.setData(m_buffer);
   }
 

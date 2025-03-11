@@ -28,9 +28,8 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
         public static final int kOperatorControllerPort = 1;
-        public static final int ToFID = 50;
-
         public static final double kDeadband = 0.25;
+        public static final int ToFID = 50;
   }
 
     public static final class ModuleConstants {
@@ -86,6 +85,7 @@ public final class Constants {
         public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
+
         public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 51.76764  * Math.PI / 180.0;
         public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 234.9324 * Math.PI / 180.0;
         public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 70.83972 * Math.PI / 180.0;
@@ -129,7 +129,7 @@ public final class Constants {
                 DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
-        public static final double kPXController = 0.1;
+        public static final double kPXController = 0.45;
         public static final double kPYController = 0.1;
         public static final double kPThetaController = 10;
 
@@ -144,6 +144,7 @@ public final class Constants {
         public static final String kTagLimelightNetworkTableName = "limelight-tags";
         public static final int kAprilTagPipeline = 0;
     }
+
     public static final class ArmConstants{
         public static final double kS = 0.65633;
         public static final double kV = 113.91;

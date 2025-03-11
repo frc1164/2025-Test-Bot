@@ -18,6 +18,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule {
+
     private final TalonFX driveMotor;
     private final TalonFX turningMotor;
 
@@ -40,8 +41,10 @@ public class SwerveModule {
         absoluteEncoder = new CANcoder(absoluteEncoderId, "rio");
         config = new CANcoderConfiguration();
 
+
         driveMotor = new TalonFX(driveMotorId);
         driveMotorConfig = new TalonFXConfiguration();
+
 
         turningMotor = new TalonFX(turningMotorId);
         turningMotorConfig = new TalonFXConfiguration();
@@ -57,6 +60,9 @@ public class SwerveModule {
         turningMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         turningMotorConfig.Feedback.FeedbackRemoteSensorID = absoluteEncoderId;
         turningMotorConfig.Feedback.RotorToSensorRatio = ModuleConstants.kTurningMotorGearRatio;
+
+        driveMotor.configure(driveMotorConfig, null, null);
+        turningMotor.configure(turningMotorConfig, null, null);
 
         config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
@@ -95,6 +101,7 @@ public class SwerveModule {
         /*
          * double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
          */
+
         // double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI/* + Math.PI / 2 */ ;
         double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
         /* angle *= 2.0 * Math.PI; */
