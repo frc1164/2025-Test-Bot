@@ -75,7 +75,7 @@ public class RobotContainer {
         
 
         arm.setDefaultCommand(new ManualLift(arm, driverController));
-        ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, operatorController));
+        ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, operatorController, lift));
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
     }
