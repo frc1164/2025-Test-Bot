@@ -153,6 +153,13 @@ public final class Constants {
         public static final double ckV = 126.31;
         public static final double ckA = 16.718;
         public static final double ckG = 0.50573;
+
+        public static final double kP = 0.55;
+        public static final double kI = 0.025;
+        public static final double kD = 0;
+
+        public static final double maxVelocity = 1;
+        public static final double maxAcceleration = 1;
     }
 
     public static final class LiftConstants{
