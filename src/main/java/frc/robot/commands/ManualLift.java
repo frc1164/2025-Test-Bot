@@ -4,22 +4,20 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Lift;
 
-/** An example command that uses an example subsystem. */
-public class ExampleCommand extends Command {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_subsystem;
-
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(ExampleSubsystem subsystem) {
-    m_subsystem = subsystem;
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class ManualLift extends Command {
+  private Arm subsystem;
+  private CommandXboxController controller;
+  /** Creates a new ManualLift. */
+  public ManualLift(Arm m_subsystem, CommandXboxController m_controller) {
     // Use addRequirements() here to declare subsystem dependencies.
+    subsystem = m_subsystem;
+    controller = m_controller;
     addRequirements(subsystem);
   }
 
@@ -29,7 +27,9 @@ public class ExampleCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+     subsystem.runArm(controller.getRightY());
+  }
 
   // Called once the command ends or is interrupted.
   @Override

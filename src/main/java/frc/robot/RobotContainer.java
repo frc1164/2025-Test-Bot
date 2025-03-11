@@ -4,16 +4,6 @@
 
 package frc.robot;
 
-
-import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.OperatorConstants;
-
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator.NameMatcher;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -24,96 +14,90 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.LiftConstants;
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.commands.AprilTagAlignCmd;
+import frc.robot.commands.ManualLift;
 import frc.robot.commands.LEDS;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Lift;
 
-
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
- private final LEDSubsystem ledSubsystem;
-   private final SwerveSubsystem swerveSubsystem;
+    // The robot's subsystems and commands are defined here...
+    private final LEDSubsystem ledSubsystem;
+    private final SwerveSubsystem swerveSubsystem;
+    private final SendableChooser<Command> autoChooser;
 
-        private final SendableChooser<Command> autoChooser;
+    private final Lift lift;
+    private final Arm arm;
 
-        private final CommandXboxController operatorController = new CommandXboxController(1);
+    private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
+        // Create Subsystems
+        swerveSubsystem = new SwerveSubsystem();
+        ledSubsystem = new LEDSubsystem();
+        lift = new Lift();
+        arm = new Arm();
 
-       
+        // Bind buttons to commands/methods
+        configureBindings();
 
-        private final Joystick m_driveController = new Joystick(OIConstants.kDriverControllerPort);
-      
+        // Setup Default Commands
+        swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
+                swerveSubsystem,
+                () -> driverController.getLeftY(),
+                () -> driverController.getLeftX(),
+                () -> -driverController.getRightX(),
+                () -> !driverController.rightBumper().getAsBoolean()));
+        
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the trigger bindings
-    swerveSubsystem = new SwerveSubsystem();
-    ledSubsystem = new LEDSubsystem();
+        arm.setDefaultCommand(new ManualLift(arm, driverController));
+        ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, operatorController));
+        // Build an auto chooser. This will use Commands.none() as the default option.
+        autoChooser = AutoBuilder.buildAutoChooser();
+    }
 
-   
-    configureBindings();
+    private void configureBindings() {
+        // Driver A Button -> Zero Heading
+        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+        driverController.x().onTrue(new InstantCommand(() -> lift.setLiftGoal(.25)));
+        driverController.y().onTrue(new InstantCommand(() -> lift.setLiftGoal(.65)));
+        driverController.b().onTrue(new InstantCommand(() -> lift.setLiftGoal(.07)));
+        
+        //Actual Operator Bindings:
+        operatorController.leftBumper().onTrue(new ParallelCommandGroup(new InstantCommand(() -> lift.setLiftGoal(LiftConstants.pickupHeight)), new InstantCommand(() ->arm.setGoal(ArmConstants.pickupSetpoint))));
+        
+    }
 
-
-    swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
-                                swerveSubsystem,
-                                () -> m_driveController.getRawAxis(OIConstants.kDriverYAxis),
-                                () -> m_driveController.getRawAxis(OIConstants.kDriverXAxis),
-                                () -> -m_driveController.getRawAxis(OIConstants.kDriverRotAxis),
-                                () -> !m_driveController.getRawButton(6))); // RB
-
-                 //Register named commands
-             
-              // Build an auto chooser. This will use Commands.none() as the default option.
-      autoChooser = AutoBuilder.buildAutoChooser();
-
-        // Another option that allows you to specify the default auto by its name
-        // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
-    
-   ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, operatorController));
-    
-     
-    
-    //ledSubsystem.setDefaultCommand(ledSubsystem.runPattern(LEDPattern.solid(Color.kBlack)).withName("Off"));
-  }
-
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    
-    
-    
-  //   // A Button
-    new JoystickButton(m_driveController, 1).onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-  }
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
-   return autoChooser.getSelected();
-  }
-
-
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        return autoChooser.getSelected();
+    }
 }
-//}
