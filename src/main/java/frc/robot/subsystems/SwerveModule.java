@@ -61,8 +61,6 @@ public class SwerveModule {
         turningMotorConfig.Feedback.FeedbackRemoteSensorID = absoluteEncoderId;
         turningMotorConfig.Feedback.RotorToSensorRatio = ModuleConstants.kTurningMotorGearRatio;
 
-        driveMotor.configure(driveMotorConfig, null, null);
-        turningMotor.configure(turningMotorConfig, null, null);
 
         config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;

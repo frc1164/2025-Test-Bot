@@ -85,15 +85,15 @@ public class RobotContainer {
         // Setup Default Commands
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
                 swerveSubsystem,
-                () -> m_driverXboxController.getLeftY(),
-                () -> m_driverXboxController.getLeftX(),
-                () -> -m_driverXboxController.getRightX(),
-                () -> !m_driverXboxController.rightBumper().getAsBoolean()));
+                () -> driverController.getLeftY(),
+                () -> driverController.getLeftX(),
+                () -> -driverController.getRightX(),
+                () -> !driverController.rightBumper().getAsBoolean()));
         
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
-        ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, swerveSubsystem));
+        ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, driverController, lift, swerveSubsystem));
 
     }
 

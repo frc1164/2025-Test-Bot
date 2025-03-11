@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.util.Color;
 public class LEDS extends Command {
   private final LEDSubsystem m_LedSubsystem;
   private final SwerveSubsystem m_SwerveSubsystem;
+  private final CommandXboxController m_CommandXboxController;
   private final Lift lift;
   private LEDPattern m_rainbow;
   private LEDPattern m_scrollingRainbow;
@@ -38,10 +39,11 @@ public class LEDS extends Command {
     /** Creates a new LEDS. */
     
 
-    public LEDS(LEDSubsystem ledSubsystem, CommandXboxController controller, Lift m_lift) {
+    public LEDS(LEDSubsystem ledSubsystem, CommandXboxController controller, Lift m_lift, SwerveSubsystem swerveSubsystem) {
       m_LedSubsystem = ledSubsystem; 
       m_CommandXboxController = controller;
       lift = m_lift;
+      m_SwerveSubsystem = swerveSubsystem;
       // Use addRequirements() here to declare subsystem dependencies.
   
       addRequirements(m_LedSubsystem);
