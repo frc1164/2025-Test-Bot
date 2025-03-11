@@ -143,24 +143,30 @@ public final class Constants {
         public static final String kTagLimelightNetworkTableName = "limelight-tags";
         public static final int kAprilTagPipeline = 0;
     }
+    public static final class ArmConstants{
+        public static final double kS = 0.65633;
+        public static final double kV = 113.91;
+        public static final double kA = 14.624;
+        public static final double kG = 1.3905;
 
-    public static final class OffsetConstants{
-        public static final double offsetRight = -13.12;
-        public static final double offsetLeft = 13.12;
+        public static final double ckS = 0.45292;
+        public static final double ckV = 126.31;
+        public static final double ckA = 16.718;
+        public static final double ckG = 0.50573;
     }
 
     public static final class LiftConstants{
-        public static final double liftPIDkP = 0;
+        public static final double liftPIDkP = 50;
         public static final double liftPIDkI = 0;
         public static final double liftPIDkD = 0;
 
-        public static final double liftMaxVelocity = 2;
-        public static final double liftMaxAcceleration = 2;
+        public static final double liftMaxVelocity = 6;
+        public static final double liftMaxAcceleration = 20;
         
         // Placeholder constants, SysId has not been run yet
-        public static final double liftFeedforwardkS = 0;
-        public static final double liftFeedforwardkG = 0;
-        public static final double liftFeedforwardkV = 0;
-        public static final double liftFeedforwardkA = 0;
+        public static final double liftFeedforwardkS = 0.74601;
+        public static final double liftFeedforwardkG = 0.21265;
+        public static final double liftFeedforwardkV = 0.58095;
+        public static final double liftFeedforwardkA = 0.090776;
     }
 }

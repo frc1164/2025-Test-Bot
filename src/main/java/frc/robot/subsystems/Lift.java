@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.hardware.CANcoder;
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -26,7 +22,7 @@ public class Lift extends SubsystemBase {
     private final SparkMax liftMotor;
     private final SparkMaxConfig liftMotorConfig;
 
-    private final LaserCan tofL, tofR;
+    private final LaserCan ToF;
     private final DigitalInput topLim, bottomLim;
 
     private final ProfiledPIDController liftPID; // either feedforward or switch statement
@@ -42,8 +38,7 @@ public class Lift extends SubsystemBase {
 
         // abs encoder offset should make 0 the bottom of the range
 
-        tofL = new LaserCan(55);
-        tofR = new LaserCan(56);
+        ToF = new LaserCan(55);
         topLim = new DigitalInput(1);
         bottomLim = new DigitalInput(2);
 
@@ -54,28 +49,29 @@ public class Lift extends SubsystemBase {
                 new Constraints(
                         LiftConstants.liftMaxVelocity,
                         LiftConstants.liftMaxAcceleration));
-        liftFeedforward = new ElevatorFeedforward(LiftConstants.liftFeedforwardkS, LiftConstants.liftFeedforwardkG,
-                LiftConstants.liftFeedforwardkV);
+        liftPID.setGoal(.225);
         // May be needed if SysId supplies an A value.
-        // liftFeedforward = new ElevatorFeedforward(LiftConstants.liftFeedforwardkS,
-        // LiftConstants.liftFeedforwardkG, LiftConstants.liftFeedforwardkV,
-        // LiftConstants.liftFeedforwardkA);
+        liftFeedforward = new ElevatorFeedforward(LiftConstants.liftFeedforwardkS,
+        LiftConstants.liftFeedforwardkG, LiftConstants.liftFeedforwardkV,
+        LiftConstants.liftFeedforwardkA);
 
     }
 
     public void runLift(double motorOutput) {
-        if (motorOutput < 0) {
+        if (motorOutput > 0) {
             if (!topLim.get()) {
-                liftMotor.setVoltage(0);
-            } else {
+                SmartDashboard.putNumber("motorOutput", motorOutput);
                 liftMotor.setVoltage(motorOutput);
+            } else {
+                liftMotor.setVoltage(0);
             }
         }
-        if (motorOutput > 0) {
+        if (motorOutput < 0) {
             if (!bottomLim.get()) {
-                liftMotor.setVoltage(0);
-            } else {
+                SmartDashboard.putNumber("motorOutput", motorOutput);
                 liftMotor.setVoltage(motorOutput);
+            } else {
+                liftMotor.setVoltage(0);
             }
         }
     }
@@ -86,7 +82,7 @@ public class Lift extends SubsystemBase {
     private double getFeedforwardPIDOutput() {
         double feedforwardOutput = liftFeedforward.calculate(liftPID.getSetpoint().velocity);
         double liftPIDOutput = liftPID.calculate(getLiftHeight());
-        return feedforwardOutput + liftPIDOutput;
+        return (feedforwardOutput + liftPIDOutput);
     }
 
     /*
@@ -102,7 +98,7 @@ public class Lift extends SubsystemBase {
      */
     public double getLiftHeight() {
         // Probably read the (unimplemented) Kalman filter here
-        return 0;
+        return ToF.getMeasurement().distance_mm / 1000.0;
     }
     /*
      * //TUNE THESE PID GAINS THE UP WILL SHATTER AND THE BOTTOM WILL OVERRUN BE
@@ -148,6 +144,10 @@ public class Lift extends SubsystemBase {
     @Override
     public void periodic() {
         runLift(getFeedforwardPIDOutput());
+        SmartDashboard.putNumber("PID Goal", liftPID.getGoal().position);
+        SmartDashboard.putNumber("PID Setpoint", liftPID.getSetpoint().position);
+        SmartDashboard.putData("liftPID", liftPID);
+        SmartDashboard.putNumber("height", getLiftHeight());
         SmartDashboard.putBoolean("toplim", !topLim.get());
         SmartDashboard.putBoolean("bottomlim", !bottomLim.get());
 

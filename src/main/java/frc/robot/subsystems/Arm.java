@@ -5,75 +5,90 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.AbsoluteEncoderConfigAccessor;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Arm extends SubsystemBase {
   private final SparkMax armMotor;
   private final SparkMaxConfig motorConfig;
+  private final AbsoluteEncoder absoluteEncoder;
+  private final AbsoluteEncoderConfig config;
+  //private final AbsoluteEncoderConfigAccessor accessor;
 
-  private final CANcoder absEncoder;
-  private final CANcoderConfiguration encoderConfig;
 
-  private final DigitalInput beamBrake;
+  private final DigitalInput beamBrake, isHeld;
 
   private final PIDController armPID;
 
   public Arm() {
     armMotor = new SparkMax(57, MotorType.kBrushless);
     motorConfig = new SparkMaxConfig();
-    motorConfig.inverted(false)
+    motorConfig.inverted(true)
                .idleMode(IdleMode.kBrake);
+
+    absoluteEncoder = armMotor.getAbsoluteEncoder();
+    config = new AbsoluteEncoderConfig();
+    config.positionConversionFactor(Math.PI * 2)  
+          .velocityConversionFactor(Math.PI / 30)
+          .zeroOffset(0.312)
+          .inverted(true);
+    motorConfig.apply(config);
+
     armMotor.configure(motorConfig, null, null);
 
-    absEncoder = new CANcoder(58);
-    encoderConfig = new CANcoderConfiguration();
-    encoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1;
-    encoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
-    absEncoder.getConfigurator().apply(encoderConfig);
-    //create an absolute encoder offset, 0 point should be straight down
-
     beamBrake = new DigitalInput(3);
+    isHeld = new DigitalInput(0);
 
-    armPID = new PIDController(0, 0, 0);
-  }
-
-  public double getAbsoluteEncoderRad(){
-    return absEncoder.getAbsolutePosition().getValueAsDouble() * Math.PI * 2;
+    armPID = new PIDController(0.55, 0.025, 0);
   }
 
   public void runArm(Double speed){
-    if (getAbsoluteEncoderRad() > 0 && getAbsoluteEncoderRad() < 5/4 * Math.PI){
-      armMotor.set(speed);
-    } else {
-      armMotor.set(0);
+    if (speed > 0){
+      if (absoluteEncoder.getPosition() <= 5){
+        armMotor.set(speed / 2);
+      } else {
+        armMotor.set(0);
+      }
+    }
+    if (speed < 0){
+      if (absoluteEncoder.getPosition() >= 1){
+        armMotor.set(speed / 2);
+      }else{
+        armMotor.set(0);
+      }
     }
   }
 
   public void runPID() {
-    runArm(-armPID.calculate(getAbsoluteEncoderRad()));
+    runArm(armPID.calculate(absoluteEncoder.getPosition()));
   }
 
-  // public void setPID(ArmConstants.Setpoint setpoint){
-  //  switch (setpoint) {
-  //   case PICKUP: armPID.setSetpoint(0);  armPID.setP(0.002);  armPID.setI(0.00003);
-  //   break;
-  //   case L2: armPID.setSetpoint(3/4 * Math.PI);   armPID.setP(.05);  armPID.setI(.0005);
-  //   break;
-  //   //add case L3 and L4
-  // }
-  // }
+  public void setPID(double setpoint){
+    armPID.setSetpoint(setpoint);
+  }
+  
 
   @Override
   public void periodic() {
-    runPID();
+    //runPID();
+    SmartDashboard.putData("armPID", armPID);
+    SmartDashboard.putNumber("armEncoder", absoluteEncoder.getPosition());
   }
 }

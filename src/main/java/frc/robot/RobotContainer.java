@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OffsetConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.ManualLift;
 import frc.robot.commands.SwerveJoystickCmd;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Lift;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -37,6 +37,7 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
 
     private final Lift lift;
+    private final Arm arm;
 
     private final CommandXboxController m_driverXboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     private final CommandXboxController m_operatorXboxController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
@@ -47,6 +48,7 @@ public class RobotContainer {
         // Create Subsystems
         swerveSubsystem = new SwerveSubsystem();
         lift = new Lift();
+        arm = new Arm();
 
         // Bind buttons to commands/methods
         configureBindings();
@@ -60,7 +62,7 @@ public class RobotContainer {
                 () -> !m_driverXboxController.rightBumper().getAsBoolean()));
         
 
-        lift.setDefaultCommand(new ManualLift(lift, m_driverXboxController));
+        arm.setDefaultCommand(new ManualLift(arm, m_driverXboxController));
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
     }
@@ -68,6 +70,10 @@ public class RobotContainer {
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         m_driverXboxController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+        m_driverXboxController.x().onTrue(new InstantCommand(() -> lift.setLiftGoal(.25)));
+        m_driverXboxController.y().onTrue(new InstantCommand(() -> lift.setLiftGoal(.65)));
+        m_driverXboxController.b().onTrue(new InstantCommand(() -> lift.setLiftGoal(.07)));
+
         
     }
 

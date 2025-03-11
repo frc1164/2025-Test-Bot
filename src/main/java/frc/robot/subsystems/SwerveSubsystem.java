@@ -304,13 +304,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
-        SmartDashboard.putNumber("Position 12", frontLeft.getTurningPosition() / Math.PI * 180);
-        SmartDashboard.putNumber("Position 22", frontRight.getTurningPosition() / Math.PI * 180);
-        SmartDashboard.putNumber("Position 32", backRight.getTurningPosition() / Math.PI * 180);
-        SmartDashboard.putNumber("Position 42", backLeft.getTurningPosition() / Math.PI * 180);
-
-
         SwerveModulePosition[] positions = { frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(),
                 backRight.getPosition() };
         m_poseEstimator.update(getRotation2d(), positions);
