@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
+
+import frc.robot.subsystems.Lift;
 import edu.wpi.first.wpilibj.util.Color;
 
 
@@ -28,17 +30,18 @@ import edu.wpi.first.wpilibj.util.Color;
 public class LEDS extends Command {
   private final LEDSubsystem m_LedSubsystem;
   private final SwerveSubsystem m_SwerveSubsystem;
+  private final Lift lift;
   private LEDPattern m_rainbow;
   private LEDPattern m_scrollingRainbow;
     Distance LED_SPACING = Meters.of(1.0 / 60);
   
     /** Creates a new LEDS. */
     
-    public LEDS(LEDSubsystem ledSubsystem, SwerveSubsystem swerveSubsystem) {
-      m_LedSubsystem = ledSubsystem;
-      m_SwerveSubsystem = swerveSubsystem; 
-      
-  
+
+    public LEDS(LEDSubsystem ledSubsystem, CommandXboxController controller, Lift m_lift) {
+      m_LedSubsystem = ledSubsystem; 
+      m_CommandXboxController = controller;
+      lift = m_lift;
       // Use addRequirements() here to declare subsystem dependencies.
   
       addRequirements(m_LedSubsystem);
@@ -75,6 +78,7 @@ public class LEDS extends Command {
       LEDPattern rightOn = LEDPattern.solid(purple);
       LEDPattern leftOff = LEDPattern.solid(Color.kBlack);
       LEDPattern rightOff = LEDPattern.solid(Color.kBlack);
+
     
       Boolean lefttrue = m_SwerveSubsystem.getToF() < 500;
       if(lefttrue){

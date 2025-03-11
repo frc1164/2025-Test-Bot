@@ -20,10 +20,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -93,6 +92,11 @@ public class SwerveSubsystem extends SubsystemBase {
     // Create a new Field2d object for plotting pose and initialize LimeLight Network table instances
     private final Field2d m_field = new Field2d();
 
+    //Limelight Definitions
+    private final NetworkTable aprilTagTable = NetworkTableInstance.getDefault().getTable(LimeLightConstants.kLLTags);
+
+    //private LimelightHelpers.LimelightResults results;
+    private LimelightHelpers.PoseEstimate limelightMeasurement;
 
     //Limelight Definitions
     private final NetworkTable aprilTagTable = NetworkTableInstance.getDefault().getTable(LimeLightConstants.kLLTags);
@@ -321,9 +325,9 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
 
+
     @Override
     public void periodic() {
-
         SwerveModulePosition[] positions = { frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(),
                 backRight.getPosition() };
         m_poseEstimator.update(getRotation2d(), positions);
@@ -344,6 +348,16 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Pitch", gyro.getPitch());
         SmartDashboard.putNumber("Yaw", gyro.getYaw());
         SmartDashboard.putNumber("Roll", gyro.getRoll());
+        
+
+       
+        //LimelightHelpers.PoseEstimate tagsLLPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.kLLTags);
+        
+        boolean signalIsUpdating = false;
+        
+       // updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
+        // if(isUpdating == true) {
+        //     signalIsUpdating = true;
 
         SmartDashboard.putNumber("ToF", getToF());
 
@@ -361,6 +375,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
             SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
             SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
+
     }
 
     public void stopModules() {

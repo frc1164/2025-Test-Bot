@@ -4,7 +4,7 @@
 
 package frc.robot;
 
- import au.grapplerobotics.CanBridge;
+import au.grapplerobotics.CanBridge;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import au.grapplerobotics.CanBridge;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
