@@ -9,8 +9,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.AprilTagAlignCmd;
@@ -39,8 +42,8 @@ public class RobotContainer {
     private final Lift lift;
     private final Arm arm;
 
-    private final CommandXboxController m_driverXboxController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
-    private final CommandXboxController m_operatorXboxController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+    private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -56,24 +59,26 @@ public class RobotContainer {
         // Setup Default Commands
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
                 swerveSubsystem,
-                () -> m_driverXboxController.getLeftY(),
-                () -> m_driverXboxController.getLeftX(),
-                () -> -m_driverXboxController.getRightX(),
-                () -> !m_driverXboxController.rightBumper().getAsBoolean()));
+                () -> driverController.getLeftY(),
+                () -> driverController.getLeftX(),
+                () -> -driverController.getRightX(),
+                () -> !driverController.rightBumper().getAsBoolean()));
         
 
-        arm.setDefaultCommand(new ManualLift(arm, m_driverXboxController));
+        arm.setDefaultCommand(new ManualLift(arm, driverController));
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
     }
 
     private void configureBindings() {
         // Driver A Button -> Zero Heading
-        m_driverXboxController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-        m_driverXboxController.x().onTrue(new InstantCommand(() -> lift.setLiftGoal(.25)));
-        m_driverXboxController.y().onTrue(new InstantCommand(() -> lift.setLiftGoal(.65)));
-        m_driverXboxController.b().onTrue(new InstantCommand(() -> lift.setLiftGoal(.07)));
-
+        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+        driverController.x().onTrue(new InstantCommand(() -> lift.setLiftGoal(.25)));
+        driverController.y().onTrue(new InstantCommand(() -> lift.setLiftGoal(.65)));
+        driverController.b().onTrue(new InstantCommand(() -> lift.setLiftGoal(.07)));
+        
+        //Actual Operator Bindings:
+        operatorController.leftBumper().onTrue(new ParallelCommandGroup(new InstantCommand(() -> lift.setLiftGoal(LiftConstants.pickupHeight)), new InstantCommand(() ->arm.setGoal(ArmConstants.pickupSetpoint))));
         
     }
 

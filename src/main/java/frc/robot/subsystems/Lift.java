@@ -94,52 +94,13 @@ public class Lift extends SubsystemBase {
     }
 
     /*
-     * Returns the calculated height of the lift in cm as a double.
+     * Returns the calculated height of the lift in M as a double.
      */
     public double getLiftHeight() {
         // Probably read the (unimplemented) Kalman filter here
         return ToF.getMeasurement().distance_mm / 1000.0;
     }
-    /*
-     * //TUNE THESE PID GAINS THE UP WILL SHATTER AND THE BOTTOM WILL OVERRUN BE
-     * CAREFUL
-     * public void setLiftPID(LiftConstants.Setpoint m_Setpoint) {
-     * 
-     * LiftConstants.Setpoint setpoint = m_Setpoint;
-     * switch (setpoint) {
-     * case L4: kp = 0.00287; ki = 0.000875; kd = 0.00007; height =
-     * LiftConstants.AmpHeight; speed = .225 ;
-     * break;
-     * case L3: kp = 0.00475; ki = 0.00115; kd = 0.000085; height =
-     * LiftConstants.SpeakerHeight; speed = 1 ;
-     * break;
-     * case L2: kp = 0; ki = 0; kd = 0; height = LiftConstants.Stow; speed = 0;
-     * break;
-     * case STOW : kp = 0; ki = 0; kd = 0; height = LiftConstants.ClimbTop; speed =
-     * 0 ;
-     * break;
-     * case PICKUP: kp = .002; ki = 0.0003; kd = 0; height =
-     * LiftConstants.PickupHeight; speed = 0 ;
-     * 
-     * default:kp = 0; ki = 0; kd = 0; height = LiftConstants.Stow; speed = 0 ;
-     * }
-     * liftPID = new PIDController(kp, ki, kd);
-     * liftPID.setSetpoint(height);
-     * }
-     * 
-     * public boolean atSetpoint() {
-     * int tolerance = 5;
-     * // if(currentHeight() < getCommandedHeight() + tolerance && currentHeight() >
-     * getCommandedHeight() - tolerance) {
-     * // return true;
-     * // }
-     * if(currentFilteredHeight() < getCommandedHeight() + tolerance &&
-     * currentFilteredHeight() > getCommandedHeight() - tolerance) {
-     * return true;
-     * }
-     * return false;
-     * }
-     */
+    
 
     @Override
     public void periodic() {

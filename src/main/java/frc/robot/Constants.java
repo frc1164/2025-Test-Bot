@@ -160,6 +160,8 @@ public final class Constants {
 
         public static final double maxVelocity = 1;
         public static final double maxAcceleration = 1;
+
+        public static final double pickupSetpoint = Math.PI / 2;
     }
 
     public static final class LiftConstants{
@@ -170,10 +172,15 @@ public final class Constants {
         public static final double liftMaxVelocity = 6;
         public static final double liftMaxAcceleration = 20;
         
-        // Placeholder constants, SysId has not been run yet
+        //Sysid Constants
         public static final double liftFeedforwardkS = 0.74601;
         public static final double liftFeedforwardkG = 0.21265;
         public static final double liftFeedforwardkV = 0.58095;
         public static final double liftFeedforwardkA = 0.090776;
+
+
+        public static final double pickupHeight = 0.03;
+
+
     }
 }

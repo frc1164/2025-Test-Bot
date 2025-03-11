@@ -98,7 +98,7 @@ public class Arm extends SubsystemBase {
     return (feedforwardOutput + armPIDOutput);
   }
 
-  public void setPID(double setpoint){
+  public void setGoal(double setpoint){
     armPID.setGoal(setpoint);
   }
   
