@@ -6,18 +6,25 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.ManualLift;
+import frc.robot.commands.LEDS;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Lift;
@@ -36,6 +43,7 @@ import com.pathplanner.lib.path.PathConstraints;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
+    private final LEDSubsystem ledSubsystem;
     private final SwerveSubsystem swerveSubsystem;
     private final SendableChooser<Command> autoChooser;
 
@@ -50,6 +58,7 @@ public class RobotContainer {
     public RobotContainer() {
         // Create Subsystems
         swerveSubsystem = new SwerveSubsystem();
+        ledSubsystem = new LEDSubsystem();
         lift = new Lift();
         arm = new Arm();
 
@@ -66,6 +75,7 @@ public class RobotContainer {
         
 
         arm.setDefaultCommand(new ManualLift(arm, driverController));
+        ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, operatorController));
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
     }

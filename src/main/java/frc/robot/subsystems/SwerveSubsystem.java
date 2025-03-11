@@ -4,6 +4,9 @@ import java.util.Optional;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+
+import au.grapplerobotics.LaserCan;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
@@ -31,6 +34,9 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimeLightConstants;
 import frc.robot.LimelightHelpers;
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
+import frc.robot.Constants.OperatorConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule frontLeft = new SwerveModule(
@@ -74,13 +80,13 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModulePosition[] Position = { frontLeft.getPosition(), frontRight.getPosition(),
             backLeft.getPosition(), backRight.getPosition() };
 
-    private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
-            DriveConstants.kDriveKinematics,
+    private final LaserCan ToF;
+
+    private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics,
             new Rotation2d(0), Position, poseThis);
 
     // Create a new Field2d object for plotting pose and initialize LimeLight Network table instances
     private final Field2d m_field = new Field2d();
-
 
     //Limelight Definitions
     private final NetworkTable aprilTagTable = NetworkTableInstance.getDefault().getTable(LimeLightConstants.kLLTags);
@@ -149,7 +155,15 @@ public class SwerveSubsystem extends SubsystemBase {
                     "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",
                     e.getStackTrace());
         }
+        ToF = new LaserCan(OperatorConstants.ToFID);
     }
+
+
+
+    public double getToF(){
+        Measurement measurement = ToF.getMeasurement();
+        return measurement.distance_mm;
+      }
 
     public void zeroHeading() {
         gyro.reset();
@@ -333,6 +347,21 @@ public class SwerveSubsystem extends SubsystemBase {
        // updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
         // if(isUpdating == true) {
         //     signalIsUpdating = true;
+
+        SmartDashboard.putNumber("ToF", getToF());
+        // SmartDashboard.putNumber("Pitch Rate", gyro.getRawGyroX());
+        // SmartDashboard.putNumber("Yaw Rate", gyro.getRawGyroY());
+        // SmartDashboard.putNumber("Roll Rate", gyro.getRawGyroZ());
+        // SmartDashboard.putNumber("X Acceleration", gyro.getWorldLinearAccelX());
+        // SmartDashboard.putNumber("Y Acceleration", gyro.getWorldLinearAccelY());
+        //offsets
+        //forward: 0.381
+        //up: 0.713
+
+        // This is not finished yet... :-)
+        // if (isUpdating && !isUpdatingSet) {
+        //     m_LEDs.signal(statusLED.STRIP3, ledMode.PURPLE);
+        //     isUpdatingSet = true;
         // }
         //     SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
         //     SmartDashboard.putBoolean("seesTags", tagsLLPoseEstimate.tagCount > 0);
