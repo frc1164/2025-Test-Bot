@@ -93,6 +93,10 @@ public class Lift extends SubsystemBase {
         liftPID.setGoal(goal);
     }
 
+    public double getGoal(){
+        return liftPID.getGoal().position;
+    }
+
     /*
      * Returns the calculated height of the lift in M as a double.
      */

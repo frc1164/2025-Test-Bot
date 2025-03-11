@@ -163,6 +163,13 @@ public final class Constants {
         public static final double maxAcceleration = 1;
 
         public static final double pickupSetpoint = Math.PI / 2;
+        public static final double Up = Math.PI * 3/2;
+
+        public static final double L2 = Math.PI * 5/6;
+        public static final double L3 = Math.PI;
+        public static final double L4 = Math.PI / 2;
+
+
     }
 
     public static final class LiftConstants{
@@ -181,7 +188,10 @@ public final class Constants {
 
 
         public static final double pickupHeight = 0.03;
-
+        public static final double L2Height = .07;
+        public static final double L3Height = .25;
+        public static final double L4Height = .65;
+        public static final double scoreHeight = .1;
 
     }
 }
