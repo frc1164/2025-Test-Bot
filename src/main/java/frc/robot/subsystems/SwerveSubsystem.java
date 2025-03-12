@@ -83,7 +83,6 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModulePosition[] Position = { frontLeft.getPosition(), frontRight.getPosition(),
             backLeft.getPosition(), backRight.getPosition() };
 
-    private final LaserCan ToF;
 
 
     private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
@@ -165,15 +164,8 @@ public class SwerveSubsystem extends SubsystemBase {
                     "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",
                     e.getStackTrace());
         }
-        ToF = new LaserCan(OperatorConstants.ToFID);
     }
 
-
-
-    public double getToF(){
-        Measurement measurement = ToF.getMeasurement();
-        return measurement.distance_mm;
-      }
 
     public void zeroHeading() {
         gyro.reset();
@@ -353,8 +345,6 @@ public class SwerveSubsystem extends SubsystemBase {
        // updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
         // if(isUpdating == true) {
         //     signalIsUpdating = true;
-
-        SmartDashboard.putNumber("ToF", getToF());
 
         SmartDashboard.putNumber("ta", aprilTagTable.getValue("ta").getDouble());
                         

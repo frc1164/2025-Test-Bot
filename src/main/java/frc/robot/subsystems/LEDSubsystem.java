@@ -21,8 +21,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class LEDSubsystem extends SubsystemBase {
   Distance LED_SPACING = Meters.of(1.0 / 60);
-  private static final int kPort = 9;
-  private static final int kLength = 74;
+  private static final int kPort = 0;
+  private static final int kLength = 121;
 
 
   private final AddressableLED m_led;
@@ -46,10 +46,11 @@ public class LEDSubsystem extends SubsystemBase {
     m_led = new AddressableLED(kPort);
     m_buffer = new AddressableLEDBuffer(kLength);
     m_led.setLength(kLength);
-    m_left = m_buffer.createView(0,36);
-    m_right = m_buffer.createView(37,73);
-    m_ziaCenter = m_buffer.createView(74,82);
-    m_ziaArms = m_buffer.createView(83,123);
+    m_ziaCenter = m_buffer.createView(0,7);
+    m_ziaArms = m_buffer.createView(8,48);
+    m_left = m_buffer.createView(49,87);
+    m_right = m_buffer.createView(88,120);
+    
     m_Lift = Lift;
     m_Arm = arm;
 
