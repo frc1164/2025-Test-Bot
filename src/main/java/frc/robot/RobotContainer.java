@@ -26,7 +26,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.ArmScorePosition;
 import frc.robot.commands.ManualLift;
-import frc.robot.commands.LEDS;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.CoralScore;
@@ -75,9 +74,10 @@ public class RobotContainer {
     public RobotContainer() {
         // Create Subsystems
         swerveSubsystem = new SwerveSubsystem();
-        ledSubsystem = new LEDSubsystem();
         lift = new Lift();
         arm = new Arm();
+        ledSubsystem = new LEDSubsystem(lift, arm);
+
 
         // Bind buttons to commands/methods
         configureBindings();
@@ -93,8 +93,6 @@ public class RobotContainer {
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
-        ledSubsystem.setDefaultCommand(new LEDS(ledSubsystem, driverController, lift, swerveSubsystem));
-
     }
 
     /**
@@ -149,9 +147,9 @@ public class RobotContainer {
              new InstantCommand(() -> lift.setLiftGoal(LiftConstants.scoreHeight))));
       
       
-      driverController.rightBumper().onTrue(new CoralScore(swerveSubsystem, false));
+      driverController.rightBumper().onTrue(new CoralScore(swerveSubsystem, false, ledSubsystem));
 
-         driverController.leftBumper().onTrue(new CoralScore(swerveSubsystem, true));
+      driverController.leftBumper().onTrue(new CoralScore(swerveSubsystem, true, ledSubsystem));
 
     }
 

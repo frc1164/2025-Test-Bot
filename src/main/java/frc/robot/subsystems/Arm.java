@@ -94,6 +94,10 @@ public class Arm extends SubsystemBase {
     armPID.setGoal(setpoint);
   }
   
+  public boolean getIntake(){
+    return beamBrake.get();
+  }
+
 
   @Override
   public void periodic() {
