@@ -112,6 +112,7 @@ public class Lift extends SubsystemBase {
         SmartDashboard.putNumber("PID Goal", liftPID.getGoal().position);
         SmartDashboard.putNumber("PID Setpoint", liftPID.getSetpoint().position);
         SmartDashboard.putData("liftPID", liftPID);
+        SmartDashboard.putNumber("lift Output", getFeedforwardPIDOutput());
         SmartDashboard.putNumber("height", getLiftHeight());
         SmartDashboard.putBoolean("toplim", !topLim.get());
         SmartDashboard.putBoolean("bottomlim", !bottomLim.get());

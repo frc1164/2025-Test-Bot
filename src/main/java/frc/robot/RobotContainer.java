@@ -115,9 +115,9 @@ public class RobotContainer {
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-        driverController.x().onTrue(new InstantCommand(() -> lift.setLiftGoal(.25)));
-        driverController.y().onTrue(new InstantCommand(() -> lift.setLiftGoal(.65)));
-        driverController.b().onTrue(new InstantCommand(() -> lift.setLiftGoal(.07)));
+        driverController.x().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI)));
+        driverController.y().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI * 3/2)));
+        driverController.b().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI * 1/2)));
         
         //Actual Operator Bindings:
 

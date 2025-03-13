@@ -85,9 +85,9 @@ public class Arm extends SubsystemBase {
   }
 
   public double getFeedforwardPIDOutput() {
-    double feedforwardOutput = armFeedforward.calculate(absoluteEncoder.getPosition(), armPID.getSetpoint().velocity);
+    double feedforwardOutput = armFeedforward.calculate(absoluteEncoder.getPosition() + ArmConstants.charOffset, armPID.getSetpoint().velocity);
     double armPIDOutput = armPID.calculate(absoluteEncoder.getPosition());
-    return (feedforwardOutput + armPIDOutput);
+    return (armPIDOutput);
   }
 
   public void setGoal(double setpoint){
@@ -101,8 +101,8 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //runArm(getFeedforwardPIDOutput());
-    SmartDashboard.putData("armPID", armPID);
+    runArm(getFeedforwardPIDOutput());
     SmartDashboard.putNumber("armEncoder", absoluteEncoder.getPosition());
+    SmartDashboard.putNumber("armCmd", getFeedforwardPIDOutput());
   }
 }

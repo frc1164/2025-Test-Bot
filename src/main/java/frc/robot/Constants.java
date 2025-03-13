@@ -139,20 +139,22 @@ public final class Constants {
 
     public static final class ArmConstants{
         public static final double kS = 0.65633;
-        public static final double kV = 113.91;
+        public static final double kV = 4.5564; //113.91
         public static final double kA = 14.624;
         public static final double kG = 1.3905;
 
         public static final double ckS = 0.45292;
-        public static final double ckV = 126.31;
+        public static final double ckV = 5.0524; //126.31
         public static final double ckA = 16.718;
         public static final double ckG = 0.50573;
 
-        public static final double kP = 0.55;
-        public static final double kI = 0.025;
-        public static final double kD = 0;
+        public static final double charOffset = -1.867;
 
-        public static final double maxVelocity = 1;
+        public static final double kP = 5;
+        public static final double kI = 0;
+        public static final double kD = 0.05;
+
+        public static final double maxVelocity = 10000;
         public static final double maxAcceleration = 1;
 
         public static final double pickupSetpoint = Math.PI / 2;
@@ -166,7 +168,7 @@ public final class Constants {
     }
 
     public static final class LiftConstants{
-        public static final double liftPIDkP = 50;
+        public static final double liftPIDkP = 25;
         public static final double liftPIDkI = 0;
         public static final double liftPIDkD = 0;
 
@@ -180,7 +182,7 @@ public final class Constants {
         public static final double liftFeedforwardkA = 0.090776;
 
 
-        public static final double pickupHeight = 0.03;
+        public static final double pickupHeight = 0.045;
         public static final double L2Height = .07;
         public static final double L3Height = .25;
         public static final double L4Height = .65;

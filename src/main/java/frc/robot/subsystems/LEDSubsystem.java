@@ -148,7 +148,7 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     // Periodically send the latest LED color data to the LED strip for it to display
     haveCoral(); //test overlap w/ pathfind light
-    applyPattern(getPattern1(), getPattern2(), pattern3, getPattern4());
+    applyPattern(getPattern1(), getPattern2(), getPattern3(), getPattern4());
     SmartDashboard.putString("pattern1", pattern1.toString());
     m_led.setData(m_buffer);
     
