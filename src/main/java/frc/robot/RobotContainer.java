@@ -68,6 +68,7 @@ public class RobotContainer {
 
     private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -118,6 +119,7 @@ public class RobotContainer {
         driverController.x().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI)));
         driverController.y().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI * 3/2)));
         driverController.b().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI * 1/2)));
+        driverController.povUp().onTrue(new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())));
         
         //Actual Operator Bindings:
 

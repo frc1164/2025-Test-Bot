@@ -81,11 +81,17 @@ public class LEDSubsystem extends SubsystemBase {
     return LEDPattern.solid(Color.kBlanchedAlmond);
   }
 
+  
+  public LEDPattern colorGreen(){
+    return LEDPattern.solid(Color.kGreen);
+  }
+
   public LEDPattern scrollingRainbow(){
     LEDPattern m_rainbow = LEDPattern.rainbow(255,100);
     LEDPattern m_scrollingRainbow = m_rainbow.scrollAtAbsoluteSpeed(MetersPerSecond.of(.08), LED_SPACING);
     return m_scrollingRainbow;
   }
+  //turns off scrollingRainbow when 
 
   public LEDPattern height(){
     LEDPattern pattern; 
@@ -130,9 +136,14 @@ public class LEDSubsystem extends SubsystemBase {
 
   public void haveCoral(){
     if (m_Arm.getIntake()){
+      setPattern3(colorGreen());
+      setPattern4(colorGreen());
+    }
+    else if (m_Arm.getIntake() && getPattern3() == scrollingRainbow()){
       setPattern3(colorPurple());
       setPattern4(colorOrange());
     }
+    //test this to make sure zia symbol still defaults to purple and orange 
   }
 
   public void applyPattern(LEDPattern pattern1, LEDPattern pattern2, LEDPattern pattern3, LEDPattern pattern4){
