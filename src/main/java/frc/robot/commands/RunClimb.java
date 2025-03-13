@@ -5,14 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Climb;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class RunClimb extends Command {
   private final Climb subsystem;
+  private final CommandXboxController controller;
   /** Creates a new RunClimb. */
-  public RunClimb(Climb climber) {
+  public RunClimb(Climb climber, CommandXboxController controller) {
     subsystem = climber;
+    this.controller = controller;
     addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -24,7 +27,10 @@ public class RunClimb extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    subsystem.runPID();
+    // Only run the PID if the gate has been unlocked.
+    if(subsystem.runGate) {
+      subsystem.setSpeed(-controller.getLeftY());
+    }
   }
 
   // Called once the command ends or is interrupted.

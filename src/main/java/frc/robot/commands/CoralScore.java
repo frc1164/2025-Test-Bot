@@ -110,15 +110,15 @@ public class CoralScore extends Command {
         constraints = new PathConstraints(3, 1.5, 1, .5);
         endstate = new GoalEndState(0, targetPose.getRotation());
 
-        ledsOn = new EventMarker("leds", 0);
-        ledsOn.command().alongWith(
-          new InstantCommand(() -> m_LedSubsystem.setPattern3(m_LedSubsystem.colorWhite())),
-          new InstantCommand(() -> m_LedSubsystem.setPattern4(m_LedSubsystem.colorWhite())));
+        // ledsOn = new EventMarker("leds", 0);
+        // ledsOn.command().alongWith(
+        //   new InstantCommand(() -> m_LedSubsystem.setPattern3(m_LedSubsystem.colorWhite())),
+        //   new InstantCommand(() -> m_LedSubsystem.setPattern4(m_LedSubsystem.colorWhite())));
 
-        ledsOff = new EventMarker("leds", 1);
-        ledsOff.command().alongWith(
-          new InstantCommand(() -> m_LedSubsystem.setPattern3(m_LedSubsystem.colorPurple())),
-          new InstantCommand(() -> m_LedSubsystem.setPattern4(m_LedSubsystem.colorOrange())));  
+        // ledsOff = new EventMarker("leds", 1);
+        // ledsOff.command().alongWith(
+        //   new InstantCommand(() -> m_LedSubsystem.setPattern3(m_LedSubsystem.colorPurple())),
+        //   new InstantCommand(() -> m_LedSubsystem.setPattern4(m_LedSubsystem.colorOrange())));  
 
         path = new PathPlannerPath(waypoints, constraints, null, endstate);
       

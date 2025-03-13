@@ -26,6 +26,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.ArmScorePosition;
 import frc.robot.commands.ManualLift;
+import frc.robot.commands.RunClimb;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.CoralScore;
@@ -41,6 +42,7 @@ import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Lift;
 
 import java.time.Instant;
@@ -65,6 +67,7 @@ public class RobotContainer {
 
     private final Lift lift;
     private final Arm arm;
+    private final Climb climb;
 
     private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
@@ -78,6 +81,7 @@ public class RobotContainer {
         lift = new Lift();
         arm = new Arm();
         ledSubsystem = new LEDSubsystem(lift, arm);
+        climb = new Climb();
 
 
         // Bind buttons to commands/methods
@@ -91,6 +95,7 @@ public class RobotContainer {
                 () -> -driverController.getRightX(),
                 () -> !driverController.rightBumper().getAsBoolean()));
         
+        climb.setDefaultCommand(new RunClimb(climb, operatorController));
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -153,6 +158,9 @@ public class RobotContainer {
 
       driverController.leftBumper().onTrue(new CoralScore(swerveSubsystem, true, ledSubsystem));
 
+      // Down on POV as gate operator. This may be wrong. Check DS to double check.
+      // Pressing down allows the RunClimb() command to work.
+      operatorController.pov(180).onTrue(new InstantCommand(() -> {climb.runGate = true;}));
     }
 
     /**
