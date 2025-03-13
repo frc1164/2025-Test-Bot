@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class LEDSubsystem extends SubsystemBase {
   Distance LED_SPACING = Meters.of(1.0 / 60);
-  private static final int kPort = 0;
+  private static final int kPort = 3;
   private static final int kLength = 121;
 
 
@@ -148,7 +148,8 @@ public class LEDSubsystem extends SubsystemBase {
   public void periodic() {
     // Periodically send the latest LED color data to the LED strip for it to display
     haveCoral(); //test overlap w/ pathfind light
-    applyPattern(getPattern1(), getPattern2(), getPattern3(), getPattern4());
+    applyPattern(getPattern1(), getPattern2(), pattern3, getPattern4());
+    SmartDashboard.putString("pattern1", pattern1.toString());
     m_led.setData(m_buffer);
     
   }
