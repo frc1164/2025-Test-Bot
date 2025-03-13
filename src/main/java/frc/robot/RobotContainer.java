@@ -30,10 +30,13 @@ import frc.robot.commands.RunClimb;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.CoralScore;
+import frc.robot.commands.IntakeCheck;
 
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindThenFollowPath;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -86,6 +89,30 @@ public class RobotContainer {
 
         // Bind buttons to commands/methods
         configureBindings();
+
+
+        //Add PathPlanner Named Commands
+        NamedCommands.registerCommand("L4", new ParallelCommandGroup(
+            new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L4Height)),
+            new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+
+        NamedCommands.registerCommand("L3", new ParallelCommandGroup(
+            new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L3Height)),
+            new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+
+        NamedCommands.registerCommand("L2", new ParallelCommandGroup(
+            new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L2Height)),
+            new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+        
+        NamedCommands.registerCommand("IntakeArm", new InstantCommand(() -> arm.setGoal(ArmConstants.pickupSetpoint)));
+
+        NamedCommands.registerCommand("IntakeLift", new InstantCommand(() -> lift.setLiftGoal(LiftConstants.pickupHeight)));
+
+        NamedCommands.registerCommand("ScoreLift", new InstantCommand(() -> lift.setLiftGoal(LiftConstants.scoreHeight)));
+
+        NamedCommands.registerCommand("IntakeLight", new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())));
+
+        NamedCommands.registerCommand("IntakeCheck", new IntakeCheck(arm));
 
         // Setup Default Commands
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(

@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -30,7 +31,7 @@ public class Arm extends SubsystemBase {
 
   private final DigitalInput beamBrake, isHeld;
 
-  private final ProfiledPIDController armPID;
+  private final PIDController armPID;
   private final ArmFeedforward armFeedforward;
 
   public Arm() {
@@ -52,16 +53,17 @@ public class Arm extends SubsystemBase {
     beamBrake = new DigitalInput(3);
     isHeld = new DigitalInput(0);
 
-    armPID = new ProfiledPIDController(
-        ArmConstants.kP,
-        ArmConstants.kI,
-        ArmConstants.kD, 
-        new Constraints(
-            ArmConstants.maxVelocity,
-            ArmConstants.maxAcceleration));
+    // armPID = new ProfiledPIDController(
+    //     ArmConstants.kP,
+    //     ArmConstants.kI,
+    //     ArmConstants.kD, 
+    //     new Constraints(
+    //         ArmConstants.maxVelocity,
+    //         ArmConstants.maxAcceleration));
 
-    armPID.setGoal(Math.PI/2.0);
+    // armPID.setGoal(Math.PI/2.0);
     
+    armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
     armFeedforward = new ArmFeedforward(ArmConstants.kS,
         ArmConstants.kG, ArmConstants.kV,
         ArmConstants.kA);
@@ -84,14 +86,15 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public double getFeedforwardPIDOutput() {
-    double feedforwardOutput = armFeedforward.calculate(absoluteEncoder.getPosition() + ArmConstants.charOffset, armPID.getSetpoint().velocity);
-    double armPIDOutput = armPID.calculate(absoluteEncoder.getPosition());
-    return (armPIDOutput);
-  }
+  // public double getFeedforwardPIDOutput() {
+  //   double feedforwardOutput = armFeedforward.calculate(absoluteEncoder.getPosition() + ArmConstants.charOffset, armPID.getSetpoint().velocity);
+  //   double armPIDOutput = armPID.calculate(absoluteEncoder.getPosition());
+  //   return (armPIDOutput);
+  // }
 
   public void setGoal(double setpoint){
-    armPID.setGoal(setpoint);
+    //armPID.setGoal(setpoint);
+    armPID.setSetpoint(setpoint);
   }
   
   public boolean getIntake(){
@@ -101,8 +104,8 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    runArm(getFeedforwardPIDOutput());
+    runArm(armPID.calculate(absoluteEncoder.getPosition()));
     SmartDashboard.putNumber("armEncoder", absoluteEncoder.getPosition());
-    SmartDashboard.putNumber("armCmd", getFeedforwardPIDOutput());
+    SmartDashboard.putNumber("armCmd", armPID.calculate(absoluteEncoder.getPosition()));
   }
 }

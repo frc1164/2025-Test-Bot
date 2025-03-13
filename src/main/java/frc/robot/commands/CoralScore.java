@@ -30,7 +30,7 @@ public class CoralScore extends Command {
   private Pose2d currentPose;
   private PathPlannerPath path;
   private GoalEndState endstate;
-  private EventMarker ledsOn, ledsOff;
+  //private EventMarker ledsOn, ledsOff;
   private boolean left;
   private LEDSubsystem m_LedSubsystem;
   // private double happy;
