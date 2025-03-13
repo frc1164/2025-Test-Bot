@@ -50,7 +50,7 @@ public class Lift extends SubsystemBase {
                         LiftConstants.liftMaxVelocity,
                         LiftConstants.liftMaxAcceleration));
         liftPID.setGoal(.225);
-        // May be needed if SysId supplies an A value.
+        
         liftFeedforward = new ElevatorFeedforward(LiftConstants.liftFeedforwardkS,
         LiftConstants.liftFeedforwardkG, LiftConstants.liftFeedforwardkV,
         LiftConstants.liftFeedforwardkA);
