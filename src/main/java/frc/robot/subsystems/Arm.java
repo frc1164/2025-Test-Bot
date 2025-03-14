@@ -64,6 +64,7 @@ public class Arm extends SubsystemBase {
     // armPID.setGoal(Math.PI/2.0);
     
     armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
+    armPID.setSetpoint(ArmConstants.L4);
     armFeedforward = new ArmFeedforward(ArmConstants.kS,
         ArmConstants.kG, ArmConstants.kV,
         ArmConstants.kA);
@@ -72,16 +73,16 @@ public class Arm extends SubsystemBase {
   public void runArm(double voltage){
     if (voltage > 0){
       if (absoluteEncoder.getPosition() <= 5){
-        armMotor.setVoltage(voltage);
+        armMotor.set(voltage);
       } else {
-        armMotor.setVoltage(0);
+        armMotor.set(0);
       }
     }
     if (voltage < 0){
       if (absoluteEncoder.getPosition() >= 1){
-        armMotor.setVoltage(voltage);
+        armMotor.set(voltage);
       }else{
-        armMotor.setVoltage(0);
+        armMotor.set(0);
       }
     }
   }
@@ -101,6 +102,14 @@ public class Arm extends SubsystemBase {
     return beamBrake.get();
   }
 
+
+  public boolean atSetpoint(){
+    return armPID.atSetpoint();
+  }
+
+  public double getPosition(){
+    return absoluteEncoder.getPosition();
+  }
 
   @Override
   public void periodic() {

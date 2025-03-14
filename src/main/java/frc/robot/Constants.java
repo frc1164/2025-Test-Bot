@@ -101,13 +101,13 @@ public final class Constants {
 
  
 
-        public static final double kSLeft = 0.48208;
-        public static final double kVLeft = 3.2488;
-        public static final double kALeft = 0.18065;
+        public static final double kSLeft = 0.32614;
+        public static final double kVLeft = 4.0056;
+        public static final double kALeft = 0.33487;
 
-        public static final double kSRight = 0.47252;
-        public static final double kVRight = 3.3299;
-        public static final double kARight = 0.18543;
+        public static final double kSRight = 0.28932;
+        public static final double kVRight = 4.0178;
+        public static final double kARight = 0.10801;
 
 
         // Drive/Rotation gain
@@ -150,9 +150,9 @@ public final class Constants {
 
         public static final double charOffset = -1.867;
 
-        public static final double kP = 5;
+        public static final double kP = .2;
         public static final double kI = 0;
-        public static final double kD = 0.05;
+        public static final double kD = 0.001;
 
         public static final double maxVelocity = 10000;
         public static final double maxAcceleration = 1;
@@ -182,7 +182,7 @@ public final class Constants {
         public static final double liftFeedforwardkA = 0.090776;
 
 
-        public static final double pickupHeight = 0.045;
+        public static final double pickupHeight = 0.03;
         public static final double L2Height = .07;
         public static final double L3Height = .25;
         public static final double L4Height = .65;

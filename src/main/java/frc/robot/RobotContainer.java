@@ -25,12 +25,14 @@ import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.commands.ArmScorePosition;
+import frc.robot.commands.ArmSetpoint;
 import frc.robot.commands.ManualLift;
 import frc.robot.commands.RunClimb;
 import frc.robot.commands.AprilTagAlignCmd;
 import frc.robot.commands.SwerveJoystickCmd;
 import frc.robot.commands.CoralScore;
 import frc.robot.commands.IntakeCheck;
+import frc.robot.commands.LiftSetpoint;
 
 import java.util.List;
 
@@ -148,37 +150,37 @@ public class RobotContainer {
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-        driverController.x().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI)));
-        driverController.y().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI * 3/2)));
-        driverController.b().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI * 1/2)));
         driverController.povUp().onTrue(new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())));
         
         //Actual Operator Bindings:
 
             //Pickup
-        operatorController.leftBumper().onTrue(new ParallelCommandGroup(
-             new InstantCommand(() -> lift.setLiftGoal(LiftConstants.pickupHeight)),
-             new InstantCommand(() -> arm.setGoal(ArmConstants.pickupSetpoint))));
+        operatorController.leftBumper().onTrue(new SequentialCommandGroup(
+            new ArmSetpoint(arm, ArmConstants.pickupSetpoint),
+            new LiftSetpoint(lift, LiftConstants.pickupHeight)));
 
             //L2
-        operatorController.a().onTrue(new ParallelCommandGroup(
-             new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L2Height)),
-             new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+        operatorController.a().onTrue(new SequentialCommandGroup(
+             new LiftSetpoint(lift, LiftConstants.L2Height),
+             new ArmSetpoint(arm, ArmConstants.Up)));
+             //new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
 
             //L3
-        operatorController.b().onTrue(new ParallelCommandGroup(
-             new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L3Height)),
-             new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+        operatorController.b().onTrue(new SequentialCommandGroup( 
+             new LiftSetpoint(lift, LiftConstants.L3Height),
+             new ArmSetpoint(arm, ArmConstants.Up)));
 
             //L4
-        operatorController.y().onTrue(new ParallelCommandGroup(
-             new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L4Height)),
-             new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+        operatorController.y().onTrue(new SequentialCommandGroup(
+             new LiftSetpoint(lift, LiftConstants.L4Height),
+             new ArmSetpoint(arm, ArmConstants.Up)));
+             
+             //new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
 
             //Score(this one is going to be weird)
         operatorController.rightBumper().onTrue(new SequentialCommandGroup(
              new ArmScorePosition(arm, lift),
-             new InstantCommand(() -> lift.setLiftGoal(LiftConstants.scoreHeight))));
+             new LiftSetpoint(lift, LiftConstants.scoreHeight)));
       
       
       driverController.rightBumper().onTrue(new CoralScore(swerveSubsystem, false, ledSubsystem));
@@ -187,7 +189,7 @@ public class RobotContainer {
 
       // Down on POV as gate operator. This may be wrong. Check DS to double check.
       // Pressing down allows the RunClimb() command to work.
-      operatorController.pov(180).onTrue(new InstantCommand(() -> {climb.runGate = true;}));
+      //operatorController.povDown().onTrue(new InstantCommand(() -> {climb.runGate = true;}));
     }
 
     /**

@@ -28,9 +28,9 @@ public class RunClimb extends Command {
   @Override
   public void execute() {
     // Only run the PID if the gate has been unlocked.
-    if(subsystem.runGate) {
-      subsystem.setSpeed(-controller.getLeftY());
-    }
+    // if(subsystem.runGate) {
+    //   subsystem.setSpeed(-controller.getLeftY());
+    // }
   }
 
   // Called once the command ends or is interrupted.

@@ -76,6 +76,9 @@ public class Lift extends SubsystemBase {
         }
     }
 
+    public boolean atSetpoint(){
+        return liftPID.atGoal();
+    }
     /*
      * The output of the Feedforward and PID combined (added).
      */
