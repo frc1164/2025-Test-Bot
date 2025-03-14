@@ -148,9 +148,6 @@ public class RobotContainer {
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-        driverController.x().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI)));
-        driverController.y().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI * 3/2)));
-        driverController.b().onTrue(new InstantCommand(() -> arm.setGoal(Math.PI * 1/2)));
         driverController.povUp().onTrue(new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())));
         
         //Actual Operator Bindings:
@@ -187,7 +184,7 @@ public class RobotContainer {
 
       // Down on POV as gate operator. This may be wrong. Check DS to double check.
       // Pressing down allows the RunClimb() command to work.
-      operatorController.pov(180).onTrue(new InstantCommand(() -> {climb.runGate = true;}));
+      operatorController.povDown().onTrue(new InstantCommand(() -> {climb.runGate = true;}));
     }
 
     /**

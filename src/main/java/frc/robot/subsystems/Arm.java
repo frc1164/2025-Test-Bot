@@ -72,16 +72,16 @@ public class Arm extends SubsystemBase {
   public void runArm(double voltage){
     if (voltage > 0){
       if (absoluteEncoder.getPosition() <= 5){
-        armMotor.setVoltage(voltage);
+        armMotor.set(voltage);
       } else {
-        armMotor.setVoltage(0);
+        armMotor.set(0);
       }
     }
     if (voltage < 0){
       if (absoluteEncoder.getPosition() >= 1){
-        armMotor.setVoltage(voltage);
+        armMotor.set(voltage);
       }else{
-        armMotor.setVoltage(0);
+        armMotor.set(0);
       }
     }
   }
@@ -107,5 +107,6 @@ public class Arm extends SubsystemBase {
     runArm(armPID.calculate(absoluteEncoder.getPosition()));
     SmartDashboard.putNumber("armEncoder", absoluteEncoder.getPosition());
     SmartDashboard.putNumber("armCmd", armPID.calculate(absoluteEncoder.getPosition()));
+    SmartDashboard.putData("armPID", armPID);
   }
 }
