@@ -95,9 +95,9 @@ public class LEDSubsystem extends SubsystemBase {
 
   public LEDPattern height(){
     LEDPattern pattern; 
-    LEDPattern base = LEDPattern.solid(orange);
+    LEDPattern base = colorPurple();
     LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_Lift.getLiftHeight() * (10.0 / 7.0));
-    mask.blend(colorPurple());
+    mask.blend(colorOrange());
     pattern = base.mask(mask);
     return pattern;
   }
