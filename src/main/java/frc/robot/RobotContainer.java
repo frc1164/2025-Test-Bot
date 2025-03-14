@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.LEDPattern;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -94,23 +95,23 @@ public class RobotContainer {
 
 
         //Add PathPlanner Named Commands
-        NamedCommands.registerCommand("L4", new ParallelCommandGroup(
-            new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L4Height)),
-            new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+        NamedCommands.registerCommand("L4", new SequentialCommandGroup(
+            new LiftSetpoint(lift, LiftConstants.L4Height),
+            new ArmSetpoint(arm, ArmConstants.Up)));
 
-        NamedCommands.registerCommand("L3", new ParallelCommandGroup(
-            new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L3Height)),
-            new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+        NamedCommands.registerCommand("L3", new SequentialCommandGroup(
+            new LiftSetpoint(lift,LiftConstants.L3Height),
+            new ArmSetpoint(arm, ArmConstants.Up)));
 
-        NamedCommands.registerCommand("L2", new ParallelCommandGroup(
-            new InstantCommand(() -> lift.setLiftGoal(LiftConstants.L2Height)),
-            new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
+        NamedCommands.registerCommand("L2", new SequentialCommandGroup(
+            new LiftSetpoint(lift, LiftConstants.L2Height),
+            new ArmSetpoint(arm, ArmConstants.Up)));
         
-        NamedCommands.registerCommand("IntakeArm", new InstantCommand(() -> arm.setGoal(ArmConstants.pickupSetpoint)));
+        NamedCommands.registerCommand("IntakeArm", new ArmSetpoint(arm, 0));
 
-        NamedCommands.registerCommand("IntakeLift", new InstantCommand(() -> lift.setLiftGoal(LiftConstants.pickupHeight)));
+        NamedCommands.registerCommand("IntakeLift", new LiftSetpoint(lift, LiftConstants.pickupHeight));
 
-        NamedCommands.registerCommand("ScoreLift", new InstantCommand(() -> lift.setLiftGoal(LiftConstants.scoreHeight)));
+        NamedCommands.registerCommand("ScoreLift", new LiftSetpoint(lift, LiftConstants.scoreHeight));
 
         NamedCommands.registerCommand("IntakeLight", new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())));
 
@@ -128,6 +129,7 @@ public class RobotContainer {
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     /**

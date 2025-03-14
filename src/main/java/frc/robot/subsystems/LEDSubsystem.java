@@ -54,8 +54,8 @@ public class LEDSubsystem extends SubsystemBase {
     m_Lift = Lift;
     m_Arm = arm;
 
-    pattern1 = height();
-    pattern2 = height();
+    pattern1 = height(colorOrange());
+    pattern2 = height(colorPurple());
     pattern3 = colorPurple();
     pattern4 = colorOrange();
     m_led.start();
@@ -93,9 +93,9 @@ public class LEDSubsystem extends SubsystemBase {
   }
   //turns off scrollingRainbow when 
 
-  public LEDPattern height(){
+  public LEDPattern height(LEDPattern color){
     LEDPattern pattern; 
-    LEDPattern base = colorPurple();
+    LEDPattern base = color;
     LEDPattern mask = LEDPattern.progressMaskLayer(() -> m_Lift.getLiftHeight() * (10.0 / 7.0));
     mask.blend(colorOrange());
     pattern = base.mask(mask);

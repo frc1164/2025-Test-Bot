@@ -62,38 +62,38 @@ public class CoralScore extends Command {
     principalTag = subsystem.getPrincipalTag();
 
     // Ensure there is a principle tag.
-    if (principalTag > 0) {
-      // The tag is on the RED alliance side, so the path needs to be flipped.
-      if (principalTag < 12) {
-        flipPath = true;
-        // Translate all the tags to be the field flipped twin tag.
-        switch (principalTag) {
-          case 6:
-            principalTag = 19;
-            break;
-          case 7:
-            principalTag = 18;
-            break;
-          case 8:
-            principalTag = 17;
-            break;
-          case 9:
-            principalTag = 22;
-            break;
-          case 10:
-            principalTag = 21;
-            break;
-          case 11:
-            principalTag = 20;
-            break;
-          default:
-            principalTag = 0;
-            break;
-        }
-      } else {
-        // The tag is on the BLUE alliance side, so no flipping is required.
-        flipPath = false;
-      }
+    // if (principalTag > 0) {
+    //   // The tag is on the RED alliance side, so the path needs to be flipped.
+    //   if (principalTag < 12) {
+    //     flipPath = true;
+    //     // Translate all the tags to be the field flipped twin tag.
+    //     // switch (principalTag) {
+    //     //   case 6:
+    //     //     principalTag = 19;
+    //     //     break;
+    //     //   case 7:
+    //     //     principalTag = 18;
+    //     //     break;
+    //     //   case 8:
+    //     //     principalTag = 17;
+    //     //     break;
+    //     //   case 9:
+    //     //     principalTag = 22;
+    //     //     break;
+    //     //   case 10:
+    //     //     principalTag = 21;
+    //     //     break;
+    //     //   case 11:
+    //     //     principalTag = 20;
+    //     //     break;
+    //     //   default:
+    //     //     principalTag = 0;
+    //     //     break;
+    //     // }
+    //   } else {
+    //     // The tag is on the BLUE alliance side, so no flipping is required.
+    //     flipPath = false;
+    //   }
 
       // Left side coordinates.
       if (left) {
@@ -116,6 +116,24 @@ public class CoralScore extends Command {
             break;
           case 22:
             targetPose = new Pose2d(5.596, 3.069, new Rotation2d(Math.PI * 2 / 3));
+            break;
+          case 6: 
+            targetPose = new Pose2d(13.864, 2.694, new Rotation2d(Math.PI * 2 / 3));
+            break;
+          case 7: 
+            targetPose = new Pose2d(14.391, 4.161, new Rotation2d(Math.PI));
+            break;
+          case 8: 
+            targetPose = new Pose2d(13.621, 5.263, new Rotation2d(Math.PI * 4 / 3));
+            break;
+          case 9:
+            targetPose = new Pose2d(12.002, 4.971, new Rotation2d(Math.PI * 5 / 3));
+            break;
+          case 10:
+            targetPose = new Pose2d(11.690, 3.557, new Rotation2d(0));
+            break;
+          case 11:
+            targetPose = new Pose2d(12.812, 2.601, new Rotation2d(Math.PI * 1 / 3));
             break;
           default:
             targetPose = null;
@@ -140,6 +158,24 @@ public class CoralScore extends Command {
             break;
           case 22:
             targetPose = new Pose2d(5.304, 2.933, new Rotation2d(Math.PI * 2 / 3));
+            break;
+          case 6: 
+            targetPose = new Pose2d(14.147, 3.069, new Rotation2d(Math.PI * 2 / 3));
+            break;
+          case 7: 
+            targetPose = new Pose2d(14.420, 4.464, new Rotation2d(Math.PI));
+            break;
+          case 8: 
+            targetPose = new Pose2d(13.328, 5.439, new Rotation2d(Math.PI * 4 / 3));
+            break;
+          case 9:
+            targetPose = new Pose2d(12.821, 5.487, new Rotation2d(Math.PI * 5 / 3));
+            break;
+          case 10:
+            targetPose = new Pose2d(11.690, 3.888, new Rotation2d(0));
+            break;
+          case 11:
+            targetPose = new Pose2d(12.509, 2.757, new Rotation2d(Math.PI * 1 / 3));
             break;
           default:
             targetPose = null;
@@ -177,7 +213,7 @@ public class CoralScore extends Command {
           subsystem.currentPath.schedule();
         }
       }
-    }
+    
     SmartDashboard.putNumber("seen", principalTag);
   }
 

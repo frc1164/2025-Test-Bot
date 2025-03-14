@@ -50,7 +50,7 @@ public class Arm extends SubsystemBase {
 
     armMotor.configure(motorConfig, null, null);
 
-    beamBrake = new DigitalInput(3);
+    beamBrake = new DigitalInput(5);
     isHeld = new DigitalInput(0);
 
     // armPID = new ProfiledPIDController(
