@@ -101,13 +101,13 @@ public final class Constants {
 
  
 
-        public static final double kSLeft = 0.48208;
-        public static final double kVLeft = 3.2488;
-        public static final double kALeft = 0.18065;
+        public static final double kSLeft = 0.32614;
+        public static final double kVLeft = 4.0056;
+        public static final double kALeft = 0.33487;
 
-        public static final double kSRight = 0.47252;
-        public static final double kVRight = 3.3299;
-        public static final double kARight = 0.18543;
+        public static final double kSRight = 0.28932;
+        public static final double kVRight = 4.0178;
+        public static final double kARight = 0.10801;
 
 
         // Drive/Rotation gain

@@ -5,34 +5,23 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.LiftConstants;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Lift;
-
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ArmScorePosition extends Command {
+public class ArmSetpoint extends Command {
   private Arm arm;
-  private Lift lift;
-  /** Creates a new ArmScorePosition. */
-  public ArmScorePosition(Arm m_arm, Lift m_lift) {
-    lift = m_lift;
+  private double setpoint;
+  /** Creates a new ArmSetpoint. */
+  public ArmSetpoint(Arm m_arm, double m_setpoint) {
     arm = m_arm;
+    setpoint = m_setpoint;
     // Use addRequirements() here to declare subsystem dependencies.
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    switch ((int)(lift.getGoal() * 1000)){
-      case (int)(LiftConstants.L4Height * 1000): arm.setGoal(ArmConstants.L4);
-        break;
-      case (int)(LiftConstants.L3Height * 1000): arm.setGoal(ArmConstants.L3);
-        break;
-      case (int)(LiftConstants.L2Height * 1000): arm.setGoal(ArmConstants.L2);
-        break;
-      default: arm.setGoal(arm.getPosition());
-    }
+    arm.setGoal(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

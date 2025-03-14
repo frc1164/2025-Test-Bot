@@ -103,6 +103,14 @@ public class Arm extends SubsystemBase {
   }
 
 
+  public boolean atSetpoint(){
+    return armPID.atSetpoint();
+  }
+
+  public double getPosition(){
+    return absoluteEncoder.getPosition();
+  }
+
   @Override
   public void periodic() {
     runArm(armPID.calculate(absoluteEncoder.getPosition()));

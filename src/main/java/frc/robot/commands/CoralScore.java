@@ -100,22 +100,22 @@ public class CoralScore extends Command {
         // Translate all tags to coordinates. Flipped below if needed.
         switch (principalTag) {
           case 17:
-            targetPose = new Pose2d(3.965, 2.95, new Rotation2d(Math.PI / 3));
+            targetPose = new Pose2d(3.92, 2.806, new Rotation2d(Math.PI / 3));
             break;
           case 18:
-            targetPose = new Pose2d(3.165, 3.93, new Rotation2d(0));
+            targetPose = new Pose2d(3.13, 3.9, new Rotation2d(0));
             break;
           case 19:
-            targetPose = new Pose2d(2.325, 3.72, new Rotation2d(Math.PI * 5 / 3));
+            targetPose = new Pose2d(3.74, 5.182, new Rotation2d(Math.PI * 5 / 3));
             break;
           case 20:
-            targetPose = new Pose2d(5.01, 5.265, new Rotation2d(Math.PI * 4 / 3));
+            targetPose = new Pose2d(4.777, 5.429, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 21:
-            targetPose = new Pose2d(5.825, 4.16, new Rotation2d(Math.PI));
+            targetPose = new Pose2d(5.87, 4.473, new Rotation2d(Math.PI));
             break;
           case 22:
-            targetPose = new Pose2d(5.29, 2.95, new Rotation2d(Math.PI * 2 / 3));
+            targetPose = new Pose2d(5.596, 3.069, new Rotation2d(Math.PI * 2 / 3));
             break;
           default:
             targetPose = null;
@@ -127,19 +127,19 @@ public class CoralScore extends Command {
             targetPose = new Pose2d(3.93, 2.82, new Rotation2d(Math.PI / 3));
             break;
           case 18:
-            targetPose = new Pose2d(3.22, 3.63, new Rotation2d(0));
+            targetPose = new Pose2d(3.22, 3.586, new Rotation2d(0));
             break;
           case 19:
-            targetPose = new Pose2d(3.66, 5.085, new Rotation2d(Math.PI * 5 / 3));
+            targetPose = new Pose2d(3.422, 4.971, new Rotation2d(Math.PI * 5 / 3));
             break;
           case 20:
-            targetPose = new Pose2d(5.28, 5.12, new Rotation2d(Math.PI * 4 / 3));
+            targetPose = new Pose2d(5.041, 5.263, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 21:
-            targetPose = new Pose2d(5.825, 3.86, new Rotation2d(Math.PI));
+            targetPose = new Pose2d(5.87, 4.412, new Rotation2d(Math.PI));
             break;
           case 22:
-            targetPose = new Pose2d(5, 2.78, new Rotation2d(Math.PI * 2 / 3));
+            targetPose = new Pose2d(5.304, 2.933, new Rotation2d(Math.PI * 2 / 3));
             break;
           default:
             targetPose = null;
