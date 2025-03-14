@@ -150,9 +150,9 @@ public final class Constants {
 
         public static final double charOffset = -1.867;
 
-        public static final double kP = 5;
+        public static final double kP = .2;
         public static final double kI = 0;
-        public static final double kD = 0.05;
+        public static final double kD = 0.001;
 
         public static final double maxVelocity = 10000;
         public static final double maxAcceleration = 1;
@@ -182,7 +182,7 @@ public final class Constants {
         public static final double liftFeedforwardkA = 0.090776;
 
 
-        public static final double pickupHeight = 0.045;
+        public static final double pickupHeight = 0.03;
         public static final double L2Height = .07;
         public static final double L3Height = .25;
         public static final double L4Height = .65;

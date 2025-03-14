@@ -184,7 +184,7 @@ public class RobotContainer {
 
       // Down on POV as gate operator. This may be wrong. Check DS to double check.
       // Pressing down allows the RunClimb() command to work.
-      operatorController.povDown().onTrue(new InstantCommand(() -> {climb.runGate = true;}));
+      //operatorController.povDown().onTrue(new InstantCommand(() -> {climb.runGate = true;}));
     }
 
     /**
