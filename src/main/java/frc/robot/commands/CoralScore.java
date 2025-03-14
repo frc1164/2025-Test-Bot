@@ -12,6 +12,7 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -146,6 +147,10 @@ public class CoralScore extends Command {
         }
       }
       currentPose = subsystem.getPose();
+      if(flipPath) {
+        // If the path needs to be flipped, flip the current pose, then flip it again, so it stays in the same place.
+        currentPose = FlippingUtil.flipFieldPose(currentPose);
+      }
       if (targetPose != null) {
         if (!targetPose.equals(currentPose)) {
           waypoints = PathPlannerPath.waypointsFromPoses(currentPose, targetPose);
