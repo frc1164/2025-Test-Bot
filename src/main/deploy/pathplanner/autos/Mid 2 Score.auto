@@ -13,14 +13,20 @@
                 "data": {
                   "pathName": "MID to BLR"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
@@ -30,21 +36,15 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.35
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "ScoreLift"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.35
+            "name": "L3 Height"
           }
         },
         {
@@ -81,12 +81,6 @@
                 "data": {
                   "pathName": "PICKLEFT to CLL"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
               }
             ]
           }
@@ -94,13 +88,19 @@
         {
           "type": "named",
           "data": {
-            "name": "ArmDown"
+            "name": "L4"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.35
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ArmDown"
           }
         },
         {

@@ -121,7 +121,7 @@ public final class Constants {
                 DriveConstants.kPhysicalMaxAngularSpeedRadiansPerSecond / 2.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 1.5;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
-        public static final double kPXController = 0.45;
+        public static final double kPXController = 0.1;
         public static final double kPYController = 0.1;
         public static final double kPThetaController = 10;
 
@@ -158,8 +158,8 @@ public final class Constants {
         public static final double maxAcceleration = 1;
 
         public static final double pickupSetpoint = Math.PI / 2;
+        public static final double UpL4 = Math.PI * 5/4;
         public static final double Up = Math.PI * 3/2;
-
         public static final double L2 = Math.PI * 5/6;
         public static final double L3 = Math.PI;
         public static final double L4 = Math.PI / 2;
@@ -182,11 +182,11 @@ public final class Constants {
         public static final double liftFeedforwardkA = 0.090776;
 
 
-        public static final double pickupHeight = 0.03;
+        public static final double pickupHeight = 0.005;
         public static final double L2Height = .07;
         public static final double L3Height = .25;
         public static final double L4Height = .65;
-        public static final double scoreHeight = .1;
+        public static final double scoreHeight = .2;
 
     }
 }

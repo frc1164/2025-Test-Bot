@@ -64,7 +64,7 @@ public class Arm extends SubsystemBase {
     // armPID.setGoal(Math.PI/2.0);
     
     armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
-    armPID.setSetpoint(ArmConstants.L4);
+    armPID.setSetpoint(ArmConstants.Up);
     armFeedforward = new ArmFeedforward(ArmConstants.kS,
         ArmConstants.kG, ArmConstants.kV,
         ArmConstants.kA);
@@ -116,5 +116,6 @@ public class Arm extends SubsystemBase {
     runArm(armPID.calculate(absoluteEncoder.getPosition()));
     SmartDashboard.putNumber("armEncoder", absoluteEncoder.getPosition());
     SmartDashboard.putNumber("armCmd", armPID.calculate(absoluteEncoder.getPosition()));
+    SmartDashboard.putBoolean("beam", getIntake());
   }
 }

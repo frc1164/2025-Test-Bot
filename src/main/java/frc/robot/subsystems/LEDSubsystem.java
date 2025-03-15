@@ -135,16 +135,21 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void haveCoral(){
-    if (m_Arm.getIntake()){
-      setPattern3(colorGreen());
-      setPattern4(colorGreen());
-    }
-    else if (m_Arm.getIntake() && getPattern3() == scrollingRainbow()){
+    if (!m_Arm.getIntake() && getPattern3() == scrollingRainbow()){
       setPattern3(colorPurple());
       setPattern4(colorOrange());
     }
+    else if (!m_Arm.getIntake()){
+      setPattern3(colorGreen());
+      setPattern4(colorGreen());
+    }
+    else{
+      setPattern3(colorPurple());
+      setPattern4(colorOrange());
+    }
+    }
     //test this to make sure zia symbol still defaults to purple and orange 
-  }
+  
 
   public void applyPattern(LEDPattern pattern1, LEDPattern pattern2, LEDPattern pattern3, LEDPattern pattern4){
     pattern3.applyTo(m_ziaCenter);

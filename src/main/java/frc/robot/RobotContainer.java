@@ -117,6 +117,12 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("IntakeCheck", new IntakeCheck(arm));
 
+        NamedCommands.registerCommand("L3 Height", new LiftSetpoint(lift, LiftConstants.L3Height));
+
+        NamedCommands.registerCommand("AlignL", new CoralScore(swerveSubsystem, true, ledSubsystem));
+        NamedCommands.registerCommand("AlignR", new CoralScore(swerveSubsystem, false, ledSubsystem));
+
+
         // Setup Default Commands
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
                 swerveSubsystem,
@@ -152,7 +158,9 @@ public class RobotContainer {
     private void configureBindings() {
         // Driver A Button -> Zero Heading
         driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-        driverController.povUp().onTrue(new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())));
+        driverController.povUp().onTrue(new SequentialCommandGroup(
+                                        new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())), 
+                                        new InstantCommand(() -> ledSubsystem.setPattern4(ledSubsystem.scrollingRainbow()))));
         
         //Actual Operator Bindings:
 
@@ -164,18 +172,20 @@ public class RobotContainer {
             //L2
         operatorController.a().onTrue(new SequentialCommandGroup(
              new LiftSetpoint(lift, LiftConstants.L2Height),
-             new ArmSetpoint(arm, ArmConstants.Up)));
+             new ArmSetpoint(arm, 4.5)));
              //new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
 
             //L3
         operatorController.b().onTrue(new SequentialCommandGroup( 
              new LiftSetpoint(lift, LiftConstants.L3Height),
-             new ArmSetpoint(arm, ArmConstants.Up)));
+             //new ArmSetpoint(arm, ArmConstants.Up)));
+             new ArmSetpoint(arm, 4.5)));
+
 
             //L4
         operatorController.y().onTrue(new SequentialCommandGroup(
              new LiftSetpoint(lift, LiftConstants.L4Height),
-             new ArmSetpoint(arm, ArmConstants.Up)));
+             new ArmSetpoint(arm, ArmConstants.UpL4)));
              
              //new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
 
@@ -191,7 +201,7 @@ public class RobotContainer {
 
       // Down on POV as gate operator. This may be wrong. Check DS to double check.
       // Pressing down allows the RunClimb() command to work.
-      //operatorController.povDown().onTrue(new InstantCommand(() -> {climb.runGate = true;}));
+      operatorController.povDown().onTrue(new InstantCommand(() -> {climb.runGate = true;}));
     }
 
     /**
