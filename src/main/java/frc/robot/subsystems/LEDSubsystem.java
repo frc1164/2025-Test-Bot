@@ -135,11 +135,11 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   public void haveCoral(){
-    if (!m_Arm.getIntake() && getPattern3() == scrollingRainbow()){
+    if (m_Arm.getIntake() && getPattern3() == scrollingRainbow()){
       setPattern3(colorPurple());
       setPattern4(colorOrange());
     }
-    else if (!m_Arm.getIntake()){
+    else if (m_Arm.getIntake()){
       setPattern3(colorGreen());
       setPattern4(colorGreen());
     }

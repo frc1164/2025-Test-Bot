@@ -15,6 +15,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Climb extends SubsystemBase {
@@ -32,7 +33,6 @@ public class Climb extends SubsystemBase {
 
     climbMotorConfig = new SparkMaxConfig();
     climbMotorConfig.inverted(false).idleMode(IdleMode.kBrake);
-    climbMotorConfig.encoder.positionConversionFactor(1/125);
     climbMotor.configure(climbMotorConfig, null, null);
 
     climbPidController = new PIDController(0,0,0);
@@ -44,7 +44,7 @@ public class Climb extends SubsystemBase {
   }
   public void setSpeed(double speed){
     if (speed != 0){
-      if (climbRelativeEncoder.getPosition() * 360 < bottomLim){
+      if (climbRelativeEncoder.getPosition() * 360 / 125 < bottomLim){
         speed = speed;
       } else {
         speed = 0;
@@ -59,7 +59,7 @@ public class Climb extends SubsystemBase {
   public boolean getLimitSwitch() {
     // Not sure which is it. Try the one that is commented out if the encoder resets everywhere but vertical.
     // return verticalLimitSwitch.get()    
-    return !verticalLimitSwitch.get();
+    return verticalLimitSwitch.get();
   }
 
   
@@ -69,5 +69,8 @@ public class Climb extends SubsystemBase {
     if(getLimitSwitch()) {
       climbRelativeEncoder.setPosition(0);
     }
+
+    SmartDashboard.putBoolean("climbGate", runGate);
+    SmartDashboard.putBoolean("climbLim", getLimitSwitch());
   }
  }
