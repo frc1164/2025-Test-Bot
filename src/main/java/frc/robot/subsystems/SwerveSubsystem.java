@@ -141,8 +141,8 @@ public class SwerveSubsystem extends SubsystemBase {
                     (speeds, feedforward) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                     new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your
                                                     // Constants class
-                            new PIDConstants(AutoConstants.kPXController, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(AutoConstants.kPThetaController, 0.0, 0.0) // Rotation PID constants
+                            new PIDConstants(AutoConstants.kPTranslationController, 0.0, AutoConstants.kDTranslationController), // Translation PID constants
+                            new PIDConstants(AutoConstants.kPThetaController, 0.0, AutoConstants.kDThetaController) // Rotation PID constants
                     ),
                     config,
                     () -> {

@@ -109,7 +109,8 @@ public class CoralScore extends Command {
             targetPose = new Pose2d(3.74, 5.182, new Rotation2d(Math.PI * 5 / 3));
             break;
           case 20:
-            targetPose = new Pose2d(4.777, 5.429, new Rotation2d(Math.PI * 4 / 3));
+            //targetPose = new Pose2d(4.777, 5.429, new Rotation2d(Math.PI * 4 / 3));
+            targetPose = new Pose2d(5, 5.6, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 21:
             targetPose = new Pose2d(5.87, 4.473, new Rotation2d(Math.PI));

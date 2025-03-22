@@ -119,6 +119,6 @@ public class Lift extends SubsystemBase {
         SmartDashboard.putNumber("height", getLiftHeight());
         SmartDashboard.putBoolean("toplim", !topLim.get());
         SmartDashboard.putBoolean("bottomlim", !bottomLim.get());
-
+        
     }
 }

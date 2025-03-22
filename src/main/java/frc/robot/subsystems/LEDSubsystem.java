@@ -47,8 +47,8 @@ public class LEDSubsystem extends SubsystemBase {
     m_buffer = new AddressableLEDBuffer(kLength);
     m_led.setLength(kLength);
     m_ziaCenter = m_buffer.createView(0,7);
-    m_ziaArms = m_buffer.createView(8,48);
-    m_left = m_buffer.createView(49,87);
+    m_ziaArms = m_buffer.createView(8,47);
+    m_left = m_buffer.createView(48,87);
     m_right = m_buffer.createView(88,120);
     
     m_Lift = Lift;

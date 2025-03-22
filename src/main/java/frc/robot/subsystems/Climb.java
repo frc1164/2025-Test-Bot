@@ -40,16 +40,17 @@ public class Climb extends SubsystemBase {
     
     runGate = false;
     // // bottomLim = 85;
-    bottomLim = 40;
+    bottomLim = 1000;
   }
   public void setSpeed(double speed){
-    if (speed != 0){
-      if (climbRelativeEncoder.getPosition() * 360 / 125 < bottomLim){
-        speed = speed;
-      } else {
-        speed = 0;
-      }
-    }
+    // if (speed != 0){
+    //   if (climbRelativeEncoder.getPosition() * 360 / 125 < bottomLim){
+    //     speed = speed;
+    //   } else {
+    //     speed = 0;
+    //   }
+    // }
+    climbMotor.set(speed);
   }
 
   // public void runPID(){
@@ -72,5 +73,6 @@ public class Climb extends SubsystemBase {
 
     SmartDashboard.putBoolean("climbGate", runGate);
     SmartDashboard.putBoolean("climbLim", getLimitSwitch());
+    SmartDashboard.putNumber("climbPos", climbRelativeEncoder.getPosition() * 360/125);
   }
  }
