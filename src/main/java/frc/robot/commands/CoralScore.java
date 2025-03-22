@@ -61,40 +61,6 @@ public class CoralScore extends Command {
 
     principalTag = subsystem.getPrincipalTag();
 
-    // Ensure there is a principle tag.
-    // if (principalTag > 0) {
-    //   // The tag is on the RED alliance side, so the path needs to be flipped.
-    //   if (principalTag < 12) {
-    //     flipPath = true;
-    //     // Translate all the tags to be the field flipped twin tag.
-    //     // switch (principalTag) {
-    //     //   case 6:
-    //     //     principalTag = 19;
-    //     //     break;
-    //     //   case 7:
-    //     //     principalTag = 18;
-    //     //     break;
-    //     //   case 8:
-    //     //     principalTag = 17;
-    //     //     break;
-    //     //   case 9:
-    //     //     principalTag = 22;
-    //     //     break;
-    //     //   case 10:
-    //     //     principalTag = 21;
-    //     //     break;
-    //     //   case 11:
-    //     //     principalTag = 20;
-    //     //     break;
-    //     //   default:
-    //     //     principalTag = 0;
-    //     //     break;
-    //     // }
-    //   } else {
-    //     // The tag is on the BLUE alliance side, so no flipping is required.
-    //     flipPath = false;
-    //   }
-
       // Left side coordinates.
       if (left) {
         // Translate all tags to coordinates. Flipped below if needed.
@@ -113,7 +79,7 @@ public class CoralScore extends Command {
             targetPose = new Pose2d(5, 5.6, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 21:
-            targetPose = new Pose2d(5.87, 4.473, new Rotation2d(Math.PI));
+            targetPose = new Pose2d(5.95, 4.36, new Rotation2d(Math.PI));
             break;
           case 22:
             targetPose = new Pose2d(5.596, 3.069, new Rotation2d(Math.PI * 2 / 3));
@@ -155,7 +121,7 @@ public class CoralScore extends Command {
             targetPose = new Pose2d(5.041, 5.263, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 21:
-            targetPose = new Pose2d(5.87, 4.412, new Rotation2d(Math.PI));
+            targetPose = new Pose2d(5.93, 4.07, new Rotation2d(Math.PI));
             break;
           case 22:
             targetPose = new Pose2d(5.304, 2.933, new Rotation2d(Math.PI * 2 / 3));
@@ -191,7 +157,7 @@ public class CoralScore extends Command {
       if (targetPose != null) {
         if (!targetPose.equals(currentPose)) {
           waypoints = PathPlannerPath.waypointsFromPoses(currentPose, targetPose);
-          constraints = new PathConstraints(3, 1.5, 1, .5);
+          constraints = new PathConstraints(1, .5, 1, .5);
           endstate = new GoalEndState(0, targetPose.getRotation());
 
           // ledsOn = new EventMarker("leds", 0);
