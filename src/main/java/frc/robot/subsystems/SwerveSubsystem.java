@@ -7,6 +7,9 @@ import org.littletonrobotics.junction.Logger;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
+
+import au.grapplerobotics.LaserCan;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
@@ -15,18 +18,31 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimeLightConstants;
+import frc.robot.LimelightHelpers;
+import au.grapplerobotics.LaserCan;
+import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
+import frc.robot.Constants.OperatorConstants;
+import edu.wpi.first.wpilibj2.command.Command;
 
 public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule frontLeft = new SwerveModule(
@@ -65,17 +81,36 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
+    public Command currentPath;
     private final AHRS gyro = new AHRS(NavXComType.kUSB1);
     private final Pose2d poseThis = new Pose2d();
     private final SwerveModulePosition[] Position = { frontLeft.getPosition(), frontRight.getPosition(),
             backLeft.getPosition(), backRight.getPosition() };
+    //private final SwerveDrivePoseEstimator odometer = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics,
+            //new Rotation2d(0), Position, poseThis);
 
+    private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
+            DriveConstants.kDriveKinematics,
     private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
             DriveConstants.kDriveKinematics,
             new Rotation2d(0), Position, poseThis);
 
     // Create a new Field2d object for plotting pose and initialize LimeLight Network table instances
     private final Field2d m_field = new Field2d();
+
+    //Limelight Definitions
+    private final NetworkTable aprilTagTable = NetworkTableInstance.getDefault().getTable(LimeLightConstants.kLLTags);
+    private double tv, ta, tl;
+    private boolean isUpdating = false;
+    private boolean gate = true;
+    private boolean updatingSet = false;
+
+    private boolean isUpdatingSet = false;
+    private boolean canSeeTagsSet = true;
+    private boolean elseSet = false;
+
+    //private LimelightHelpers.LimelightResults results;
+    private LimelightHelpers.PoseEstimate limelightMeasurement;
 
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
 
@@ -85,6 +120,11 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kVRight, DriveConstants.kARight);
     private SimpleMotorFeedforward feedforwardLeft = new SimpleMotorFeedforward(DriveConstants.kSLeft,
             DriveConstants.kVLeft, DriveConstants.kALeft);
+
+
+    private double tag;
+    private int tagRead;
+
 
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -107,8 +147,8 @@ public class SwerveSubsystem extends SubsystemBase {
                     (speeds, feedforward) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                     new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your
                                                     // Constants class
-                            new PIDConstants(AutoConstants.kPXController, 0.0, 0.0), // Translation PID constants
-                            new PIDConstants(AutoConstants.kPThetaController, 0.0, 0.0) // Rotation PID constants
+                            new PIDConstants(AutoConstants.kPTranslationController, 0.0, AutoConstants.kDTranslationController), // Translation PID constants
+                            new PIDConstants(AutoConstants.kPThetaController, 0.0, AutoConstants.kDThetaController) // Rotation PID constants
                     ),
                     config,
                     () -> {
@@ -117,14 +157,14 @@ public class SwerveSubsystem extends SubsystemBase {
                         // This will flip the path being followed to the red side of the field.
                         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                },
-                this // Reference to this subsystem to set requirements
-        );
+                        var alliance = DriverStation.getAlliance();
+                        if (alliance.isPresent()) {
+                            return alliance.get() == DriverStation.Alliance.Red;
+                        }
+                        return false;
+                    },
+                    this // Reference to this subsystem to set requirements
+            );
         PathPlannerLogging.setLogActivePathCallback(
             (activePath) -> {
               Logger.recordOutput(
@@ -134,11 +174,13 @@ public class SwerveSubsystem extends SubsystemBase {
             (targetPose) -> {
               Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
             });
-        }
-        catch(Exception e){
-            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",e.getStackTrace());
+        } catch (Exception e) {
+            DriverStation.reportError(
+                    "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists. Ensure /src/main/deploy/pathplanner/settings.json exists",
+                    e.getStackTrace());
         }
     }
+
 
     public void zeroHeading() {
         gyro.reset();
@@ -182,13 +224,116 @@ public class SwerveSubsystem extends SubsystemBase {
     @AutoLogOutput(key = "SwerveStates/Measured")
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = {
-                frontLeft.getState(),
-                frontRight.getState(),
-                backLeft.getState(),
-                backRight.getState()
+            frontLeft.getState(),
+            frontRight.getState(),
+            backLeft.getState(),
+            backRight.getState()
         };
         return states;
     }
+
+    public LimelightHelpers.PoseEstimate getVisionEstimatedPose() {
+
+       LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), getYawRate(),0,0,0,0);
+        LimelightHelpers.PoseEstimate botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-tags");
+
+        // double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        // double bot_x, bot_y, rotation_z;
+
+        // bot_pose = aprilTagTable
+        //             .getEntry("botpose_orb_wpiblue")
+        //             .getDoubleArray(new double[6]);
+
+        return botPose;
+    }
+
+        public void updatePoseEstimatorWithVisionBotPose(LimelightHelpers.PoseEstimate poseEstimate) {
+        //PoseLatency visionBotPose = m_visionSystem.getPoseLatency();
+        //Pose2d visionPose = getVisionEstimatedPose();
+        Pose2d visionPose = poseEstimate.pose;
+        // invalid LL data
+        //if (visionBotPose.pose2d.getX() == 0.0) {
+        //    return;
+        //}
+
+        if (visionPose.getX() == 0.0) {
+            isUpdating = false;
+            return;
+        }
+        
+        // distance from current pose to vision estimated pose
+        //double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
+        //    .getDistance(visionBotPose.pose2d.getTranslation());
+
+        double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
+            .getDistance(visionPose.getTranslation());
+
+        if (poseEstimate.tagCount > 0) {
+            double xyStds;
+            double degStds;
+            SmartDashboard.putNumber("poseDifference", poseDifference);
+            // multiple targets detected
+            if (poseEstimate.tagCount >= 2 && poseEstimate.avgTagArea > 0.5) {
+                xyStds = 0.5;
+                degStds = 6;
+            }
+            // 1 target with large area and close to estimated pose
+            else if (poseEstimate.avgTagArea > 0.66 && poseDifference < 1.5) { //areea 0.8, diff 0.5
+                xyStds = 1.0;
+                degStds = 12;
+            }
+            // 1 target farther away and estimated pose is close
+            else if (poseEstimate.avgTagArea > 0.15 && poseDifference < 0.3) { // area 0.1, diff 0.3
+                xyStds = 2.0;
+                degStds = 30;
+            }
+            else if (gate) {
+                xyStds = 0;
+                degStds = 0;
+                gate = false;
+            }
+            // conditions don't match to add a vision measurement
+            else {
+                isUpdating = false;
+                return;
+            }
+
+            isUpdating = true;
+
+            m_poseEstimator.setVisionMeasurementStdDevs(
+                VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+            m_poseEstimator.addVisionMeasurement(visionPose,
+                poseEstimate.timestampSeconds);
+        }
+    }
+
+
+
+    public double getLatency() {
+        return Timer.getFPGATimestamp() - Units.millisecondsToSeconds(tl);
+
+        // maybe need camera_latency?
+        // TODO: TEST 
+        // return results.targetingResults.latency_capture;
+
+        // TODO: TEST this breaks it for some reason
+        // return llresults.targetingResults.latency_pipeline; 
+    }
+
+
+    public int getPrincipalTag(){
+        tag = aprilTagTable.getValue("tid").getDouble();
+        if(tag == 0){}
+        else{tagRead = (int)tag;}
+        
+        return tagRead;
+    }
+
+    public double getYawRate(){
+        return gyro.getRate();
+    }
+
+
 
     @Override
     public void periodic() {
@@ -206,31 +351,32 @@ public class SwerveSubsystem extends SubsystemBase {
         SmartDashboard.putData(m_field);
 
         SmartDashboard.putNumber("Robot Heading", getHeading());
+
         SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 
         SmartDashboard.putNumber("Pitch", gyro.getPitch());
         SmartDashboard.putNumber("Yaw", gyro.getYaw());
         SmartDashboard.putNumber("Roll", gyro.getRoll());
-        // SmartDashboard.putNumber("Pitch Rate", gyro.getRawGyroX());
-        // SmartDashboard.putNumber("Yaw Rate", gyro.getRawGyroY());
-        // SmartDashboard.putNumber("Roll Rate", gyro.getRawGyroZ());
-        // SmartDashboard.putNumber("X Acceleration", gyro.getWorldLinearAccelX());
-        // SmartDashboard.putNumber("Y Acceleration", gyro.getWorldLinearAccelY());
-        // offsets
-        // forward: 0.381
-        // up: 0.713
+        
 
-        // This is not finished yet... :-)
-        // if (isUpdating && !isUpdatingSet) {
-        //     m_LEDs.signal(statusLED.STRIP3, ledMode.PURPLE);
-        //     isUpdatingSet = true;
-        // }
-        // else if (!isUpdating && !updatingSet) {
-        //     m_LEDs.signal(statusLED.STRIP3, ledMode.ORANGE);
-        //     updatingSet = true;
-        // }
+       
+        //LimelightHelpers.PoseEstimate tagsLLPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.kLLTags);
+        
+        boolean signalIsUpdating = false;
+        
+       // updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
+        // if(isUpdating == true) {
+        //     signalIsUpdating = true;
 
+        SmartDashboard.putNumber("ta", aprilTagTable.getValue("ta").getDouble());
+                        
+        updatePoseEstimatorWithVisionBotPose(getVisionEstimatedPose());
+        if(isUpdating == true) {
+            signalIsUpdating = true;
+        }
+            SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
+            SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
         // Log empty setpoint states when disabled
         if (DriverStation.isDisabled()) {
             Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
