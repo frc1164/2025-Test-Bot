@@ -2,6 +2,10 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 
+import org.littletonrobotics.junction.AutoLog;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -9,6 +13,7 @@ import au.grapplerobotics.LaserCan;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 
@@ -159,6 +164,14 @@ public class SwerveSubsystem extends SubsystemBase {
                     },
                     this // Reference to this subsystem to set requirements
             );
+            PathPlannerLogging.setLogActivePathCallback(
+                (activePath) -> {
+                    Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                });
+            PathPlannerLogging.setLogTargetPoseCallback(
+                (targetPose) -> {
+                    Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                });
         } catch (Exception e) {
             DriverStation.reportError(
                     "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",
@@ -171,6 +184,7 @@ public class SwerveSubsystem extends SubsystemBase {
         gyro.reset();
     }
 
+    @AutoLogOutput(key = "Chassis/RobotHeading")
     public double getHeading() {
         return Math.IEEEremainder(gyro.getAngle(), 360);
     }
@@ -179,6 +193,7 @@ public class SwerveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(getHeading());
     }
 
+    @AutoLogOutput(key = "Odometry/Robot")
     public Pose2d getPose() {
         return m_poseEstimator.getEstimatedPosition();
     }
@@ -189,6 +204,7 @@ public class SwerveSubsystem extends SubsystemBase {
         m_poseEstimator.resetPosition(getRotation2d(), state, pose);
     }
 
+    @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
     }
@@ -197,9 +213,12 @@ public class SwerveSubsystem extends SubsystemBase {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
         SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
+
+        Logger.recordOutput("SwerveChassisSpeeds/Setpoints", targetSpeeds);
+
         setModuleStates(targetStates);
     }
-
+    @AutoLogOutput(key = "SwerveStates/Measured")
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = {
                 frontLeft.getState(),
@@ -210,6 +229,7 @@ public class SwerveSubsystem extends SubsystemBase {
         return states;
     }
 
+    @AutoLogOutput(key = "Vision/EstimatedPose")
     public LimelightHelpers.PoseEstimate getVisionEstimatedPose() {
 
        LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), getYawRate(),0,0,0,0);
@@ -298,7 +318,7 @@ public class SwerveSubsystem extends SubsystemBase {
         // return llresults.targetingResults.latency_pipeline; 
     }
 
-
+    @AutoLogOutput(key = "Vision/PrincipalTag")
     public int getPrincipalTag(){
         tag = aprilTagTable.getValue("tid").getDouble();
         if(tag == 0){}
@@ -306,12 +326,6 @@ public class SwerveSubsystem extends SubsystemBase {
         
         return tagRead;
     }
-
-    public double getYawRate(){
-        return gyro.getRate();
-    }
-
-
 
     @Override
     public void periodic() {
@@ -352,9 +366,14 @@ public class SwerveSubsystem extends SubsystemBase {
         if(isUpdating == true) {
             signalIsUpdating = true;
         }
-            SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
-            SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
+        Logger.recordOutput("Vision/SignalIsUpdating", signalIsUpdating);
+        SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
+        SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
 
+        // Log empty setpoint states when disabled
+        if (DriverStation.isDisabled()) {
+            Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
+        }
     }
 
     public void stopModules() {
@@ -366,6 +385,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+
+        // Log unoptimized setpoints and setpoint speeds
+        Logger.recordOutput("SwerveStates/Setpoints", desiredStates);
+
         frontLeft.setDesiredState(desiredStates[0], feedforwardLeft);
         frontRight.setDesiredState(desiredStates[1], feedforwardRight);
         backLeft.setDesiredState(desiredStates[2], feedforwardLeft);
@@ -381,7 +404,13 @@ public class SwerveSubsystem extends SubsystemBase {
      * }
      */
 
+    @AutoLogOutput(key = "Chassis/Yaw")
     public float getChassisYaw() {
         return gyro.getYaw();
+    }
+
+    @AutoLogOutput(key = "Chassis/YawRate")
+    public double getYawRate(){
+        return gyro.getRate();
     }
 }

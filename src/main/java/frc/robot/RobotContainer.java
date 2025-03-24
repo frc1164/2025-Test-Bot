@@ -37,6 +37,8 @@ import frc.robot.commands.LiftSetpoint;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -69,7 +71,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final LEDSubsystem ledSubsystem;
     private final SwerveSubsystem swerveSubsystem;
-    private final SendableChooser<Command> autoChooser;
+    private final LoggedDashboardChooser<Command> autoChooser;
 
     private final Lift lift;
     private final Arm arm;
@@ -134,8 +136,8 @@ public class RobotContainer {
         climb.setDefaultCommand(new RunClimb(climb, operatorController));
 
         // Build an auto chooser. This will use Commands.none() as the default option.
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Chooser", autoChooser);
+        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+        SmartDashboard.putData("Auto Chooser", autoChooser.getSendableChooser());
     }
 
     /**
@@ -210,6 +212,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
+        return autoChooser.get();
     }
 }
