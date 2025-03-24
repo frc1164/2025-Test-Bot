@@ -18,14 +18,9 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.ModuleConstants;
 
 public class SwerveModule {
-<<<<<<< HEAD
-    private final SparkMax driveMotor;
-    private final SparkMax turningMotor;
-=======
 
     private final TalonFX driveMotor;
     private final TalonFX turningMotor;
->>>>>>> ScoreSystem
 
     private final TalonFXConfiguration driveMotorConfig;
     private final TalonFXConfiguration turningMotorConfig;
@@ -46,27 +41,6 @@ public class SwerveModule {
         absoluteEncoder = new CANcoder(absoluteEncoderId, "rio");
         config = new CANcoderConfiguration();
 
-<<<<<<< HEAD
-        driveMotor = new SparkMax(driveMotorId, MotorType.kBrushless);
-        driveMotorConfig = new SparkMaxConfig();
-
-        turningMotor = new SparkMax(turningMotorId, MotorType.kBrushless);
-        turningMotorConfig = new SparkMaxConfig();
-
-        driveMotorConfig
-                .inverted(driveMotorReversed)
-                .idleMode(IdleMode.kBrake);
-        driveMotorConfig.encoder
-                .positionConversionFactor(ModuleConstants.kDriveEncoderRot2Meter)
-                .velocityConversionFactor(ModuleConstants.kDriveEncoderRPM2MeterPerSec);
-
-        turningMotorConfig
-                .inverted(turningMotorReversed)
-                .idleMode(IdleMode.kBrake);
-        turningMotorConfig.encoder
-                .positionConversionFactor(ModuleConstants.kTurningEncoderRot2Rad)
-                .velocityConversionFactor(ModuleConstants.kTurningEncoderRPM2RadPerSec);
-=======
 
         driveMotor = new TalonFX(driveMotorId);
         driveMotorConfig = new TalonFXConfiguration();
@@ -86,11 +60,6 @@ public class SwerveModule {
         turningMotorConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
         turningMotorConfig.Feedback.FeedbackRemoteSensorID = absoluteEncoderId;
         turningMotorConfig.Feedback.RotorToSensorRatio = ModuleConstants.kTurningMotorGearRatio;
->>>>>>> ScoreSystem
-
-
-        driveMotor.configure(driveMotorConfig, null, null);
-        turningMotor.configure(turningMotorConfig, null, null);
 
         config.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         config.MagnetSensor.SensorDirection = SensorDirectionValue.CounterClockwise_Positive;
@@ -129,13 +98,9 @@ public class SwerveModule {
         /*
          * double angle = absoluteEncoder.getVoltage() / RobotController.getVoltage5V();
          */
-<<<<<<< HEAD
-        double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI + Math.PI / 2;
-=======
 
         // double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI/* + Math.PI / 2 */ ;
         double angle = absoluteEncoder.getAbsolutePosition().getValueAsDouble() * 2 * Math.PI;
->>>>>>> ScoreSystem
         /* angle *= 2.0 * Math.PI; */
         angle -= absoluteEncoderOffsetRad;
         return angle * (absoluteEncoderReversed ? -1.0 : 1.0);

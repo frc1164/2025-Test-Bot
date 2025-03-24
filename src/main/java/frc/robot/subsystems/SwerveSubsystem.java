@@ -2,9 +2,6 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -14,7 +11,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -86,11 +82,9 @@ public class SwerveSubsystem extends SubsystemBase {
     private final Pose2d poseThis = new Pose2d();
     private final SwerveModulePosition[] Position = { frontLeft.getPosition(), frontRight.getPosition(),
             backLeft.getPosition(), backRight.getPosition() };
-    //private final SwerveDrivePoseEstimator odometer = new SwerveDrivePoseEstimator(DriveConstants.kDriveKinematics,
-            //new Rotation2d(0), Position, poseThis);
 
-    private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
-            DriveConstants.kDriveKinematics,
+
+
     private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
             DriveConstants.kDriveKinematics,
             new Rotation2d(0), Position, poseThis);
@@ -165,18 +159,9 @@ public class SwerveSubsystem extends SubsystemBase {
                     },
                     this // Reference to this subsystem to set requirements
             );
-        PathPlannerLogging.setLogActivePathCallback(
-            (activePath) -> {
-              Logger.recordOutput(
-                  "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-            });
-        PathPlannerLogging.setLogTargetPoseCallback(
-            (targetPose) -> {
-              Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-            });
         } catch (Exception e) {
             DriverStation.reportError(
-                    "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists. Ensure /src/main/deploy/pathplanner/settings.json exists",
+                    "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",
                     e.getStackTrace());
         }
     }
@@ -194,7 +179,6 @@ public class SwerveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(getHeading());
     }
 
-    @AutoLogOutput(key = "Odometry/Robot")
     public Pose2d getPose() {
         return m_poseEstimator.getEstimatedPosition();
     }
@@ -205,7 +189,6 @@ public class SwerveSubsystem extends SubsystemBase {
         m_poseEstimator.resetPosition(getRotation2d(), state, pose);
     }
 
-    @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
     }
@@ -214,20 +197,15 @@ public class SwerveSubsystem extends SubsystemBase {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
         SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
-
-        // Log unoptimized setpoints
-        Logger.recordOutput("SwerveStates/targetStates", targetStates);
-        
         setModuleStates(targetStates);
     }
 
-    @AutoLogOutput(key = "SwerveStates/Measured")
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = {
-            frontLeft.getState(),
-            frontRight.getState(),
-            backLeft.getState(),
-            backRight.getState()
+                frontLeft.getState(),
+                frontRight.getState(),
+                backLeft.getState(),
+                backRight.getState()
         };
         return states;
     }
@@ -337,7 +315,6 @@ public class SwerveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // TODO: Log Gyro data
         SwerveModulePosition[] positions = { frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(),
                 backRight.getPosition() };
         m_poseEstimator.update(getRotation2d(), positions);
@@ -377,11 +354,7 @@ public class SwerveSubsystem extends SubsystemBase {
         }
             SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
             SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
-        // Log empty setpoint states when disabled
-        if (DriverStation.isDisabled()) {
-            Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
-            Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
-        }
+
     }
 
     public void stopModules() {

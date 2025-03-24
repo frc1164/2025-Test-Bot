@@ -198,4 +198,6 @@ public final class Constants {
         public static final double scoreHeight = .2;
 
     }
+
+    public static final int kPowerDistributionPort = 5;
 }
