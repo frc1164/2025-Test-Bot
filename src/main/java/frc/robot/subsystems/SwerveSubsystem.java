@@ -25,9 +25,12 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -43,6 +46,8 @@ import frc.robot.LimelightHelpers;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOInputsAutoLogged;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -245,67 +250,10 @@ public class SwerveSubsystem extends SubsystemBase {
         return botPose;
     }
 
-        public void updatePoseEstimatorWithVisionBotPose(LimelightHelpers.PoseEstimate poseEstimate) {
-        //PoseLatency visionBotPose = m_visionSystem.getPoseLatency();
-        //Pose2d visionPose = getVisionEstimatedPose();
-        Pose2d visionPose = poseEstimate.pose;
-        // invalid LL data
-        //if (visionBotPose.pose2d.getX() == 0.0) {
-        //    return;
-        //}
-
-        if (visionPose.getX() == 0.0) {
-            isUpdating = false;
-            return;
-        }
-        
-        // distance from current pose to vision estimated pose
-        //double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
-        //    .getDistance(visionBotPose.pose2d.getTranslation());
-
-        double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
-            .getDistance(visionPose.getTranslation());
-
-        if (poseEstimate.tagCount > 0) {
-            double xyStds;
-            double degStds;
-            SmartDashboard.putNumber("poseDifference", poseDifference);
-            // multiple targets detected
-            if (poseEstimate.tagCount >= 2 && poseEstimate.avgTagArea > 0.5) {
-                xyStds = 0.5;
-                degStds = 6;
-            }
-            // 1 target with large area and close to estimated pose
-            else if (poseEstimate.avgTagArea > 0.66 && poseDifference < 1.5) { //areea 0.8, diff 0.5
-                xyStds = 1.0;
-                degStds = 12;
-            }
-            // 1 target farther away and estimated pose is close
-            else if (poseEstimate.avgTagArea > 0.15 && poseDifference < 0.3) { // area 0.1, diff 0.3
-                xyStds = 2.0;
-                degStds = 30;
-            }
-            else if (gate) {
-                xyStds = 0;
-                degStds = 0;
-                gate = false;
-            }
-            // conditions don't match to add a vision measurement
-            else {
-                isUpdating = false;
-                return;
-            }
-
-            isUpdating = true;
-
-            m_poseEstimator.setVisionMeasurementStdDevs(
-                VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-            m_poseEstimator.addVisionMeasurement(visionPose,
-                poseEstimate.timestampSeconds);
-        }
+    /** Adds a new timestamped vision measurement. */
+    public void addVisionMeasurement(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
+        m_poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
     }
-
-
 
     public double getLatency() {
         return Timer.getFPGATimestamp() - Units.millisecondsToSeconds(tl);
@@ -318,7 +266,6 @@ public class SwerveSubsystem extends SubsystemBase {
         // return llresults.targetingResults.latency_pipeline; 
     }
 
-    @AutoLogOutput(key = "Vision/PrincipalTag")
     public int getPrincipalTag(){
         tag = aprilTagTable.getValue("tid").getDouble();
         if(tag == 0){}
@@ -361,14 +308,6 @@ public class SwerveSubsystem extends SubsystemBase {
         //     signalIsUpdating = true;
 
         SmartDashboard.putNumber("ta", aprilTagTable.getValue("ta").getDouble());
-                        
-        updatePoseEstimatorWithVisionBotPose(getVisionEstimatedPose());
-        if(isUpdating == true) {
-            signalIsUpdating = true;
-        }
-        Logger.recordOutput("Vision/SignalIsUpdating", signalIsUpdating);
-        SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
-        SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
 
         // Log empty setpoint states when disabled
         if (DriverStation.isDisabled()) {

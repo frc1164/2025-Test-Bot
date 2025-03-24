@@ -24,7 +24,10 @@ import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.LiftConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.commands.ArmScorePosition;
 import frc.robot.commands.ArmSetpoint;
 import frc.robot.commands.ManualLift;
@@ -52,6 +55,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Lift;
+import frc.robot.subsystems.SwerveSubsystem;
 
 import java.time.Instant;
 
@@ -76,6 +80,7 @@ public class RobotContainer {
     private final Lift lift;
     private final Arm arm;
     private final Climb climb;
+    private final Vision vision;
 
     private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
@@ -90,6 +95,7 @@ public class RobotContainer {
         arm = new Arm();
         ledSubsystem = new LEDSubsystem(lift, arm);
         climb = new Climb();
+        vision = new Vision(swerveSubsystem::addVisionMeasurement, new VisionIOLimelight(VisionConstants.camera0Name, swerveSubsystem::getRotation2d));
 
 
         // Bind buttons to commands/methods
