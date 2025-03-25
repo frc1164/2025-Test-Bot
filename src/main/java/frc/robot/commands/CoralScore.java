@@ -9,6 +9,7 @@ import java.util.List;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.EventMarker;
 import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
@@ -112,7 +113,7 @@ public class CoralScore extends Command {
             targetPose = new Pose2d(3.93, 2.82, new Rotation2d(Math.PI / 3));
             break;
           case 18:
-            targetPose = new Pose2d(3.22, 3.586, new Rotation2d(0));
+            targetPose = new Pose2d(3.13, 3.586, new Rotation2d(0));
             break;
           case 19:
             targetPose = new Pose2d(3.422, 4.971, new Rotation2d(Math.PI * 5 / 3));
@@ -173,8 +174,8 @@ public class CoralScore extends Command {
           // m_LedSubsystem.setPattern3(m_LedSubsystem.colorPurple())),
           // new InstantCommand(() ->
           // m_LedSubsystem.setPattern4(m_LedSubsystem.colorOrange())));
-
-          path = new PathPlannerPath(waypoints, constraints, null, endstate);
+          double velocity = Math.sqrt(Math.pow(subsystem.getRobotRelativeSpeeds().vxMetersPerSecond, 2) + Math.pow(subsystem.getRobotRelativeSpeeds().vyMetersPerSecond, 2));
+          path = new PathPlannerPath(waypoints, constraints, new IdealStartingState(velocity, currentPose.getRotation()), endstate);
           path.preventFlipping = flipPath; // Flip path if the original tag was on the RED alliance side.
           subsystem.currentPath = AutoBuilder.followPath(path);
           subsystem.currentPath.schedule();

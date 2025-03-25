@@ -5,19 +5,25 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "LOW to BLR"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "LReef1"
+                  "name": "L4"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "AlignL"
                 }
               }
             ]
@@ -27,80 +33,6 @@
           "type": "named",
           "data": {
             "name": "IntakeArm"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.35
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ScoreLift"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.35
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeLight"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Reef1HCoralStation"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeCheck"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "HCoralStationReef6"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "L4"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ArmDown"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.35
           }
         },
         {

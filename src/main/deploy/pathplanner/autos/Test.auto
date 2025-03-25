@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "LOW to BLR"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LOW to BLR"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4"
+                }
+              }
+            ]
           }
         }
       ]

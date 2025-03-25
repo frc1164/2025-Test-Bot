@@ -234,7 +234,6 @@ public class SwerveSubsystem extends SubsystemBase {
         return states;
     }
 
-    @AutoLogOutput(key = "Vision/EstimatedPose")
     public LimelightHelpers.PoseEstimate getVisionEstimatedPose() {
 
        LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), getYawRate(),0,0,0,0);
