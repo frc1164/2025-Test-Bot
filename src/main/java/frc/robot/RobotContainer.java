@@ -97,7 +97,8 @@ public class RobotContainer {
         //Add PathPlanner Named Commands
         NamedCommands.registerCommand("L4", new SequentialCommandGroup(
             new LiftSetpoint(lift, LiftConstants.L4Height),
-            new ArmSetpoint(arm, ArmConstants.Up)));
+            new ArmSetpoint(arm, ArmConstants.UpL4),
+            new InstantCommand(() -> {System.out.println("L4 Finished");})));
 
         NamedCommands.registerCommand("L3", new SequentialCommandGroup(
             new LiftSetpoint(lift,LiftConstants.L3Height),
@@ -107,7 +108,13 @@ public class RobotContainer {
             new LiftSetpoint(lift, LiftConstants.L2Height),
             new ArmSetpoint(arm, ArmConstants.Up)));
         
-        NamedCommands.registerCommand("IntakeArm", new ArmSetpoint(arm, 0));
+        NamedCommands.registerCommand("L4Lift", new LiftSetpoint(lift, LiftConstants.L4Height));
+
+        NamedCommands.registerCommand("L4Arm", new InstantCommand(() -> {arm.setGoal(ArmConstants.UpL4);}));
+
+        NamedCommands.registerCommand("IntakeArm", new ArmSetpoint(arm, ArmConstants.pickupSetpoint));
+
+        NamedCommands.registerCommand("Arm Score", new ArmScorePosition(arm, lift));
 
         NamedCommands.registerCommand("IntakeLift", new LiftSetpoint(lift, LiftConstants.pickupHeight));
 

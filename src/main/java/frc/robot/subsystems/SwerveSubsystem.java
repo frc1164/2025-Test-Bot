@@ -164,11 +164,16 @@ public class SwerveSubsystem extends SubsystemBase {
                     "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",
                     e.getStackTrace());
         }
+        setCurrentGyroHeading(180);
     }
 
 
     public void zeroHeading() {
         gyro.reset();
+    }
+
+    private void setCurrentGyroHeading(double heading) {
+        gyro.setAngleAdjustment(heading);
     }
 
     public double getHeading() {
@@ -212,7 +217,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public LimelightHelpers.PoseEstimate getVisionEstimatedPose() {
 
-       LimelightHelpers.SetRobotOrientation("limelight-tags", getChassisYaw(), getYawRate(),0,0,0,0);
+       LimelightHelpers.SetRobotOrientation("limelight-tags", getHeading(), getYawRate(),0,0,0,0);
         LimelightHelpers.PoseEstimate botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-tags");
 
         // double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};

@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.Function;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Lift;
 
@@ -11,6 +13,7 @@ import frc.robot.subsystems.Lift;
 public class LiftSetpoint extends Command {
   private Lift lift;
   private double setpoint;
+  private Runnable nextCommandList;
   /** Creates a new LiftSetpoint. */
   public LiftSetpoint(Lift m_lift, double m_setpoint) {
     lift = m_lift;
@@ -30,7 +33,9 @@ public class LiftSetpoint extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("LiftSetpoint finished.");
+  }
 
   // Returns true when the command should end.
   @Override

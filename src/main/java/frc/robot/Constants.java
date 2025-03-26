@@ -28,7 +28,7 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
         public static final int kOperatorControllerPort = 1;
-        public static final double kDeadband = 0.25;
+        public static final double kDeadband = 0.15;
   }
 
     public static final class ModuleConstants {
@@ -111,8 +111,8 @@ public final class Constants {
 
 
         // Drive/Rotation gain
-        public static final double kRotGain = 2;
-        public static final double kDriveGain = 3;
+        public static final double kRotGain = 3;
+        public static final double kDriveGain = 4.5;
     }
 
     public static final class AutoConstants {

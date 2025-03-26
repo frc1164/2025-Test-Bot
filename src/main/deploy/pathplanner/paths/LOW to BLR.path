@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.324487704918032,
-        "y": 5.42156762295082
+        "x": 7.22,
+        "y": 5.29
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.293413136106215,
-        "y": 5.421741106997059
+        "x": 6.149468650022051,
+        "y": 5.283154287042723
+      },
+      "isLocked": false,
+      "linkedName": "Low Start"
+    },
+    {
+      "anchor": {
+        "x": 5.303999999999999,
+        "y": 5.8775
+      },
+      "prevControl": {
+        "x": 5.544679999623218,
+        "y": 5.945124978974987
+      },
+      "nextControl": {
+        "x": 5.06332000037678,
+        "y": 5.809875021025014
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.5383196721311485,
-        "y": 5.42156762295082
+        "x": 4.99,
+        "y": 5.47
       },
       "prevControl": {
-        "x": 5.914275882185863,
-        "y": 5.406515574847002
+        "x": 5.217488986478082,
+        "y": 5.58585766486315
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,13 +48,13 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8006958250496983,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.5935483870967966,
+      "maxWaypointRelativePos": 2.0,
       "constraints": {
-        "maxVelocity": 0.5,
-        "maxAcceleration": 0.5,
-        "maxAngularVelocity": 360.0,
-        "maxAngularAcceleration": 90.0,
+        "maxVelocity": 0.6,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
         "unlimited": false
       }
@@ -47,8 +63,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 0.8,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -64,5 +80,5 @@
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

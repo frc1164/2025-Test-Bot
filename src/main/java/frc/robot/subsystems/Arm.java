@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ArmConstants;
+import frc.robot.commands.ArmScorePosition;
 
 public class Arm extends SubsystemBase {
   private final SparkMax armMotor;
@@ -64,6 +65,7 @@ public class Arm extends SubsystemBase {
     // armPID.setGoal(Math.PI/2.0);
     
     armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
+    armPID.setTolerance((Math.PI/180) * 30);
     armPID.setSetpoint(ArmConstants.Up);
     armFeedforward = new ArmFeedforward(ArmConstants.kS,
         ArmConstants.kG, ArmConstants.kV,
@@ -104,7 +106,7 @@ public class Arm extends SubsystemBase {
 
 
   public boolean atSetpoint(){
-    return armPID.atSetpoint();
+    return (Math.abs(absoluteEncoder.getPosition() - armPID.getSetpoint()) < .5);
   }
 
   public double getPosition(){
@@ -117,5 +119,6 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("armEncoder", absoluteEncoder.getPosition());
     SmartDashboard.putNumber("armCmd", armPID.calculate(absoluteEncoder.getPosition()));
     SmartDashboard.putBoolean("beam", getIntake());
+    SmartDashboard.putNumber("Difference", absoluteEncoder.getPosition() - armPID.getSetpoint());
   }
 }

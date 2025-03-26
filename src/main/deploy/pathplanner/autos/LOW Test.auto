@@ -11,19 +11,19 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "L4"
+                  "name": "L4Lift"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignL"
+                  "name": "L4Arm"
                 }
               }
             ]
@@ -32,7 +32,7 @@
         {
           "type": "named",
           "data": {
-            "name": "IntakeArm"
+            "name": "Arm Score"
           }
         },
         {
@@ -44,7 +44,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

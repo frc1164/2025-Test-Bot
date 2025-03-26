@@ -195,6 +195,7 @@ public class CoralScore extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("CoralScore finished.");
   }
 
   // Returns true when the command should end.
