@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LOW to BLR"
+            "pathName": "LOW to BLL p1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LOW to BLL p2"
           }
         },
         {
@@ -39,6 +45,54 @@
           "type": "named",
           "data": {
             "name": "ScoreLift"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BLL to PICKLEFT"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeCheck"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PICKLEFT to BLR p1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeLift"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4Lift"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4Arm"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PICKLEFT to BLR p2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm Score"
           }
         }
       ]

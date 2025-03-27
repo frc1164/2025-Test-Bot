@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.99,
-        "y": 5.47
+        "x": 5.303999999999999,
+        "y": 5.8775
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.534254793777048,
-        "y": 5.193712888072928
+        "x": 5.11875,
+        "y": 5.673309426229508
       },
       "isLocked": false,
-      "linkedName": "BLR"
+      "linkedName": "BLL offset"
     },
     {
       "anchor": {
-        "x": 1.6183401639344261,
-        "y": 7.159784836065573
+        "x": 4.92,
+        "y": 5.42
       },
       "prevControl": {
-        "x": 1.2794407647461623,
-        "y": 7.348394369600529
+        "x": 5.11373804222618,
+        "y": 5.57800497142295
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "PICKLEFT"
+      "linkedName": "BLR"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 0.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.0
+    "rotation": -119.99999999999999
   },
   "reversed": false,
   "folder": null,

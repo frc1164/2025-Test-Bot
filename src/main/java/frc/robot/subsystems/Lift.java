@@ -49,6 +49,7 @@ public class Lift extends SubsystemBase {
                 new Constraints(
                         LiftConstants.liftMaxVelocity,
                         LiftConstants.liftMaxAcceleration));
+        liftPID.setTolerance(.1);
         liftPID.setGoal(.225);
         
         liftFeedforward = new ElevatorFeedforward(LiftConstants.liftFeedforwardkS,
