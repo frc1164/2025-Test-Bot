@@ -8,8 +8,12 @@ import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.signals.InvertedValue;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
@@ -182,12 +186,20 @@ public final class Constants {
         public static final double liftFeedforwardkV = 0.58095;
         public static final double liftFeedforwardkA = 0.090776;
 
-
         public static final double pickupHeight = 0.005;
         public static final double L2Height = .07;
         public static final double L3Height = .25;
         public static final double L4Height = .65;
         public static final double scoreHeight = .2;
 
+        // Kalman Constants
+        public static final double statePosStdev = 0.001;
+        public static final double stateVelStdev = 0.001;
+        public static final double measurePosStdev = 0.002;
+
+        public static final Matrix<N2, N2> A = new Matrix<N2, N2>(Nat.N2(), Nat.N2(), new double[] {1, 0.02, 0, 0});
+        public static final Matrix<N2, N1> B = new Matrix<N2, N1>(Nat.N2(), Nat.N1(), new double[] {0, 1});
+        public static final Matrix<N1, N2> C = new Matrix<N1, N2>(Nat.N1(), Nat.N2(), new double[] {1, 0});
+        public static final Matrix<N1, N1> D = new Matrix<N1, N1>(Nat.N1(), Nat.N1(), new double[] {0});
     }
 }
