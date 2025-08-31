@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimeLightConstants;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.SwerveSubsystem.SwerveSubsystem;
 
 public class AprilTagAlignCmd extends Command {
   private final SwerveSubsystem m_swerveSubsystem;

@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.InvertType;
-import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.Matrix;
@@ -16,6 +14,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -33,7 +32,7 @@ public final class Constants {
         public static final int kDriverControllerPort = 0;
         public static final int kOperatorControllerPort = 1;
         public static final double kDeadband = 0.15;
-  }
+    }
 
     public static final class ModuleConstants {
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
@@ -44,6 +43,8 @@ public final class Constants {
         public static final double kDriveEncoderRPM2MeterPerSec = kDriveEncoderRot2Meter / 60.0;
         public static final double kTurningEncoderRPM2RadPerSec = kTurningEncoderRot2Rad / 60.0;
         public static final double kPTurning = 0.35;
+        public static final double kITurning = 0;
+        public static final double kDTurning = 0;        
     }
 
     public static final class DriveConstants {
@@ -88,8 +89,7 @@ public final class Constants {
         public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
         public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
 
-
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 51.76764  * Math.PI / 180.0;
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = 51.76764 * Math.PI / 180.0;
         public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = 234.9324 * Math.PI / 180.0;
         public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = 71.36712 * Math.PI / 180.0;
         public static final double kBackRightDriveAbsoluteEncoderOffsetRad = 37.3536 * Math.PI / 180.0;
@@ -103,8 +103,6 @@ public final class Constants {
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
 
- 
-
         public static final double kSLeft = 0.32614;
         public static final double kVLeft = 4.0056;
         public static final double kALeft = 0.33487;
@@ -113,10 +111,11 @@ public final class Constants {
         public static final double kVRight = 4.0178;
         public static final double kARight = 0.10801;
 
-
         // Drive/Rotation gain
         public static final double kRotGain = 3;
         public static final double kDriveGain = 4.5;
+
+        public static final double odometryFrequency = 100.0; // Hz
     }
 
     public static final class AutoConstants {
@@ -136,20 +135,20 @@ public final class Constants {
                         kMaxAngularAccelerationRadiansPerSecondSquared);
     }
 
-    public static final class LimeLightConstants{
+    public static final class LimeLightConstants {
         public static final String kLLTags = "limelight-tags";
         public static final String kTagLimelightNetworkTableName = "limelight-tags";
         public static final int kAprilTagPipeline = 0;
     }
 
-    public static final class ArmConstants{
+    public static final class ArmConstants {
         public static final double kS = 0.65633;
-        public static final double kV = 4.5564; //113.91
+        public static final double kV = 4.5564; // 113.91
         public static final double kA = 14.624;
         public static final double kG = 1.3905;
 
         public static final double ckS = 0.45292;
-        public static final double ckV = 5.0524; //126.31
+        public static final double ckV = 5.0524; // 126.31
         public static final double ckA = 16.718;
         public static final double ckG = 0.50573;
 
@@ -163,24 +162,23 @@ public final class Constants {
         public static final double maxAcceleration = 1;
 
         public static final double pickupSetpoint = Math.PI / 2;
-        public static final double UpL4 = Math.PI * 5/4;
-        public static final double Up = Math.PI * 3/2;
-        public static final double L2 = Math.PI * 5/6;
+        public static final double UpL4 = Math.PI * 5 / 4;
+        public static final double Up = Math.PI * 3 / 2;
+        public static final double L2 = Math.PI * 5 / 6;
         public static final double L3 = Math.PI;
         public static final double L4 = Math.PI / 2;
 
-
     }
 
-    public static final class LiftConstants{
+    public static final class LiftConstants {
         public static final double liftPIDkP = 25;
         public static final double liftPIDkI = 0;
         public static final double liftPIDkD = 0;
 
         public static final double liftMaxVelocity = 6;
         public static final double liftMaxAcceleration = 20;
-        
-        //Sysid Constants
+
+        // Sysid Constants
         public static final double liftFeedforwardkS = 0.74601;
         public static final double liftFeedforwardkG = 0.21265;
         public static final double liftFeedforwardkV = 0.58095;
@@ -197,9 +195,26 @@ public final class Constants {
         public static final double stateVelStdev = 0.001;
         public static final double measurePosStdev = 0.002;
 
-        public static final Matrix<N2, N2> A = new Matrix<N2, N2>(Nat.N2(), Nat.N2(), new double[] {1, 0.02, 0, 0});
-        public static final Matrix<N2, N1> B = new Matrix<N2, N1>(Nat.N2(), Nat.N1(), new double[] {0, 1});
-        public static final Matrix<N1, N2> C = new Matrix<N1, N2>(Nat.N1(), Nat.N2(), new double[] {1, 0});
-        public static final Matrix<N1, N1> D = new Matrix<N1, N1>(Nat.N1(), Nat.N1(), new double[] {0});
+        public static final Matrix<N2, N2> A = new Matrix<N2, N2>(Nat.N2(), Nat.N2(), new double[] { 1, 0.02, 0, 0 });
+        public static final Matrix<N2, N1> B = new Matrix<N2, N1>(Nat.N2(), Nat.N1(), new double[] { 0, 1 });
+        public static final Matrix<N1, N2> C = new Matrix<N1, N2>(Nat.N1(), Nat.N2(), new double[] { 1, 0 });
+        public static final Matrix<N1, N1> D = new Matrix<N1, N1>(Nat.N1(), Nat.N1(), new double[] { 0 });
+    }
+
+    public static final class AdvantageKitConstants {
+        public static final Mode simMode = Mode.SIM;
+        public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+        
+        public static enum Mode {
+            /** Running on a real robot. */
+            REAL,
+
+            /** Running a physics simulator. */
+            SIM,
+
+            /** Replaying from a log file. */
+            REPLAY
+        }
+
     }
 }

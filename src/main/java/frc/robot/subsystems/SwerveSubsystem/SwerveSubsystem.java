@@ -1,12 +1,12 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.SwerveSubsystem;
 
 import java.util.Optional;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
-
-import au.grapplerobotics.LaserCan;
-
+import com.ctre.phoenix6.CANBus;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
@@ -14,8 +14,8 @@ import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -27,72 +27,54 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AdvantageKitConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimeLightConstants;
+import frc.robot.BuildConstants;
 import frc.robot.LimelightHelpers;
-import au.grapplerobotics.LaserCan;
-import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
-import frc.robot.Constants.OperatorConstants;
 import edu.wpi.first.wpilibj2.command.Command;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter.AdvantageScopeOpenBehavior;
 
 public class SwerveSubsystem extends SubsystemBase {
-    private final SwerveModule frontLeft = new SwerveModule(
-            DriveConstants.kFrontLeftDriveMotorPort,
-            DriveConstants.kFrontLeftTurningMotorPort,
-            DriveConstants.kFrontLeftDriveEncoderReversed,
-            DriveConstants.kFrontLeftTurningEncoderReversed,
-            DriveConstants.kFrontLeftDriveAbsoluteEncoderPort,
-            DriveConstants.kFrontLeftDriveAbsoluteEncoderOffsetRad,
-            DriveConstants.kFrontLeftDriveAbsoluteEncoderReversed);
+    private final ModuleIO frontLeftIO;
+    private final ModuleIO frontRightIO;
+    private final ModuleIO backLeftIO;
+    private final ModuleIO backRightIO;
 
-    private final SwerveModule frontRight = new SwerveModule(
-            DriveConstants.kFrontRightDriveMotorPort,
-            DriveConstants.kFrontRightTurningMotorPort,
-            DriveConstants.kFrontRightDriveEncoderReversed,
-            DriveConstants.kFrontRightTurningEncoderReversed,
-            DriveConstants.kFrontRightDriveAbsoluteEncoderPort,
-            DriveConstants.kFrontRightDriveAbsoluteEncoderOffsetRad,
-            DriveConstants.kFrontRightDriveAbsoluteEncoderReversed);
+    private final SwerveModule frontLeft;
+    private final SwerveModule frontRight;
+    private final SwerveModule backLeft;
+    private final SwerveModule backRight;
 
-    private final SwerveModule backLeft = new SwerveModule(
-            DriveConstants.kBackLeftDriveMotorPort,
-            DriveConstants.kBackLeftTurningMotorPort,
-            DriveConstants.kBackLeftDriveEncoderReversed,
-            DriveConstants.kBackLeftTurningEncoderReversed,
-            DriveConstants.kBackLeftDriveAbsoluteEncoderPort,
-            DriveConstants.kBackLeftDriveAbsoluteEncoderOffsetRad,
-            DriveConstants.kBackLeftDriveAbsoluteEncoderReversed);
+      private final Alert gyroDisconnectedAlert =
+      new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
 
-    private final SwerveModule backRight = new SwerveModule(
-            DriveConstants.kBackRightDriveMotorPort,
-            DriveConstants.kBackRightTurningMotorPort,
-            DriveConstants.kBackRightDriveEncoderReversed,
-            DriveConstants.kBackRightTurningEncoderReversed,
-            DriveConstants.kBackRightDriveAbsoluteEncoderPort,
-            DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
-            DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
 
     public Command currentPath;
-    private final AHRS gyro = new AHRS(NavXComType.kUSB1);
     private final Pose2d poseThis = new Pose2d();
-    private final SwerveModulePosition[] Position = { frontLeft.getPosition(), frontRight.getPosition(),
-            backLeft.getPosition(), backRight.getPosition() };
-
-
-
+    private SwerveModulePosition[] Position = // For delta tracking
+            new SwerveModulePosition[] {
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition(),
+                    new SwerveModulePosition()
+            };
     private final SwerveDrivePoseEstimator m_poseEstimator = new SwerveDrivePoseEstimator(
             DriveConstants.kDriveKinematics,
             new Rotation2d(0), Position, poseThis);
 
-    // Create a new Field2d object for plotting pose and initialize LimeLight Network table instances
+    // Create a new Field2d object for plotting pose and initialize LimeLight
+    // Network table instances
     private final Field2d m_field = new Field2d();
 
-    //Limelight Definitions
+    // Limelight Definitions
     private final NetworkTable aprilTagTable = NetworkTableInstance.getDefault().getTable(LimeLightConstants.kLLTags);
     private double tv, ta, tl;
     private boolean isUpdating = false;
@@ -103,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private boolean canSeeTagsSet = true;
     private boolean elseSet = false;
 
-    //private LimelightHelpers.LimelightResults results;
+    // private LimelightHelpers.LimelightResults results;
     private LimelightHelpers.PoseEstimate limelightMeasurement;
 
     Optional<DriverStation.Alliance> alliance = DriverStation.getAlliance();
@@ -115,12 +97,29 @@ public class SwerveSubsystem extends SubsystemBase {
     private SimpleMotorFeedforward feedforwardLeft = new SimpleMotorFeedforward(DriveConstants.kSLeft,
             DriveConstants.kVLeft, DriveConstants.kALeft);
 
-
     private double tag;
     private int tagRead;
 
+    // AdvantageKit
+    static final Lock odometryLock = new ReentrantLock();
+    private final GyroIO gyroIO;
+    private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+    static final double ODOMETRY_FREQUENCY = new CANBus().isNetworkFD() ? 250.0 : 100.0;
 
-    public SwerveSubsystem() {
+    public SwerveSubsystem(ModuleIO flModuleIO, ModuleIO frModuleIO, ModuleIO blModuleIO, ModuleIO brModuleIO, GyroIO gyroIO) {
+        this.frontLeftIO = flModuleIO;
+        this.frontRightIO = frModuleIO;
+        this.backLeftIO = blModuleIO;
+        this.backRightIO = brModuleIO;
+        this.gyroIO = gyroIO;
+
+        this.frontLeft = new SwerveModule(flModuleIO, 1);
+        this.frontRight = new SwerveModule(frModuleIO, 2);
+        this.backLeft = new SwerveModule(blModuleIO, 3);
+        this.backRight = new SwerveModule(brModuleIO, 4);
+
+        PhoenixOdometryThread.getInstance().start();
+
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
@@ -138,11 +137,15 @@ public class SwerveSubsystem extends SubsystemBase {
                     this::getPose, // Robot pose supplier
                     this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
                     this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-                    (speeds, feedforward) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                    (speeds, feedforward) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT
+                                                                         // RELATIVE ChassisSpeeds
                     new PPHolonomicDriveController( // HolonomicPathFollowerConfig, this should likely live in your
                                                     // Constants class
-                            new PIDConstants(AutoConstants.kPTranslationController, 0.0, AutoConstants.kDTranslationController), // Translation PID constants
-                            new PIDConstants(AutoConstants.kPThetaController, 0.0, AutoConstants.kDThetaController) // Rotation PID constants
+                            new PIDConstants(AutoConstants.kPTranslationController, 0.0,
+                                    AutoConstants.kDTranslationController), // Translation PID constants
+                            new PIDConstants(AutoConstants.kPThetaController, 0.0, AutoConstants.kDThetaController) // Rotation
+                                                                                                                    // PID
+                                                                                                                    // constants
                     ),
                     config,
                     () -> {
@@ -167,21 +170,16 @@ public class SwerveSubsystem extends SubsystemBase {
         setCurrentGyroHeading(180);
     }
 
-
     public void zeroHeading() {
-        gyro.reset();
+        gyroIO.resetHeading();
     }
 
     private void setCurrentGyroHeading(double heading) {
-        gyro.setAngleAdjustment(heading);
+        gyroIO.setAngleAdjustment(heading);
     }
 
-    public double getHeading() {
-        return Math.IEEEremainder(gyro.getAngle(), 360);
-    }
-
-    public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(getHeading());
+    public Rotation2d getHeading() {
+        return gyroInputs.yawPosition;
     }
 
     public Pose2d getPose() {
@@ -191,7 +189,7 @@ public class SwerveSubsystem extends SubsystemBase {
     public void resetOdometry(Pose2d pose) {
         SwerveModulePosition[] state = { frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(),
                 backRight.getPosition() };
-        m_poseEstimator.resetPosition(getRotation2d(), state, pose);
+        m_poseEstimator.resetPosition(getHeading(), state, pose);
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -217,39 +215,40 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public LimelightHelpers.PoseEstimate getVisionEstimatedPose() {
 
-       LimelightHelpers.SetRobotOrientation("limelight-tags", getHeading(), getYawRate(),0,0,0,0);
+        LimelightHelpers.SetRobotOrientation("limelight-tags", getHeading().getDegrees(), getYawRate(), 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate botPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-tags");
 
         // double[] bot_pose = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
         // double bot_x, bot_y, rotation_z;
 
         // bot_pose = aprilTagTable
-        //             .getEntry("botpose_orb_wpiblue")
-        //             .getDoubleArray(new double[6]);
+        // .getEntry("botpose_orb_wpiblue")
+        // .getDoubleArray(new double[6]);
 
         return botPose;
     }
 
-        public void updatePoseEstimatorWithVisionBotPose(LimelightHelpers.PoseEstimate poseEstimate) {
-        //PoseLatency visionBotPose = m_visionSystem.getPoseLatency();
-        //Pose2d visionPose = getVisionEstimatedPose();
+    public void updatePoseEstimatorWithVisionBotPose(LimelightHelpers.PoseEstimate poseEstimate) {
+        // PoseLatency visionBotPose = m_visionSystem.getPoseLatency();
+        // Pose2d visionPose = getVisionEstimatedPose();
         Pose2d visionPose = poseEstimate.pose;
         // invalid LL data
-        //if (visionBotPose.pose2d.getX() == 0.0) {
-        //    return;
-        //}
+        // if (visionBotPose.pose2d.getX() == 0.0) {
+        // return;
+        // }
 
         if (visionPose.getX() == 0.0) {
             isUpdating = false;
             return;
         }
-        
+
         // distance from current pose to vision estimated pose
-        //double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
-        //    .getDistance(visionBotPose.pose2d.getTranslation());
+        // double poseDifference =
+        // m_poseEstimator.getEstimatedPosition().getTranslation()
+        // .getDistance(visionBotPose.pose2d.getTranslation());
 
         double poseDifference = m_poseEstimator.getEstimatedPosition().getTranslation()
-            .getDistance(visionPose.getTranslation());
+                .getDistance(visionPose.getTranslation());
 
         if (poseEstimate.tagCount > 0) {
             double xyStds;
@@ -261,7 +260,7 @@ public class SwerveSubsystem extends SubsystemBase {
                 degStds = 6;
             }
             // 1 target with large area and close to estimated pose
-            else if (poseEstimate.avgTagArea > 0.66 && poseDifference < 1.5) { //areea 0.8, diff 0.5
+            else if (poseEstimate.avgTagArea > 0.66 && poseDifference < 1.5) { // areea 0.8, diff 0.5
                 xyStds = 1.0;
                 degStds = 12;
             }
@@ -269,8 +268,7 @@ public class SwerveSubsystem extends SubsystemBase {
             else if (poseEstimate.avgTagArea > 0.15 && poseDifference < 0.3) { // area 0.1, diff 0.3
                 xyStds = 2.0;
                 degStds = 30;
-            }
-            else if (gate) {
+            } else if (gate) {
                 xyStds = 0;
                 degStds = 0;
                 gate = false;
@@ -284,82 +282,101 @@ public class SwerveSubsystem extends SubsystemBase {
             isUpdating = true;
 
             m_poseEstimator.setVisionMeasurementStdDevs(
-                VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+                    VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
             m_poseEstimator.addVisionMeasurement(visionPose,
-                poseEstimate.timestampSeconds);
+                    poseEstimate.timestampSeconds);
         }
     }
-
-
 
     public double getLatency() {
         return Timer.getFPGATimestamp() - Units.millisecondsToSeconds(tl);
 
         // maybe need camera_latency?
-        // TODO: TEST 
+        // TODO: TEST
         // return results.targetingResults.latency_capture;
 
         // TODO: TEST this breaks it for some reason
-        // return llresults.targetingResults.latency_pipeline; 
+        // return llresults.targetingResults.latency_pipeline;
     }
 
-
-    public int getPrincipalTag(){
+    public int getPrincipalTag() {
         tag = aprilTagTable.getValue("tid").getDouble();
-        if(tag == 0){}
-        else{tagRead = (int)tag;}
-        
+        if (tag == 0) {
+        } else {
+            tagRead = (int) tag;
+        }
+
         return tagRead;
     }
 
-    public double getYawRate(){
-        return gyro.getRate();
+    public double getYawRate() {
+        return gyroInputs.yawRate;
     }
-
-
 
     @Override
     public void periodic() {
+        odometryLock.lock(); // Prevents odometry updates while reading data
+
+        gyroIO.updateInputs(gyroInputs);
+        Logger.processInputs("Drive/Gyro", gyroInputs);
+
+        frontLeft.periodic();
+        frontRight.periodic();
+        backLeft.periodic();
+        backRight.periodic();
+
+        odometryLock.unlock();
+
+        // Stop moving when disabled
+        if (DriverStation.isDisabled()) {
+            stopModules();
+
+            Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
+            Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+        }
+
         SwerveModulePosition[] positions = { frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(),
                 backRight.getPosition() };
-        m_poseEstimator.update(getRotation2d(), positions);
+        m_poseEstimator.update(gyroInputs.yawPosition, positions);
 
-        // The .name() method seems to have been removed from DriverStation.getAlliance. So this needs a switch statement or something
-        //SmartDashboard.putString("Alliance Color", DriverStation.getAlliance().name());
+        // The .name() method seems to have been removed from DriverStation.getAlliance.
+        // So this needs a switch statement or something
+        // SmartDashboard.putString("Alliance Color",
+        // DriverStation.getAlliance().name());
 
         // Set the robot pose on the Field2D object
 
         m_field.setRobotPose(this.getPose());
         SmartDashboard.putData(m_field);
 
-        SmartDashboard.putNumber("Robot Heading", getHeading());
+        SmartDashboard.putNumber("Robot Heading", getHeading().getDegrees());
 
         SmartDashboard.putString("Robot Rotation", getPose().getRotation().toString());
         SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
 
-        SmartDashboard.putNumber("Pitch", gyro.getPitch());
-        SmartDashboard.putNumber("Yaw", gyro.getYaw());
-        SmartDashboard.putNumber("Roll", gyro.getRoll());
-        
+        SmartDashboard.putNumber("Pitch", gyroInputs.pitchPosition.getDegrees());
+        SmartDashboard.putNumber("Yaw", gyroInputs.yawPosition.getDegrees());
+        SmartDashboard.putNumber("Roll", gyroInputs.rollPosition.getDegrees());
 
-       
-        //LimelightHelpers.PoseEstimate tagsLLPoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.kLLTags);
-        
+        // LimelightHelpers.PoseEstimate tagsLLPoseEstimate =
+        // LimelightHelpers.getBotPoseEstimate_wpiBlue(LimeLightConstants.kLLTags);
+
         boolean signalIsUpdating = false;
-        
-       // updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
+
+        // updatePoseEstimatorWithVisionBotPose(tagsLLPoseEstimate);
         // if(isUpdating == true) {
-        //     signalIsUpdating = true;
+        // signalIsUpdating = true;
 
         SmartDashboard.putNumber("ta", aprilTagTable.getValue("ta").getDouble());
-                        
+
         updatePoseEstimatorWithVisionBotPose(getVisionEstimatedPose());
-        if(isUpdating == true) {
+        if (isUpdating == true) {
             signalIsUpdating = true;
         }
-            SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
-            SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
+        SmartDashboard.putBoolean("signalIsUpdating", signalIsUpdating);
+        SmartDashboard.putBoolean("seesTags", getVisionEstimatedPose().tagCount > 0);
 
+        gyroDisconnectedAlert.set(!gyroInputs.connected && AdvantageKitConstants.currentMode != AdvantageKitConstants.Mode.SIM);
     }
 
     public void stopModules() {
@@ -377,16 +394,7 @@ public class SwerveSubsystem extends SubsystemBase {
         backRight.setDesiredState(desiredStates[3], feedforwardRight);
     }
 
-    // Though related to the LimeLights, these functions are needed for pose esimation.
-
-    /*
-     * This can probably be safely removed
-     * public float getChassisPitch() {
-     * return gyro.getPitch();
-     * }
-     */
-
-    public float getChassisYaw() {
-        return gyro.getYaw();
+    public Rotation2d getChassisYaw() {
+        return gyroInputs.yawPosition;
     }
 }
