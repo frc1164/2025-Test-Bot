@@ -28,6 +28,8 @@ import edu.wpi.first.wpilibj.RobotBase;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static final int kPowerDistrubutionPort = 5;
+
     public static class OperatorConstants {
         public static final int kDriverControllerPort = 0;
         public static final int kOperatorControllerPort = 1;

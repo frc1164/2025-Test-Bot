@@ -39,8 +39,13 @@ import frc.robot.Constants.LimeLightConstants;
 import frc.robot.BuildConstants;
 import frc.robot.LimelightHelpers;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter.AdvantageScopeOpenBehavior;
+import frc.robot.util.LocalADStarAK;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.PathPlannerLogging;
 
 public class SwerveSubsystem extends SubsystemBase {
     private final ModuleIO frontLeftIO;
@@ -162,6 +167,18 @@ public class SwerveSubsystem extends SubsystemBase {
                     },
                     this // Reference to this subsystem to set requirements
             );
+            Pathfinding.setPathfinder(new LocalADStarAK());
+            PathPlannerLogging.setLogActivePathCallback(
+                (activePath) -> {
+                  Logger.recordOutput(
+                      "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                });
+            PathPlannerLogging.setLogTargetPoseCallback(
+                (targetPose) -> {
+                  Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                });
+
+                
         } catch (Exception e) {
             DriverStation.reportError(
                     "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",
@@ -181,7 +198,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public Rotation2d getHeading() {
         return gyroInputs.yawPosition;
     }
-
+    
+    @AutoLogOutput(key = "Odometry/Robot")
     public Pose2d getPose() {
         return m_poseEstimator.getEstimatedPosition();
     }
@@ -192,6 +210,7 @@ public class SwerveSubsystem extends SubsystemBase {
         m_poseEstimator.resetPosition(getHeading(), state, pose);
     }
 
+    @AutoLogOutput(key = "SwerveChassisSpeeds/Measured")
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return DriveConstants.kDriveKinematics.toChassisSpeeds(getModuleStates());
     }
@@ -203,6 +222,7 @@ public class SwerveSubsystem extends SubsystemBase {
         setModuleStates(targetStates);
     }
 
+    @AutoLogOutput(key = "SwerveStates/Measured")
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = {
                 frontLeft.getState(),
