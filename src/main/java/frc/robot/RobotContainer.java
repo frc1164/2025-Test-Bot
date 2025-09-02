@@ -73,7 +73,7 @@ public class RobotContainer {
 
     private final Lift lift;
     private final Arm arm;
-    private final Climb climb;
+    // private final Climb climb;
 
     private final CommandXboxController driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     private final CommandXboxController operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
@@ -87,7 +87,7 @@ public class RobotContainer {
         lift = new Lift();
         arm = new Arm();
         ledSubsystem = new LEDSubsystem(lift, arm);
-        climb = new Climb();
+        // climb = new Climb();
 
 
         // Bind buttons to commands/methods
@@ -110,7 +110,7 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("L4Lift", new LiftSetpoint(lift, LiftConstants.L4Height));
 
-        NamedCommands.registerCommand("L4Arm", new InstantCommand(() -> {arm.setGoal(ArmConstants.UpL4);}));
+        NamedCommands.registerCommand("L4Arm", new ArmSetpoint(arm, ArmConstants.UpL4));
 
         NamedCommands.registerCommand("IntakeArm", new ArmSetpoint(arm, ArmConstants.pickupSetpoint));
 
@@ -136,9 +136,9 @@ public class RobotContainer {
                 () -> driverController.getLeftY(),
                 () -> driverController.getLeftX(),
                 () -> -driverController.getRightX(),
-                () -> !driverController.rightBumper().getAsBoolean()));
+                () -> !driverController.povUp().getAsBoolean()));
         
-        climb.setDefaultCommand(new RunClimb(climb, operatorController));
+        // climb.setDefaultCommand(new RunClimb(climb, operatorController));
 
         // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -164,8 +164,8 @@ public class RobotContainer {
     
     private void configureBindings() {
         // Driver A Button -> Zero Heading
-        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
-        driverController.povUp().onTrue(new SequentialCommandGroup(
+        driverController.povDown().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
+        driverController.povLeft().onTrue(new SequentialCommandGroup(
                                         new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())), 
                                         new InstantCommand(() -> ledSubsystem.setPattern4(ledSubsystem.scrollingRainbow()))));
         
@@ -202,13 +202,13 @@ public class RobotContainer {
              new LiftSetpoint(lift, LiftConstants.scoreHeight)));
       
       
-      driverController.rightBumper().onTrue(new CoralScore(swerveSubsystem, false, ledSubsystem));
+    //   driverController.rightBumper().onTrue(new CoralScore(swerveSubsystem, false, ledSubsystem));
 
-      driverController.leftBumper().onTrue(new CoralScore(swerveSubsystem, true, ledSubsystem));
+    //   driverController.leftBumper().onTrue(new CoralScore(swerveSubsystem, true, ledSubsystem));
 
       // Down on POV as gate operator. This may be wrong. Check DS to double check.
       // Pressing down allows the RunClimb() command to work.
-      operatorController.povDown().onTrue(new InstantCommand(() -> {climb.runGate = true;}));
+    //   operatorController.povDown().onTrue(new InstantCommand(() -> {climb.runGate = true;}));
     }
 
     /**

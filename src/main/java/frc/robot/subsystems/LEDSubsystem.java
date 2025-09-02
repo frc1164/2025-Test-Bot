@@ -22,15 +22,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class LEDSubsystem extends SubsystemBase {
   Distance LED_SPACING = Meters.of(1.0 / 60);
   private static final int kPort = 3;
-  private static final int kLength = 121;
+  // private static final int kLength = 121;
+  private static final int kLength = 73;
 
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;
   private final AddressableLEDBufferView m_left;
   private final AddressableLEDBufferView m_right;
-  private final AddressableLEDBufferView m_ziaCenter;
-  private final AddressableLEDBufferView m_ziaArms;
+  // private final AddressableLEDBufferView m_ziaCenter;
+  // private final AddressableLEDBufferView m_ziaArms;
 
   private LEDPattern pattern1;
   private LEDPattern pattern2;
@@ -46,11 +47,12 @@ public class LEDSubsystem extends SubsystemBase {
     m_led = new AddressableLED(kPort);
     m_buffer = new AddressableLEDBuffer(kLength);
     m_led.setLength(kLength);
-    m_ziaCenter = m_buffer.createView(0,7);
-    m_ziaArms = m_buffer.createView(8,47);
-    m_left = m_buffer.createView(48,87);
-    m_right = m_buffer.createView(88,120);
-    
+    // m_ziaCenter = m_buffer.createView(0,7);
+    // m_ziaArms = m_buffer.createView(8,47);
+    // m_left = m_buffer.createView(48,87);
+    // m_right = m_buffer.createView(88,120);
+    m_left = m_buffer.createView(0,39);
+    m_right = m_buffer.createView(40,72);
     m_Lift = Lift;
     m_Arm = arm;
 
@@ -152,8 +154,8 @@ public class LEDSubsystem extends SubsystemBase {
   
 
   public void applyPattern(LEDPattern pattern1, LEDPattern pattern2, LEDPattern pattern3, LEDPattern pattern4){
-    pattern3.applyTo(m_ziaCenter);
-    pattern4.applyTo(m_ziaArms);
+    // pattern3.applyTo(m_ziaCenter);
+    // pattern4.applyTo(m_ziaArms);
     pattern1.applyTo(m_left);
     pattern2.applyTo(m_right);
     m_led.setData(m_buffer);

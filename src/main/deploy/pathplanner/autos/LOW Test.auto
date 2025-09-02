@@ -11,15 +11,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "LOW to BLL p2"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LOW to BLL p2"
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -60,33 +60,60 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "PICKLEFT to BLR p1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "PICKLEFT to BLR p1"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakeLift"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "L3 Height"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "IntakeLift"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4Lift"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4Arm"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "PICKLEFT to BLR p2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "PICKLEFT to BLR p2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Lift"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "L4Arm"
+                }
+              }
+            ]
           }
         },
         {

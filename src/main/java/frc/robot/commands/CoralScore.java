@@ -66,41 +66,51 @@ public class CoralScore extends Command {
         // Translate all tags to coordinates. Flipped below if needed.
         switch (principalTag) {
           case 17:
-            targetPose = new Pose2d(3.92, 2.806, new Rotation2d(Math.PI / 3));
+            // targetPose = new Pose2d(3.92, 2.806, new Rotation2d(Math.PI / 3));
+            targetPose = new Pose2d(4.061, 2.61, new Rotation2d(Math.PI / 3));
             break;
           case 18:
-            targetPose = new Pose2d(3.13, 3.9, new Rotation2d(0));
+            // targetPose = new Pose2d(3.13, 3.9, new Rotation2d(0));
+            targetPose = new Pose2d(3.05, 3.69, new Rotation2d(0));
             break;
           case 19:
-            targetPose = new Pose2d(3.74, 5.182, new Rotation2d(Math.PI * 5 / 3));
+            // targetPose = new Pose2d(3.74, 5.182, new Rotation2d(Math.PI * 5 / 3));
+            targetPose = new Pose2d(3.733, 5.24, new Rotation2d(Math.PI * 5 / 3));
             break;
           case 20:
             //targetPose = new Pose2d(4.777, 5.429, new Rotation2d(Math.PI * 4 / 3));
-            targetPose = new Pose2d( 4.9, 5.45, new Rotation2d(Math.PI * 4 / 3));
+            targetPose = new Pose2d( 4.91, 5.436, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 21:
-            targetPose = new Pose2d(5.95, 4.36, new Rotation2d(Math.PI));
+            targetPose = new Pose2d(5.94, 4.36, new Rotation2d(Math.PI));
             break;
           case 22:
-            targetPose = new Pose2d(5.596, 3.069, new Rotation2d(Math.PI * 2 / 3));
+            // targetPose = new Pose2d(5.596, 3.069, new Rotation2d(Math.PI * 2 / 3));
+            targetPose = new Pose2d(5.496, 2.95, new Rotation2d(Math.PI * 2 / 3));
             break;
           case 6: 
-            targetPose = new Pose2d(13.864, 2.694, new Rotation2d(Math.PI * 2 / 3));
+            // targetPose = new Pose2d(13.864, 2.694, new Rotation2d(Math.PI * 2 / 3));
+            targetPose = new Pose2d(13.884, 2.804, new Rotation2d(Math.PI * 2 / 3));
             break;
           case 7: 
-            targetPose = new Pose2d(14.391, 4.161, new Rotation2d(Math.PI));
+            // targetPose = new Pose2d(14.391, 4.161, new Rotation2d(Math.PI));
+            targetPose = new Pose2d(14.494, 4.07, new Rotation2d(Math.PI));
             break;
           case 8: 
-            targetPose = new Pose2d(13.621, 5.263, new Rotation2d(Math.PI * 4 / 3));
+            // targetPose = new Pose2d(13.621, 5.263, new Rotation2d(Math.PI * 4 / 3));
+            targetPose = new Pose2d(13.738, 5.291, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 9:
-            targetPose = new Pose2d(12.002, 4.971, new Rotation2d(Math.PI * 5 / 3));
+            // targetPose = new Pose2d(12.002, 4.971, new Rotation2d(Math.PI * 5 / 3));
+            targetPose = new Pose2d(11.623, 3.691, new Rotation2d(Math.PI * 5 / 3));
             break;
           case 10:
-            targetPose = new Pose2d(11.690, 3.557, new Rotation2d(0));
+            // targetPose = new Pose2d(11.690, 3.557, new Rotation2d(0));
+            targetPose = new Pose2d(11.62, 3.69, new Rotation2d(0));
             break;
           case 11:
-            targetPose = new Pose2d(12.812, 2.601, new Rotation2d(Math.PI * 1 / 3));
+            // targetPose = new Pose2d(12.812, 2.601, new Rotation2d(Math.PI * 1 / 3));
+            targetPose = new Pose2d(12.379, 2.7606, new Rotation2d(Math.PI * 1 / 3));
             break;
           default:
             targetPose = null;
@@ -109,40 +119,52 @@ public class CoralScore extends Command {
       } else if (!left) { // Right side coordinates.
         switch (principalTag) {
           case 17:
-            targetPose = new Pose2d(3.93, 2.82, new Rotation2d(Math.PI / 3));
+            // targetPose = new Pose2d(3.93, 2.82, new Rotation2d(Math.PI / 3));
+            targetPose = new Pose2d(3.81, 2.7606, new Rotation2d(Math.PI / 3));
             break;
           case 18:
-            targetPose = new Pose2d(3.13, 3.586, new Rotation2d(0));
+            // targetPose = new Pose2d(3.13, 3.586, new Rotation2d(0));
+            targetPose = new Pose2d(3.05, 3.98, new Rotation2d(0));
             break;
           case 19:
-            targetPose = new Pose2d(3.422, 4.971, new Rotation2d(Math.PI * 5 / 3));
+            // targetPose = new Pose2d(3.422, 4.971, new Rotation2d(Math.PI * 5 / 3));
+            targetPose = new Pose2d(3.733, 5.247, new Rotation2d(Math.PI * 5 / 3));
             break;
           case 20:
-            targetPose = new Pose2d(5.041, 5.263, new Rotation2d(Math.PI * 4 / 3));
+            // targetPose = new Pose2d(5.041, 5.263, new Rotation2d(Math.PI * 4 / 3));
+            targetPose = new Pose2d(5.169, 5.291, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 21:
-            targetPose = new Pose2d(5.93, 4.07, new Rotation2d(Math.PI));
+            targetPose = new Pose2d(5.91, 4.07, new Rotation2d(Math.PI));
             break;
           case 22:
-            targetPose = new Pose2d(5.304, 2.933, new Rotation2d(Math.PI * 2 / 3));
+            // targetPose = new Pose2d(5.304, 2.933, new Rotation2d(Math.PI * 2 / 3));
+            targetPose = new Pose2d(5.245, 2.804, new Rotation2d(Math.PI * 2 / 3));
             break;
           case 6: 
-            targetPose = new Pose2d(14.147, 3.069, new Rotation2d(Math.PI * 2 / 3));
+            // targetPose = new Pose2d(14.147, 3.069, new Rotation2d(Math.PI * 2 / 3));
+            targetPose = new Pose2d(13.815, 2.804, new Rotation2d(Math.PI * 2 / 3));
             break;
           case 7: 
-            targetPose = new Pose2d(14.420, 4.464, new Rotation2d(Math.PI));
+            // targetPose = new Pose2d(14.420, 4.464, new Rotation2d(Math.PI));
+            targetPose = new Pose2d(14.492, 4.36, new Rotation2d(Math.PI));
             break;
           case 8: 
-            targetPose = new Pose2d(13.328, 5.439, new Rotation2d(Math.PI * 4 / 3));
+            // targetPose = new Pose2d(13.328, 5.439, new Rotation2d(Math.PI * 4 / 3));
+            targetPose = new Pose2d(13.487, 5.436, new Rotation2d(Math.PI * 4 / 3));
             break;
           case 9:
-            targetPose = new Pose2d(12.821, 5.487, new Rotation2d(Math.PI * 5 / 3));
+            // targetPose = new Pose2d(12.821, 5.487, new Rotation2d(Math.PI * 5 / 3));
+            targetPose = new Pose2d(12.307, 5.247, new Rotation2d(Math.PI * 5 / 3));
             break;
           case 10:
-            targetPose = new Pose2d(11.690, 3.888, new Rotation2d(0));
+            // targetPose = new Pose2d(11.690, 3.888, new Rotation2d(0));
+            targetPose = new Pose2d(11.623, 3.9818, new Rotation2d(0));
             break;
           case 11:
-            targetPose = new Pose2d(12.509, 2.757, new Rotation2d(Math.PI * 1 / 3));
+            // targetPose = new Pose2d(12.509, 2.757, new Rotation2d(Math.PI * 1 / 3));
+            targetPose = new Pose2d(12.630, 2.616, new Rotation2d(Math.PI * 1 / 3));
+
             break;
           default:
             targetPose = null;
@@ -157,7 +179,9 @@ public class CoralScore extends Command {
       if (targetPose != null) {
         if (!targetPose.equals(currentPose)) {
           waypoints = PathPlannerPath.waypointsFromPoses(currentPose, targetPose);
-          constraints = new PathConstraints(1, .5, 1, .5);
+          // constraints = new PathConstraints(1, .5, 1, .5);
+          constraints = new PathConstraints(1.5, 1, 1, .5);
+
           endstate = new GoalEndState(0, targetPose.getRotation());
 
           // ledsOn = new EventMarker("leds", 0);

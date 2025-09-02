@@ -65,7 +65,7 @@ public class Arm extends SubsystemBase {
     // armPID.setGoal(Math.PI/2.0);
     
     armPID = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
-    armPID.setTolerance((Math.PI/180) * 30);
+    armPID.setTolerance((Math.PI/180) * 18);
     armPID.setSetpoint(ArmConstants.Up);
     armFeedforward = new ArmFeedforward(ArmConstants.kS,
         ArmConstants.kG, ArmConstants.kV,

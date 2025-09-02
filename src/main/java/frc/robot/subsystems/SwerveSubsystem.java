@@ -164,7 +164,10 @@ public class SwerveSubsystem extends SubsystemBase {
                     "Failed to load PathPlanner config and configure AutoBuilder. Ensure /src/main/deploy/pathplanner/settings.json exists",
                     e.getStackTrace());
         }
+        
+        if (alliance.get() == DriverStation.Alliance.Blue){
         setCurrentGyroHeading(180);
+        }
     }
 
 
