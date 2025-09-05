@@ -219,6 +219,7 @@ public class SwerveSubsystem extends SubsystemBase {
         ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
 
         SwerveModuleState[] targetStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(targetSpeeds);
+        
         setModuleStates(targetStates);
     }
 
@@ -352,7 +353,6 @@ public class SwerveSubsystem extends SubsystemBase {
             stopModules();
 
             Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
-            Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
         }
 
         SwerveModulePosition[] positions = { frontLeft.getPosition(), frontRight.getPosition(), backLeft.getPosition(),
@@ -407,7 +407,12 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public void setModuleStates(SwerveModuleState[] desiredStates) {
+        Logger.recordOutput("SwerveChassisSpeeds/Setpoints", desiredStates);
+
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, DriveConstants.kPhysicalMaxSpeedMetersPerSecond);
+
+        Logger.recordOutput("SwerveStates/Setpoints", desiredStates);
+    
         frontLeft.setDesiredState(desiredStates[0], feedforwardLeft);
         frontRight.setDesiredState(desiredStates[1], feedforwardRight);
         backLeft.setDesiredState(desiredStates[2], feedforwardLeft);

@@ -219,7 +219,7 @@ public class Lift extends SubsystemBase {
         );
 
         SmartDashboard.putNumber("Tof Measurement", ToF.getMeasurement().distance_mm / 1000.0);
-        SmartDashboard.putNumber("Kalman Position", elevatorKalmanFilter.getXhat(1));
-        SmartDashboard.putNumber("Kalman Velocity", elevatorKalmanFilter.getXhat(2));
+        // SmartDashboard.putNumber("Kalman Position", elevatorKalmanFilter.getXhat(1));
+        // SmartDashboard.putNumber("Kalman Velocity", elevatorKalmanFilter.getXhat(2));
     }
 }

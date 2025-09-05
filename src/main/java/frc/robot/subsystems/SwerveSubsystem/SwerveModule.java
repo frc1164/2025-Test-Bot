@@ -4,10 +4,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Constants.ModuleConstants;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 public class SwerveModule {
     private final ModuleIO io;
@@ -17,6 +20,7 @@ public class SwerveModule {
     private final Alert driveDisconnectedAlert;
     private final Alert turnDisconnectedAlert;
     private final Alert turnEncoderDisconnectedAlert;
+    private final PIDController turnPIDController = new PIDController(ModuleConstants.kPTurning, ModuleConstants.kITurning, ModuleConstants.kDTurning);
     private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
 
 
@@ -73,9 +77,13 @@ public class SwerveModule {
 
     public void setDesiredState(SwerveModuleState state, SimpleMotorFeedforward feedforward) {
         state.optimize(getTurningPosition());
-        state.cosineScale(inputs.turnPosition);
+        // state.cosineScale(inputs.turnPosition);
 
         io.setDriveVelocity(state.speedMetersPerSecond / (ModuleConstants.kWheelDiameterMeters / 2));
+        SmartDashboard.putNumber("state.angle", state.angle.getRotations());
+
+        io.setTurnOpenLoop(turnPIDController.calculate(getState().angle.getRotations(), state.angle.getRotations()));
+        // io.setTurnPosition();
     }
 
     public void stop() {
