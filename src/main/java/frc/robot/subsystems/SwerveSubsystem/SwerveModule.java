@@ -39,24 +39,37 @@ public class SwerveModule {
 
     }
 
+    /**
+     * 
+     * @return Module position in meters
+     */
     public double getDrivePosition() {
-        return inputs.drivePositionRad * ModuleConstants.kDriveEncoderRot2Meter;
+        return (inputs.drivePositionRad / (2 * Math.PI)) * ModuleConstants.kDriveEncoderRot2Meter;
     }
 
     public Rotation2d getTurningPosition() {
         return inputs.turnPosition;
     }
 
+    /**
+     * 
+     * @return Module velocity in m/s
+     */
     public double getDriveVelocity() {
-        return inputs.driveVelocityRadPerSec * ModuleConstants.kWheelDiameterMeters;
+        return (inputs.driveVelocityRadPerSec / (2 * Math.PI)) * ModuleConstants.kWheelDiameterMeters;
     }
 
+    /**
+     * 
+     * @return Module steering velocity in m/s
+     */
     public double getTurningVelocity() {
         return inputs.turnVelocityRadPerSec;
     }
 
-    /*
-     * Returns a double from -pi to pi.
+    /**
+     * 
+     * @return Rotation2d
      */
     public Rotation2d getAbsoluteEncoderRad() {
         return inputs.turnAbsolutePosition;
