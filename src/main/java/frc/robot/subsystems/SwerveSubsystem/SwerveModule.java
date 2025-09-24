@@ -11,7 +11,6 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
 public class SwerveModule {
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
@@ -20,9 +19,9 @@ public class SwerveModule {
     private final Alert driveDisconnectedAlert;
     private final Alert turnDisconnectedAlert;
     private final Alert turnEncoderDisconnectedAlert;
-    private final PIDController turnPIDController = new PIDController(ModuleConstants.kPTurning, ModuleConstants.kITurning, ModuleConstants.kDTurning);
+    private final PIDController turnPIDController = new PIDController(ModuleConstants.kPTurning,
+            ModuleConstants.kITurning, ModuleConstants.kDTurning);
     private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
-
 
     public SwerveModule(ModuleIO io, int id) {
         this.io = io;
@@ -36,6 +35,8 @@ public class SwerveModule {
         turnEncoderDisconnectedAlert = new Alert(
                 "Disconnected turn encoder on module " + Integer.toString(moduleId) + ".",
                 AlertType.kError);
+
+        turnPIDController.enableContinuousInput(-.5, 0.5);
 
     }
 
@@ -76,8 +77,8 @@ public class SwerveModule {
     }
 
     // public void resetEncoders() {
-    //     driveMotor.setPosition(0);
-    //     // turningMotor.setPosition((getAbsoluteEncoderRad()) / (2 * Math.PI));
+    // driveMotor.setPosition(0);
+    // // turningMotor.setPosition((getAbsoluteEncoderRad()) / (2 * Math.PI));
     // }
 
     public SwerveModulePosition getPosition() {
@@ -89,19 +90,26 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState state, SimpleMotorFeedforward feedforward) {
-        state.optimize(getTurningPosition());
+        // state.optimize(getTurningPosition());
         // state.cosineScale(inputs.turnPosition);
 
-        io.setDriveVelocity(state.speedMetersPerSecond / (ModuleConstants.kWheelDiameterMeters / 2));
-        SmartDashboard.putNumber("state.angle", state.angle.getRotations());
+        // io.setDriveVelocity(state.speedMetersPerSecond / (ModuleConstants.kWheelDiameterMeters / 2));
+        SmartDashboard.putNumber("current.angle[" + moduleId + ']', (getState().angle.getRotations() + 0.5) % 1 + 0.5);
+        SmartDashboard.putNumber("state.angle[" + moduleId + ']', state.angle.getRotations());
 
-        io.setTurnOpenLoop(turnPIDController.calculate(getState().angle.getRotations(), state.angle.getRotations()));
+        if(state.speedMetersPerSecond != 0) {
+            io.setTurnOpenLoop(turnPIDController.calculate((getState().angle.getRotations() + 0.5) % 1 + 0.5, state.angle.getRotations()));
+        }
+        else {
+            io.setTurnOpenLoop(0);
+        }
+        // io.setTurnPosition(state.angle);
         // io.setTurnPosition();
     }
 
     public void stop() {
-        io.setDriveOpenLoop(0);
-        io.setTurnOpenLoop(0);
+        // io.setDriveOpenLoop(0);
+        // io.setTurnOpenLoop(0);
     }
 
     public void periodic() {

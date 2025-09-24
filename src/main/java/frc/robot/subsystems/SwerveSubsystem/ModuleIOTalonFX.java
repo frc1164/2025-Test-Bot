@@ -145,6 +145,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         cancoderConfig.MagnetSensor.SensorDirection = absoluteEncoderReversed
                 ? SensorDirectionValue.Clockwise_Positive
                 : SensorDirectionValue.CounterClockwise_Positive;
+        cancoderConfig.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 0.5;
         cancoder.getConfigurator().apply(cancoderConfig);
 
         // Create timestamp queue
@@ -198,7 +199,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         inputs.turnConnected = turnConnectedDebounce.calculate(turnStatus.isOK());
         inputs.turnEncoderConnected = turnEncoderConnectedDebounce.calculate(turnEncoderStatus.isOK());
         inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
-        inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
+        inputs.turnPosition = Rotation2d.fromRotations((turnPosition.getValueAsDouble() + 0.5) % 1 + 0.5);
         inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
         inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
         inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();

@@ -42,8 +42,11 @@ public class SwerveJoystickCmd extends Command {
         double turningSpeed = turningSpdFunction.get();
 
         // 2. Apply deadband
-        xSpeed = Math.abs(xSpeed) > OperatorConstants.kDeadband ? (xSpeed * Math.pow(Math.E, (DriveConstants.kDriveGain * Math.abs(xSpeed))))/Math.pow(Math.E, DriveConstants.kDriveGain) : 0.0;
-        ySpeed = Math.abs(ySpeed) > OperatorConstants.kDeadband ? (ySpeed * Math.pow(Math.E, (DriveConstants.kDriveGain * Math.abs(ySpeed))))/Math.pow(Math.E, DriveConstants.kDriveGain) : 0.0;
+        // xSpeed = Math.abs(xSpeed) > OperatorConstants.kDeadband ? (xSpeed * Math.pow(Math.E, (DriveConstants.kDriveGain * Math.abs(xSpeed))))/Math.pow(Math.E, DriveConstants.kDriveGain) : 0.0;
+        // ySpeed = Math.abs(ySpeed) > OperatorConstants.kDeadband ? (ySpeed * Math.pow(Math.E, (DriveConstants.kDriveGain * Math.abs(ySpeed))))/Math.pow(Math.E, DriveConstants.kDriveGain) : 0.0;
+        
+        xSpeed = Math.abs(xSpeed) > OperatorConstants.kDeadband ? xSpeed: 0.0;
+        ySpeed = Math.abs(ySpeed) > OperatorConstants.kDeadband ? ySpeed: 0.0;
         turningSpeed = Math.abs(turningSpeed) > OperatorConstants.kDeadband ? ((turningSpeed * Math.pow(Math.E, (DriveConstants.kRotGain * Math.abs(turningSpeed))))/Math.pow(Math.E, DriveConstants.kRotGain))/4 : 0.0;
 
         // 3. Make the driving smoother
