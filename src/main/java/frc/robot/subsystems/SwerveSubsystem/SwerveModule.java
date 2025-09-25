@@ -93,15 +93,16 @@ public class SwerveModule {
         // state.optimize(getTurningPosition());
         // state.cosineScale(inputs.turnPosition);
 
-        // io.setDriveVelocity(state.speedMetersPerSecond / (ModuleConstants.kWheelDiameterMeters / 2));
+        io.setDriveVelocity(state.speedMetersPerSecond);
         SmartDashboard.putNumber("current.angle[" + moduleId + ']', (getState().angle.getRotations() + 0.5) % 1 + 0.5);
         SmartDashboard.putNumber("state.angle[" + moduleId + ']', state.angle.getRotations());
 
         if(state.speedMetersPerSecond != 0) {
-            io.setTurnOpenLoop(turnPIDController.calculate((getState().angle.getRotations() + 0.5) % 1 + 0.5, state.angle.getRotations()));
+            // io.setTurnOpenLoop(turnPIDController.calculate((getState().angle.getRotations() + 0.5) % 1 + 0.5, state.angle.getRotations()));
+            io.setTurnPosition(state.angle);
         }
         else {
-            io.setTurnOpenLoop(0);
+            io.setTurnVoltage(0);
         }
         // io.setTurnPosition(state.angle);
         // io.setTurnPosition();

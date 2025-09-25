@@ -110,13 +110,13 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
-  public void setDriveOpenLoop(double output) {
+  public void setDriveVoltage(double output) {
     driveClosedLoop = false;
     driveAppliedVolts = output;
   }
 
   @Override
-  public void setTurnOpenLoop(double output) {
+  public void setTurnVoltage(double output) {
     turnClosedLoop = false;
     turnAppliedVolts = output;
   }
