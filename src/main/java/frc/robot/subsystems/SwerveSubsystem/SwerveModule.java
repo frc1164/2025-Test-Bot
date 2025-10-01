@@ -90,11 +90,11 @@ public class SwerveModule {
     }
 
     public void setDesiredState(SwerveModuleState state, SimpleMotorFeedforward feedforward) {
-        // state.optimize(getTurningPosition());
-        // state.cosineScale(inputs.turnPosition);
+        state.optimize(getTurningPosition());
+        state.cosineScale(getAbsoluteEncoderRad());
 
-        io.setDriveVelocity(state.speedMetersPerSecond);
-        SmartDashboard.putNumber("current.angle[" + moduleId + ']', (getState().angle.getRotations() + 0.5) % 1 + 0.5);
+        // io.setDriveVelocity(state.speedMetersPerSecond);
+        SmartDashboard.putNumber("current.angle[" + moduleId + ']', (getState().angle.getRotations() + 0.5) % 1 - 0.5);
         SmartDashboard.putNumber("state.angle[" + moduleId + ']', state.angle.getRotations());
 
         if(state.speedMetersPerSecond != 0) {

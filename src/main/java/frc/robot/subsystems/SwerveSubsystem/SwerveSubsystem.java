@@ -120,8 +120,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
         this.frontLeft = new SwerveModule(flModuleIO, 1);
         this.frontRight = new SwerveModule(frModuleIO, 2);
-        this.backLeft = new SwerveModule(blModuleIO, 3);
-        this.backRight = new SwerveModule(brModuleIO, 4);
+        this.backLeft = new SwerveModule(blModuleIO, 4);
+        this.backRight = new SwerveModule(brModuleIO, 3);
 
         PhoenixOdometryThread.getInstance().start();
 

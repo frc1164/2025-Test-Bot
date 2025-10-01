@@ -74,6 +74,9 @@ public class ModuleIOTalonFX implements ModuleIO {
         cancoder = new CANcoder(absoluteEncoderId);
 
         turnPidController = new PIDController(ModuleConstants.kPTurning, ModuleConstants.kITurning, ModuleConstants.kDTurning);
+        turnPidController.enableContinuousInput(-.5, .5);
+        turnPidController.setTolerance(.003);
+
         driveFeedforward = new SimpleMotorFeedforward(kS, kV, kA);
         // Configure drive motor
         var driveConfig = new TalonFXConfiguration();
@@ -144,7 +147,7 @@ public class ModuleIOTalonFX implements ModuleIO {
         
         inputs.turnEncoderConnected = cancoder.isConnected();
         inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition);
-        inputs.turnPosition = Rotation2d.fromRotations((turnPosition + 0.5) % 1 + 0.5);
+        inputs.turnPosition = Rotation2d.fromRotations((turnPosition + 0.5) % 1 - 0.5);
         inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity);
         inputs.turnAppliedVolts = turnAppliedVolts;
         inputs.turnCurrentAmps = turnCurrent;
