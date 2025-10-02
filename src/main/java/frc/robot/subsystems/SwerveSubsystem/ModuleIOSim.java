@@ -1,3 +1,4 @@
+
 // Copyright (c) 2021-2025 Littleton Robotics
 // http://github.com/Mechanical-Advantage
 //
@@ -18,8 +19,6 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
-import frc.robot.Constants.ModuleConstants;
-import static edu.wpi.first.units.Units.KilogramSquareMeters;;
 
 /**
  * Physics sim implementation of module IO. The sim models are configured using a set of module
@@ -49,17 +48,19 @@ public class ModuleIOSim implements ModuleIO {
   private double driveAppliedVolts = 0.0;
   private double turnAppliedVolts = 0.0;
 
-  public ModuleIOSim() {
+  public ModuleIOSim(
+      SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
+          constants) {
     // Create drive and turn sim models
     driveSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-                DRIVE_GEARBOX, 0.025, ModuleConstants.kDriveMotorGearRatio),
+                DRIVE_GEARBOX, constants.DriveInertia, constants.DriveMotorGearRatio),
             DRIVE_GEARBOX);
     turnSim =
         new DCMotorSim(
             LinearSystemId.createDCMotorSystem(
-                TURN_GEARBOX, 0.004, ModuleConstants.kTurningMotorGearRatio),
+                TURN_GEARBOX, constants.SteerInertia, constants.SteerMotorGearRatio),
             TURN_GEARBOX);
 
     // Enable wrapping for turn PID
@@ -110,13 +111,13 @@ public class ModuleIOSim implements ModuleIO {
   }
 
   @Override
-  public void setDriveVoltage(double output) {
+  public void setDriveOpenLoop(double output) {
     driveClosedLoop = false;
     driveAppliedVolts = output;
   }
 
   @Override
-  public void setTurnVoltage(double output) {
+  public void setTurnOpenLoop(double output) {
     turnClosedLoop = false;
     turnAppliedVolts = output;
   }
