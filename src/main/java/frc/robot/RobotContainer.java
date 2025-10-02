@@ -36,8 +36,7 @@ import frc.robot.subsystems.SwerveSubsystem.ModuleIO;
 import frc.robot.subsystems.SwerveSubsystem.ModuleIOSim;
 import frc.robot.subsystems.SwerveSubsystem.ModuleIOTalonFX;
 import frc.robot.subsystems.SwerveSubsystem.SwerveSubsystem;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Pose2d;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -49,12 +48,12 @@ import edu.wpi.first.math.geometry.Pose2d;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    // private final LEDSubsystem ledSubsystem;
+//     private final LEDSubsystem ledSubsystem;
     private final SendableChooser<Command> autoChooser;
 
     private final SwerveSubsystem swerveSubsystem;
-    // private final Lift lift;
-    // private final Arm arm;
+//     private final Lift lift;
+//     private final Arm arm;
     private final Climb climb;
 
     private final CommandXboxController driverController = new CommandXboxController(
@@ -114,30 +113,26 @@ public class RobotContainer {
                         new GyroIONavX());
                 break;
 
-            // case SIM:
+            case SIM:
                 // Sim robot, instantiate physics sim IO implementations
-                // swerveSubsystem = new SwerveSubsystem(
-                // new ModuleIOSim(),
-                // new ModuleIOSim(),
-                // new ModuleIOSim(),
-                // new ModuleIOSim(),
-                // new GyroIO() {
-                // });
-                // break;
+                swerveSubsystem = new SwerveSubsystem(
+                        new ModuleIOSim(),
+                        new ModuleIOSim(),
+                        new ModuleIOSim(),
+                        new ModuleIOSim(),
+                        new GyroIO() {
+                        });
+                break;
 
             default:
                 // Replayed robot, disable IO implementations
                 swerveSubsystem = new SwerveSubsystem(
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new ModuleIO() {
-                        },
-                        new GyroIO() {
-                        });
+                        new ModuleIO() {},
+                        new ModuleIO() {},
+                        new ModuleIO() {},
+                        new ModuleIO() {},
+                        new GyroIO() {}
+                    );
 
                 break;
         }
@@ -151,51 +146,43 @@ public class RobotContainer {
 
         // Add PathPlanner Named Commands
         // NamedCommands.registerCommand("L4", new SequentialCommandGroup(
-        // new LiftSetpoint(lift, LiftConstants.L4Height),
-        // new ArmSetpoint(arm, ArmConstants.UpL4),
-        // new InstantCommand(() -> {
-        // System.out.println("L4 Finished");
-        // })));
+        //         new LiftSetpoint(lift, LiftConstants.L4Height),
+        //         new ArmSetpoint(arm, ArmConstants.UpL4),
+        //         new InstantCommand(() -> {
+        //             System.out.println("L4 Finished");
+        //         })));
 
         // NamedCommands.registerCommand("L3", new SequentialCommandGroup(
-        // new LiftSetpoint(lift, LiftConstants.L3Height),
-        // new ArmSetpoint(arm, ArmConstants.Up)));
+        //         new LiftSetpoint(lift, LiftConstants.L3Height),
+        //         new ArmSetpoint(arm, ArmConstants.Up)));
 
         // NamedCommands.registerCommand("L2", new SequentialCommandGroup(
-        // new LiftSetpoint(lift, LiftConstants.L2Height),
-        // new ArmSetpoint(arm, ArmConstants.Up)));
+        //         new LiftSetpoint(lift, LiftConstants.L2Height),
+        //         new ArmSetpoint(arm, ArmConstants.Up)));
 
-        // NamedCommands.registerCommand("L4Lift", new LiftSetpoint(lift,
-        // LiftConstants.L4Height));
+        // NamedCommands.registerCommand("L4Lift", new LiftSetpoint(lift, LiftConstants.L4Height));
 
         // NamedCommands.registerCommand("L4Arm", new InstantCommand(() -> {
-        // arm.setGoal(ArmConstants.UpL4);
+        //     arm.setGoal(ArmConstants.UpL4);
         // }));
 
-        // NamedCommands.registerCommand("IntakeArm", new ArmSetpoint(arm,
-        // ArmConstants.pickupSetpoint));
+        // NamedCommands.registerCommand("IntakeArm", new ArmSetpoint(arm, ArmConstants.pickupSetpoint));
 
         // NamedCommands.registerCommand("Arm Score", new ArmScorePosition(arm, lift));
 
-        // NamedCommands.registerCommand("IntakeLift", new LiftSetpoint(lift,
-        // LiftConstants.pickupHeight));
+        // NamedCommands.registerCommand("IntakeLift", new LiftSetpoint(lift, LiftConstants.pickupHeight));
 
-        // NamedCommands.registerCommand("ScoreLift", new LiftSetpoint(lift,
-        // LiftConstants.scoreHeight));
+        // NamedCommands.registerCommand("ScoreLift", new LiftSetpoint(lift, LiftConstants.scoreHeight));
 
         // NamedCommands.registerCommand("IntakeLight",
-        // new InstantCommand(() ->
-        // ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())));
+        //         new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())));
 
         // NamedCommands.registerCommand("IntakeCheck", new IntakeCheck(arm));
 
-        // NamedCommands.registerCommand("L3 Height", new LiftSetpoint(lift,
-        // LiftConstants.L3Height));
+        // NamedCommands.registerCommand("L3 Height", new LiftSetpoint(lift, LiftConstants.L3Height));
 
-        // NamedCommands.registerCommand("AlignL", new CoralScore(swerveSubsystem, true,
-        // ledSubsystem));
-        // NamedCommands.registerCommand("AlignR", new CoralScore(swerveSubsystem,
-        // false, ledSubsystem));
+        // NamedCommands.registerCommand("AlignL", new CoralScore(swerveSubsystem, true, ledSubsystem));
+        // NamedCommands.registerCommand("AlignR", new CoralScore(swerveSubsystem, false, ledSubsystem));
 
         // Setup Default Commands
         swerveSubsystem.setDefaultCommand(new SwerveJoystickCmd(
@@ -207,8 +194,7 @@ public class RobotContainer {
 
         // climb.setDefaultCommand(new RunClimb(climb, operatorController));
 
-        // // Build an auto chooser. This will use Commands.none() as the default
-        // option.
+        // // Build an auto chooser. This will use Commands.none() as the default option.
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
@@ -230,50 +216,45 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Driver A Button -> Zero Heading
-        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.setPose(
-                new Pose2d(swerveSubsystem.getPose().getTranslation(), Rotation2d.kZero))));
+        driverController.a().onTrue(new InstantCommand(() -> swerveSubsystem.zeroHeading()));
         // driverController.povUp().onTrue(new SequentialCommandGroup(
-        // new InstantCommand(() ->
-        // ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())),
-        // new InstantCommand(() ->
-        // ledSubsystem.setPattern4(ledSubsystem.scrollingRainbow()))));
+        //         new InstantCommand(() -> ledSubsystem.setPattern3(ledSubsystem.scrollingRainbow())),
+        //         new InstantCommand(() -> ledSubsystem.setPattern4(ledSubsystem.scrollingRainbow()))));
 
         // Actual Operator Bindings:
 
         // Pickup
         // operatorController.leftBumper().onTrue(new SequentialCommandGroup(
-        // new ArmSetpoint(arm, ArmConstants.pickupSetpoint),
-        // new LiftSetpoint(lift, LiftConstants.pickupHeight)));
+        //         new ArmSetpoint(arm, ArmConstants.pickupSetpoint),
+        //         new LiftSetpoint(lift, LiftConstants.pickupHeight)));
 
         // // L2
         // operatorController.a().onTrue(new SequentialCommandGroup(
-        // new LiftSetpoint(lift, LiftConstants.L2Height),
-        // new ArmSetpoint(arm, 4.5)));
+        //         new LiftSetpoint(lift, LiftConstants.L2Height),
+        //         new ArmSetpoint(arm, 4.5)));
         // // new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
 
         // // L3
         // operatorController.b().onTrue(new SequentialCommandGroup(
-        // new LiftSetpoint(lift, LiftConstants.L3Height),
-        // // new ArmSetpoint(arm, ArmConstants.Up)));
-        // new ArmSetpoint(arm, 4.5)));
+        //         new LiftSetpoint(lift, LiftConstants.L3Height),
+        //         // new ArmSetpoint(arm, ArmConstants.Up)));
+        //         new ArmSetpoint(arm, 4.5)));
 
         // // L4
         // operatorController.y().onTrue(new SequentialCommandGroup(
-        // new LiftSetpoint(lift, LiftConstants.L4Height),
-        // new ArmSetpoint(arm, ArmConstants.UpL4)));
+        //         new LiftSetpoint(lift, LiftConstants.L4Height),
+        //         new ArmSetpoint(arm, ArmConstants.UpL4)));
 
         // // new InstantCommand(() -> arm.setGoal(ArmConstants.Up))));
 
         // // Score(this one is going to be weird)
         // operatorController.rightBumper().onTrue(new SequentialCommandGroup(
-        // new ArmScorePosition(arm, lift),
-        // new LiftSetpoint(lift, LiftConstants.scoreHeight)));
+        //         new ArmScorePosition(arm, lift),
+        //         new LiftSetpoint(lift, LiftConstants.scoreHeight)));
 
-        // driverController.rightBumper().onTrue(new CoralScore(swerveSubsystem, false,
-        // ledSubsystem));
+        // driverController.rightBumper().onTrue(new CoralScore(swerveSubsystem, false, ledSubsystem));
 
-        // driverController.leftBumper().onTrue(new CoralScore(swerveSubsystem, true,
-        // ledSubsystem));
+        // driverController.leftBumper().onTrue(new CoralScore(swerveSubsystem, true, ledSubsystem));
 
         // Down on POV as gate operator. This may be wrong. Check DS to double check.
         // Pressing down allows the RunClimb() command to work.
