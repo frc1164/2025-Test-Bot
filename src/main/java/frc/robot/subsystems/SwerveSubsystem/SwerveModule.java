@@ -6,6 +6,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -57,7 +58,7 @@ public class SwerveModule {
      * @return Module velocity in m/s
      */
     public double getDriveVelocity() {
-        return (inputs.driveVelocityRadPerSec / (2 * Math.PI)) * ModuleConstants.kWheelDiameterMeters;
+        return (inputs.driveVelocityRadPerSec  * ModuleConstants.kWheelDiameterMeters * ModuleConstants.kDriveMotorGearRatio / 2);
     }
 
     /**
@@ -93,7 +94,7 @@ public class SwerveModule {
         state.optimize(getTurningPosition());
         state.cosineScale(getAbsoluteEncoderRad());
 
-        // io.setDriveVelocity(state.speedMetersPerSecond);
+        io.setDriveVelocity(state.speedMetersPerSecond);
         SmartDashboard.putNumber("current.angle[" + moduleId + ']', (getState().angle.getRotations() + 0.5) % 1 - 0.5);
         SmartDashboard.putNumber("state.angle[" + moduleId + ']', state.angle.getRotations());
 
